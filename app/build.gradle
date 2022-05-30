@@ -64,6 +64,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
     //图标
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    //下拉刷新
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+    //状态栏
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+
 
 
 }

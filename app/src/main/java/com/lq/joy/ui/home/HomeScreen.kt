@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lq.joy.data.AppContainer
 import com.lq.lib_sakura.bean.HomeItemBean
 
@@ -30,40 +32,70 @@ fun HomeScreen(appContainer: AppContainer) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    when (uiState) {
-        is HomeUiState.HasData -> {
-            //todo 写一个banner
+    HomeScreenScaffold(uiState = uiState,
+        onRefresh = { viewModel.getHomeHtml() })
 
-            HomeContentHasData(uiState)
-
-
-        }
-        is HomeUiState.NoData -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(text = "无数据", modifier = Modifier.align(Alignment.Center))
-            }
-        }
-    }
 }
 
 @Composable
 fun HomeScreenScaffold(
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    onRefresh: () -> Unit,
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
-        snackbarHost = { snackbarHostState ->
-
-        },
+        snackbarHost = { },
         topBar = {
 
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        val contentPadding = Modifier.padding(innerPadding)
+        LoadingContent(
+            isLoading = uiState.isLoading,
+            empty = when (uiState) {
+                is HomeUiState.HasData -> false
+                is HomeUiState.NoData -> true
+            },
+            onRefresh = onRefresh,
+            contentEmpty = {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text(text = "无数据", modifier = Modifier.align(Alignment.Center))
+                }
+            }) {
+            HomeContentHasData(uiState)
         }
-
-
-    ) {
-
     }
+}
 
+
+@Composable
+fun HomeTopBar() {
+
+
+}
+
+@Composable
+fun LoadingContent(
+    isLoading: Boolean,
+    empty: Boolean,
+    onRefresh: () -> Unit,
+    contentEmpty: @Composable () -> Unit,
+    contentHasData: @Composable () -> Unit
+) {
+    println("refresh $isLoading")
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isLoading),
+        onRefresh = onRefresh,
+    ) {
+        if (empty) {
+            contentEmpty()
+        } else {
+            contentHasData()
+        }
+    }
 
 }
 
@@ -71,7 +103,11 @@ fun HomeScreenScaffold(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContentHasData(uiState: HomeUiState) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ) {
         val width = LocalConfiguration.current.screenWidthDp
         val verticalCount = 2
         val itemWidthPadding = 8
@@ -90,10 +126,20 @@ private fun HomeContentHasData(uiState: HomeUiState) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White)
+                            .background(MaterialTheme.colors.background),
                     ) {
-                        TextButton(onClick = { /*TODO*/ }) {
-                            Text(text = group.groupTitle)
+                        Text(
+                            text = group.groupTitle,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .align(Alignment.CenterStart)
+                        )
+
+                        TextButton(onClick = {
+
+                        }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                            Text(text = "更多", color = MaterialTheme.colors.primary)
                         }
                     }
                 }
@@ -138,7 +184,7 @@ private fun HomeItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Card(elevation = 4.dp, modifier = modifier.clickable {
+    Card(elevation = 1.dp, modifier = modifier.clickable {
         onClick()
     }) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -155,7 +201,7 @@ private fun HomeItem(
             )
             Text(
                 text = item.name,
-                color = Color.Black,
+                color = MaterialTheme.colors.onBackground,
                 modifier = Modifier.weight(1f),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1

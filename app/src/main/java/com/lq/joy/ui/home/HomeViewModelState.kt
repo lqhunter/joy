@@ -9,10 +9,10 @@ data class HomeViewModelState(
 ) {
     fun toUiState(): HomeUiState {
         return if (data == null) {
-            HomeUiState.NoData(isLoading = false)
+            HomeUiState.NoData(isLoading = isLoading)
         } else {
             HomeUiState.HasData(
-                isLoading = false,
+                isLoading = isLoading,
                 selectedId = selectedId,
                 data = data
             )

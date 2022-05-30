@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.sakura.ISakuraRepository
 import com.lq.lib_sakura.bean.HomeBean
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -31,15 +32,12 @@ class HomeViewModel(private val sakuraRepository: ISakuraRepository) : ViewModel
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            HomeViewModelState(isLoading = true).toUiState()
+            viewModelState.value.toUiState()
         )
 
     init {
         getHomeHtml()
     }
-
-
-
 
     fun getHomeHtml() {
         viewModelState.update { it.copy(isLoading = true) }

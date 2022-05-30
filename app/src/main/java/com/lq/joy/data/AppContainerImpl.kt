@@ -10,5 +10,5 @@ interface AppContainer {
 }
 
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
-    override val sakuraRepository: ISakuraRepository by lazy { SakuraRepository() }
+    override val sakuraRepository: ISakuraRepository by lazy { SakuraRepository(applicationContext) }
 }
