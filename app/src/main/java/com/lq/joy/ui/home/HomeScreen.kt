@@ -23,6 +23,7 @@ import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lq.joy.data.AppContainer
+import com.lq.joy.ui.theme.Blue300
 import com.lq.lib_sakura.bean.HomeItemBean
 
 @Composable
@@ -139,7 +140,7 @@ private fun HomeContentHasData(uiState: HomeUiState) {
                         TextButton(onClick = {
 
                         }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                            Text(text = "更多", color = MaterialTheme.colors.primary)
+                            Text(text = "更多", color = Blue300)
                         }
                     }
                 }
