@@ -1,12 +1,10 @@
-package com.lq.joy.ui.home
+package com.lq.joy.ui.page.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.sakura.ISakuraRepository
-import com.lq.lib_sakura.bean.HomeBean
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

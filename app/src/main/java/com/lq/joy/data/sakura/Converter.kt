@@ -1,9 +1,9 @@
-package com.lq.lib_sakura
+package com.lq.joy.data.sakura
 
-import com.lq.lib_sakura.bean.HomeBannerBean
-import com.lq.lib_sakura.bean.HomeBean
-import com.lq.lib_sakura.bean.HomeGroupBean
-import com.lq.lib_sakura.bean.HomeItemBean
+import com.lq.joy.data.sakura.bean.HomeBannerBean
+import com.lq.joy.data.sakura.bean.HomeBean
+import com.lq.joy.data.sakura.bean.HomeGroupBean
+import com.lq.joy.data.sakura.bean.HomeItemBean
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 
@@ -33,7 +33,14 @@ object Converter {
                 if (childNodes.isNotEmpty()) {
                     updateTime = (li.getElementsByTag("em")[0].childNode(0) as TextNode).text()
                 }
-                banners.add(HomeBannerBean(url.substring(6, url.length - 5), name, cover, updateTime, url))
+                banners.add(
+                    com.lq.joy.data.sakura.bean.HomeBannerBean(
+                        url.substring(
+                            6,
+                            url.length - 5
+                        ), name, cover, updateTime, url
+                    )
+                )
             }
         }
 
@@ -64,7 +71,14 @@ object Converter {
                     newestUrl = newests[0].attributes()["href"]
                     newestEpisode = (newests[0].childNode(0) as TextNode).text()
                 }
-                groups.add(HomeItemBean(url.substring(6, url.length - 5), name, cover, newestEpisode, newestUrl, url))
+                groups.add(
+                    HomeItemBean(
+                        url.substring(
+                            6,
+                            url.length - 5
+                        ), name, cover, newestEpisode, newestUrl, url
+                    )
+                )
             }
             group.add(groupBean)
         }

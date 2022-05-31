@@ -1,4 +1,4 @@
-package com.lq.lib_sakura.bean
+package com.lq.joy.data.sakura.bean
 
 data class HomeBean(val banners: List<HomeBannerBean>, val groups: List<HomeGroupBean>)
 

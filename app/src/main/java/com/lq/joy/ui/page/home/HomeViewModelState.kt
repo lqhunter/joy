@@ -1,6 +1,6 @@
-package com.lq.joy.ui.home
+package com.lq.joy.ui.page.home
 
-import com.lq.lib_sakura.bean.HomeBean
+import com.lq.joy.data.sakura.bean.HomeBean
 
 data class HomeViewModelState(
     val isLoading: Boolean = false,

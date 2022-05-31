@@ -1,4 +1,4 @@
-package com.lq.joy.ui.home
+package com.lq.joy.ui.page.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -26,11 +26,16 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lq.joy.R
 import com.lq.joy.data.AppContainer
-import com.lq.joy.ui.theme.Blue300
-import com.lq.lib_sakura.bean.HomeItemBean
+import com.lq.joy.ui.theme.Blue500
+import com.lq.joy.data.sakura.bean.HomeItemBean
 
 @Composable
-fun HomeScreen(appContainer: AppContainer, onSearchClick: () -> Unit) {
+fun HomeScreen(
+    appContainer: AppContainer,
+    onSearchClick: () -> Unit,
+    onAnimationClick: (HomeItemBean) -> Unit,
+    onMoreClick: (String) -> Unit
+    ) {
     val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModel.providerFactory(appContainer.sakuraRepository))
 
@@ -39,7 +44,9 @@ fun HomeScreen(appContainer: AppContainer, onSearchClick: () -> Unit) {
     HomeScreenScaffold(
         uiState = uiState,
         onRefresh = { viewModel.getHomeHtml() },
-        onSearchClick = onSearchClick
+        onSearchClick = onSearchClick,
+        onAnimationClick = onAnimationClick,
+        onMoreClick = onMoreClick
     )
 
 }
@@ -50,6 +57,8 @@ fun HomeScreenScaffold(
     uiState: HomeUiState,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     onSearchClick: () -> Unit,
+    onAnimationClick: (HomeItemBean) -> Unit,
+    onMoreClick: (String) -> Unit,
     onRefresh: () -> Unit,
 ) {
     Scaffold(
@@ -75,7 +84,7 @@ fun HomeScreenScaffold(
             }) {
 
 
-            HomeContentHasData(uiState)
+            HomeContentHasData(uiState, onAnimationClick, onMoreClick)
         }
     }
 }
@@ -124,7 +133,11 @@ fun LoadingContent(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeContentHasData(uiState: HomeUiState) {
+private fun HomeContentHasData(
+    uiState: HomeUiState,
+    onAnimationClick: (HomeItemBean) -> Unit,
+    onMoreClick: (String) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -159,9 +172,9 @@ private fun HomeContentHasData(uiState: HomeUiState) {
                         )
 
                         TextButton(onClick = {
-
+                            onMoreClick(group.groupUrl)
                         }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                            Text(text = "更多", color = Blue300)
+                            Text(text = "更多", color = Blue500)
                         }
                     }
                 }
@@ -171,20 +184,16 @@ private fun HomeContentHasData(uiState: HomeUiState) {
                     item {
                         Row {
                             for (j in 0 until verticalCount) {
-                                val item = group.items[i + j]
                                 HomeItem(
-                                    item = item,
+                                    item = group.items[i + j],
                                     modifier = Modifier
                                         .padding(itemWidthPadding.dp)
                                         .width(itemWidth.dp)
                                         .height((itemHeight + textHeight).dp),
                                     imageWidth = itemWidth,
-                                    imageHeight = itemHeight
-                                ) {
-
-
-                                }
-
+                                    imageHeight = itemHeight,
+                                    onClick = onAnimationClick
+                                )
                             }
                         }
                     }
@@ -204,10 +213,10 @@ private fun HomeItem(
     imageWidth: Int,
     imageHeight: Int,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (HomeItemBean) -> Unit
 ) {
     Card(elevation = 1.dp, modifier = modifier.clickable {
-        onClick()
+        onClick(item)
     }) {
         Column(modifier = Modifier.fillMaxSize()) {
             AsyncImage(

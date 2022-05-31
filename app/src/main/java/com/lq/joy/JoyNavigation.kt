@@ -6,6 +6,12 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 object JoyDestinations {
     const val HOME = "home"
     const val SEARCH = "search"
+
+    const val DETAIL = "detail"
+    const val DETAIL_PARAMS_ID = "id"
+    const val DETAIL_WITH_PARAMS = "${DETAIL}/{${DETAIL_PARAMS_ID}}"
+
+    const val MORE = "more"
 }
 
 
@@ -28,6 +34,26 @@ class NavigationActions(navController: NavController) {
 
     val navigateToSearch: () -> Unit = {
         navController.navigate(JoyDestinations.SEARCH) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    val navigateToDetail: (String) -> Unit = {
+        navController.navigate("${JoyDestinations.DETAIL}/$it") {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    val navigationToMore: (String) -> Unit = {
+        navController.navigate(JoyDestinations.MORE) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

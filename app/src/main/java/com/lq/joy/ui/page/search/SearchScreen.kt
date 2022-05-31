@@ -1,4 +1,4 @@
-package com.lq.joy.ui.home
+package com.lq.joy.ui.page.search
 
 import androidx.compose.runtime.Composable
 

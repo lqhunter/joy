@@ -1,16 +1,18 @@
-package com.lq.lib_sakura
+package com.lq.joy.data.sakura
 
 import android.content.Context
-import com.lq.lib_sakura.bean.HomeBean
+import com.lq.joy.data.Api
+import com.lq.joy.data.sakura.bean.HomeBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
-object Sakura {
+object SakuraService {
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -50,7 +52,7 @@ object Sakura {
     suspend fun getLocalHomeData(context: Context): HomeBean? {
         return withContext(Dispatchers.IO) {
 
-            delay(3000)
+            delay(1000)
             var inputStream: InputStream? = null
             var reader:InputStreamReader? = null
             try {

@@ -9,7 +9,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.lq.joy.ui.home.HomeScreen
 import com.lq.joy.ui.theme.Blue100
 import com.lq.joy.ui.theme.JoyTheme
 
