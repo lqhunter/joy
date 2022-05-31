@@ -6,15 +6,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,19 +24,23 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.lq.joy.R
 import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.theme.Blue300
 import com.lq.lib_sakura.bean.HomeItemBean
 
 @Composable
-fun HomeScreen(appContainer: AppContainer) {
+fun HomeScreen(appContainer: AppContainer, onSearchClick: () -> Unit) {
     val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModel.providerFactory(appContainer.sakuraRepository))
 
     val uiState by viewModel.uiState.collectAsState()
 
-    HomeScreenScaffold(uiState = uiState,
-        onRefresh = { viewModel.getHomeHtml() })
+    HomeScreenScaffold(
+        uiState = uiState,
+        onRefresh = { viewModel.getHomeHtml() },
+        onSearchClick = onSearchClick
+    )
 
 }
 
@@ -43,13 +49,14 @@ fun HomeScreenScaffold(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
+    onSearchClick: () -> Unit,
     onRefresh: () -> Unit,
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
         snackbarHost = { },
         topBar = {
-
+            HomeTopBar(onSearchClick)
         },
         modifier = modifier
     ) { innerPadding ->
@@ -66,6 +73,8 @@ fun HomeScreenScaffold(
                     Text(text = "无数据", modifier = Modifier.align(Alignment.Center))
                 }
             }) {
+
+
             HomeContentHasData(uiState)
         }
     }
@@ -73,9 +82,21 @@ fun HomeScreenScaffold(
 
 
 @Composable
-fun HomeTopBar() {
-
-
+fun HomeTopBar(onSearchClick: () -> Unit) {
+    TopAppBar(title = {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                text = stringResource(id = R.string.sakura),
+            )
+        }
+    }, actions = {
+        IconButton(onClick = onSearchClick) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = null
+            )
+        }
+    })
 }
 
 @Composable

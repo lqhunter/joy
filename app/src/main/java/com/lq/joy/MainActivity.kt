@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.ui.home.HomeScreen
-import com.lq.joy.ui.theme.Blue50
+import com.lq.joy.ui.theme.Blue100
 import com.lq.joy.ui.theme.JoyTheme
 
 @ExperimentalFoundationApi
@@ -23,11 +25,15 @@ class MainActivity : ComponentActivity() {
                 val systemUiController = rememberSystemUiController()
                 val darkIcons = MaterialTheme.colors.isLight
                 SideEffect {
-                    systemUiController.setSystemBarsColor(Blue50, darkIcons = darkIcons)
+                    systemUiController.setSystemBarsColor(Blue100, darkIcons = darkIcons)
                 }
 
-                HomeScreen(appContainer)
+                val navController = rememberNavController()
+                val navigationActions = remember(navController) {
+                    NavigationActions(navController)
+                }
 
+                JoyNavGraph(appContainer, navController, navigationActions)
             }
         }
     }
