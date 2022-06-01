@@ -15,7 +15,7 @@ class SakuraRepository : ISakuraRepository {
         }
     }
 
-    override suspend fun getDetailData(): BaseResult<DetailBean> {
+    override suspend fun getDetailData(url: String): BaseResult<DetailBean> {
         TODO("Not yet implemented")
     }
 }

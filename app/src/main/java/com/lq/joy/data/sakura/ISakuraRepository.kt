@@ -8,5 +8,5 @@ interface ISakuraRepository {
 
     suspend fun getHomeData(): BaseResult<HomeBean>
 
-    suspend fun getDetailData():BaseResult<DetailBean>
+    suspend fun getDetailData(url:String):BaseResult<DetailBean>
 }

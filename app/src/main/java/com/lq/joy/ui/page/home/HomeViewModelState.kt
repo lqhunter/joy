@@ -4,7 +4,6 @@ import com.lq.joy.data.sakura.bean.HomeBean
 
 data class HomeViewModelState(
     val isLoading: Boolean = false,
-    val selectedId: String? = null,
     val data: HomeBean? = null
 ) {
     fun toUiState(): HomeUiState {
@@ -13,7 +12,6 @@ data class HomeViewModelState(
         } else {
             HomeUiState.HasData(
                 isLoading = isLoading,
-                selectedId = selectedId,
                 data = data
             )
         }
@@ -29,7 +27,6 @@ sealed interface HomeUiState {
 
     data class HasData(
         override val isLoading: Boolean,
-        val selectedId: String?,
         val data: HomeBean
     ) : HomeUiState
 }

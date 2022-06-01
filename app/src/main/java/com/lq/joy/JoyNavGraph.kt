@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.lq.joy.JoyDestinations.DETAIL_PARAMS_ID
 import com.lq.joy.data.AppContainer
+import com.lq.joy.ui.page.detail.DetailScreen
 import com.lq.joy.ui.page.home.HomeScreen
 
 @Composable
@@ -37,11 +38,8 @@ fun JoyNavGraph(
         }
 
         composable(JoyDestinations.DETAIL_WITH_PARAMS, arguments = listOf(navArgument(DETAIL_PARAMS_ID) {})) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                it.arguments?.getString(DETAIL_PARAMS_ID)?.let { url ->
-                    Text(text = url)
-                } ?: Text(text = "详情页面")
-
+            it.arguments?.getString(DETAIL_PARAMS_ID)?.let { url ->
+                DetailScreen(appContainer, url)
             }
         }
 

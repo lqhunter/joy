@@ -17,7 +17,7 @@ class FakeSakuraRepository(private val context: Context) : ISakuraRepository {
         }
     }
 
-    override suspend fun getDetailData(): BaseResult<DetailBean> {
+    override suspend fun getDetailData(url: String): BaseResult<DetailBean> {
         val bean = SakuraService.getLocalDetailData(context)
 
         return if (bean == null) {

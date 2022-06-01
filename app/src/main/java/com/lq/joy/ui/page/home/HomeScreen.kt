@@ -22,12 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lq.joy.R
 import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.theme.Blue500
 import com.lq.joy.data.sakura.bean.HomeItemBean
+import com.lq.joy.ui.page.common.SwipeRefreshContent
 
 @Composable
 fun HomeScreen(
@@ -70,9 +69,9 @@ fun HomeScreenScaffold(
         modifier = modifier
     ) { innerPadding ->
         val contentPadding = Modifier.padding(innerPadding)
-        LoadingContent(
+        SwipeRefreshContent(
             isLoading = uiState.isLoading,
-            empty = when (uiState) {
+            isEmpty = when (uiState) {
                 is HomeUiState.HasData -> false
                 is HomeUiState.NoData -> true
             },
@@ -108,27 +107,7 @@ fun HomeTopBar(onSearchClick: () -> Unit) {
     })
 }
 
-@Composable
-fun LoadingContent(
-    isLoading: Boolean,
-    empty: Boolean,
-    onRefresh: () -> Unit,
-    contentEmpty: @Composable () -> Unit,
-    contentHasData: @Composable () -> Unit
-) {
-    println("refresh $isLoading")
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isLoading),
-        onRefresh = onRefresh,
-    ) {
-        if (empty) {
-            contentEmpty()
-        } else {
-            contentHasData()
-        }
-    }
 
-}
 
 
 @OptIn(ExperimentalFoundationApi::class)
