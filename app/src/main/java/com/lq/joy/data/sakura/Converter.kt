@@ -1,9 +1,6 @@
 package com.lq.joy.data.sakura
 
-import com.lq.joy.data.sakura.bean.HomeBannerBean
-import com.lq.joy.data.sakura.bean.HomeBean
-import com.lq.joy.data.sakura.bean.HomeGroupBean
-import com.lq.joy.data.sakura.bean.HomeItemBean
+import com.lq.joy.data.sakura.bean.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 
@@ -34,7 +31,7 @@ object Converter {
                     updateTime = (li.getElementsByTag("em")[0].childNode(0) as TextNode).text()
                 }
                 banners.add(
-                    com.lq.joy.data.sakura.bean.HomeBannerBean(
+                    HomeBannerBean(
                         url.substring(
                             6,
                             url.length - 5
@@ -62,7 +59,7 @@ object Converter {
                 val url = li.getElementsByTag("a")[0].attributes()["href"]
                 val attributes = li.getElementsByTag("img")[0].attributes()
                 val cover = attributes["src"]
-                val name =  attributes["alt"]
+                val name = attributes["alt"]
 
                 val newests = li.getElementsByAttribute("target")
                 var newestUrl = ""
@@ -83,5 +80,28 @@ object Converter {
             group.add(groupBean)
         }
         return HomeBean(banners, group)
+    }
+
+    fun parseDetail(html: String): DetailBean? {
+        val document = Jsoup.parse(html)
+
+        var result: DetailBean? = null
+        val list = mutableListOf<PlayBean>()
+        val thumb = document.getElementsByClass("thumb l")
+        if (thumb.isNotEmpty()) {
+            val attrs = thumb[0].getElementsByTag("img")[0].attributes()
+            result = DetailBean(attrs["alt"], attrs["src"], list)
+        }
+
+
+        val movurl = document.getElementsByClass("movurl")
+        if (movurl.isNotEmpty()) {
+            movurl[0].getElementsByTag("a").forEach {
+                val playHtmlUrl = it.attributes()["href"]
+                val episodeName = (it.childNode(0) as TextNode).text()
+                list.add(PlayBean(episodeName, playHtmlUrl))
+            }
+        }
+        return result
     }
 }

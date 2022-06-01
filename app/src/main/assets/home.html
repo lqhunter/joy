@@ -1,386 +1,779 @@
 <!doctype html>
 <html>
- <head> 
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge"> 
-  <meta http-equiv="Content-Language" content="zh-CN"> 
-  <title>樱花动漫－专注动漫的门户网站</title> 
-  <meta name="keywords" content="樱花动漫,Sakura,Y站"> 
-  <meta name="description" content="樱花动漫拥有上万集高清晰画质的在线动漫，观看完全免费、无须注册、高速播放、更新及时的专业在线樱花动漫站，我们致力为所有动漫迷们提供最好看的动漫。"> 
-  <script type="text/javascript" src="/js/uaredirect.js"></script> 
-  <script type="text/javascript">uaredirect("http://m.yinghuacd.com/");</script> 
-  <link rel="shortcut icon" href="/js/20180601/favicon.ico" type="image/x-icon">
-  <link href="/js/20180601/style.css" rel="stylesheet" type="text/css"> 
-  <script type="text/javascript" src="//libs.baidu.com/jquery/1.7.0/jquery.min.js"></script> 
-  <script type="text/javascript" src="/js/js/jquery.foucs.js"></script> 
-  <script type="text/javascript" src="/js/js/history.js"></script> 
- </head> 
- <body> 
-  <div class="head area">
-   <div class="logo l">
-    <a href="/" title="樱花动漫">樱花动漫</a>
-   </div>
-   <div class="so l">
-    <form id="sform" name="sform" method="post" action="" placeholder="请输入要搜索的关键词!" onsubmit="if(document.sform.q.value=='') {alert('请输入要搜索的关键词!');document.sform.q.focus();return false}document.sform.action='/search/'+document.sform.q.value+'/';">
-     <input type="hidden" name="m" value="search">
-     <input type="hidden" name="c" value="index">
-     <input type="hidden" name="a" value="init">
-     <input id="keyw" name="q" type="text" maxlength="100" value="" class="sinp"> 
-     <input type="submit" value="搜索" class="sbut">
-    </form>
-   </div>
-   <div class="dmus r">
-    <ul>
-     <li class="gbook"><i class="gb"></i><a href="javascript:void(0)" id="StranLink" name="StranLink">繁體</a></li>
-     <li class="hotv"><i class="hot"></i><a href="/top/">排行榜</a></li>
-     <li class="history" onmouseout="hideTop();" onmouseover="showTop(0);" id="Tab_top_0"><i class="his"></i><a href="javascript:void(0)">播放记录</a></li>
-    </ul>
-   </div>
-   <div onmouseout="hideTop();" onmouseover="showTop(0);" id="List_top_0" style="display:none;" class="historys">
-    <div class="vlist">
-     <ul id="playhistory" class="item">
-      <li>您的观看历史为空</li>
-     </ul>
-     <script>PlayHistoryObj.viewPlayHistory('playhistory')</script>
-     <div class="vinfo">
-      <span class="count"><a title="清空观看记录" onclick="javascript:_GC()" href="javascript:void(0)">清空观看记录</a></span><span class="close"><a onclick="hideTop();" class="red" title="关闭" href="javascript:void(0)">关闭</a></span>
-     </div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Content-Language" content="zh-CN">
+    <title>樱花动漫－专注动漫的门户网站</title>
+    <meta name="keywords" content="樱花动漫,Sakura,Y站">
+    <meta name="description"
+          content="樱花动漫拥有上万集高清晰画质的在线动漫，观看完全免费、无须注册、高速播放、更新及时的专业在线樱花动漫站，我们致力为所有动漫迷们提供最好看的动漫。">
+    <script type="text/javascript" src="/js/uaredirect.js"></script>
+    <script type="text/javascript">uaredirect("http://m.yinghuacd.com/");</script>
+    <link rel="shortcut icon" href="/js/20180601/favicon.ico" type="image/x-icon">
+    <link href="/js/20180601/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="//libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/js/jquery.foucs.js"></script>
+    <script type="text/javascript" src="/js/js/history.js"></script>
+</head>
+<body>
+<div class="head area">
+    <div class="logo l">
+        <a href="/" title="樱花动漫">樱花动漫</a>
     </div>
-   </div>
-  </div>
-  <div class="menu">
-   <ul class="dmx l">
-    <li class="nav"><a href="/">首页</a></li>
-    <li><a href="/ribendongman/">日本动漫</a></li>
-    <li><a href="/guochandongman/">国产动漫</a></li>
-    <li><a href="/meiguodongman/">美国动漫</a></li>
-    <li><a href="/movie/">动漫电影</a></li>
-    <li><a href="/qinzi/">亲子动漫</a></li>
-   </ul>
-   <ul class="dme r">
-    <li><a href="/2022/">新番动漫</a></li>
-    <li><a href="/37/">剧场版</a></li>
-    <li><a href="/36/">OVA版</a></li>
-    <li><a href="/38/">真人版</a></li>
-    <li><a href="/topic/">动漫专题</a></li>
-    <li class="new"><a href="/new/">最新更新</a></li>
-   </ul>
-  </div>
-  <div class="blank"></div>
-  <div class="foucs bg">
-   <div class="hero-wrap">
-    <ul class="heros"> 
-     <li><a href="/show/273.html" title="妖精的尾巴"><img src="http://css.yhdmtu.com/comic/focus/2018/10/201810070913.jpg" alt="妖精的尾巴"><p>妖精的尾巴<span></span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">328集全</em></li> 
-     <li><a href="/show/3303.html" title="宠物小精灵 太阳·月亮"><img src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229042521996.jpg" alt="宠物小精灵 太阳·月亮"><p>宠物小精灵 太阳·月亮<span>每周四21:00更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">全集</em></li> 
-     <li><a href="/show/3833.html" title="游戏王vrains"><img src="http://css.yhdmtu.com/comic/focus/2017/05/11/20170511093023893.jpg" alt="游戏王vrains"><p>游戏王vrains<span>每周四更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">120集全</em></li> 
+    <div class="so l">
+        <form id="sform" name="sform" method="post" action="" placeholder="请输入要搜索的关键词!"
+              onsubmit="if(document.sform.q.value=='') {alert('请输入要搜索的关键词!');document.sform.q.focus();return false}document.sform.action='/search/'+document.sform.q.value+'/';">
+            <input type="hidden" name="m" value="search">
+            <input type="hidden" name="c" value="index">
+            <input type="hidden" name="a" value="init">
+            <input id="keyw" name="q" type="text" maxlength="100" value="" class="sinp">
+            <input type="submit" value="搜索" class="sbut">
+        </form>
+    </div>
+    <div class="dmus r">
+        <ul>
+            <li class="gbook"><i class="gb"></i><a href="javascript:void(0)" id="StranLink"
+                                                   name="StranLink">繁體</a></li>
+            <li class="hotv"><i class="hot"></i><a href="/top/">排行榜</a></li>
+            <li class="history" onmouseout="hideTop();" onmouseover="showTop(0);" id="Tab_top_0"><i
+                    class="his"></i><a href="javascript:void(0)">播放记录</a></li>
+        </ul>
+    </div>
+    <div onmouseout="hideTop();" onmouseover="showTop(0);" id="List_top_0" style="display:none;"
+         class="historys">
+        <div class="vlist">
+            <ul id="playhistory" class="item">
+                <li>您的观看历史为空</li>
+            </ul>
+            <script>PlayHistoryObj.viewPlayHistory('playhistory')</script>
+            <div class="vinfo">
+                <span class="count"><a title="清空观看记录" onclick="javascript:_GC()"
+                                       href="javascript:void(0)">清空观看记录</a></span><span
+                    class="close"><a onclick="hideTop();" class="red" title="关闭"
+                                     href="javascript:void(0)">关闭</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="menu">
+    <ul class="dmx l">
+        <li class="nav"><a href="/">首页</a></li>
+        <li><a href="/ribendongman/">日本动漫</a></li>
+        <li><a href="/guochandongman/">国产动漫</a></li>
+        <li><a href="/meiguodongman/">美国动漫</a></li>
+        <li><a href="/movie/">动漫电影</a></li>
+        <li><a href="/qinzi/">亲子动漫</a></li>
     </ul>
-    <ul class="heros">
-     <li><a href="/show/1412.html" title="名侦探柯南"><img src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229040456369.jpg" alt="名侦探柯南"><p>名侦探柯南<span>每周六19:30更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至1101</em></li> 
-     <li><a href="/show/2.html" title="海贼王"><img src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229035524924.jpg" alt="海贼王"><p>海贼王<span>每周日11:30左右更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至1019</em></li> 
-     <li><a href="/show/4604.html" title="你遭难了吗？"><img src="http://css.yhdmtu.com/focus/2019/07/01/20190701064912277.jpg" alt="你遭难了吗？"><p>你遭难了吗？<span></span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);"></em></li> 
+    <ul class="dme r">
+        <li><a href="/2022/">新番动漫</a></li>
+        <li><a href="/37/">剧场版</a></li>
+        <li><a href="/36/">OVA版</a></li>
+        <li><a href="/38/">真人版</a></li>
+        <li><a href="/topic/">动漫专题</a></li>
+        <li class="new"><a href="/new/">最新更新</a></li>
     </ul>
-    <ul class="heros">
-     <li><a href="/show/4607.html" title="魔术学姐"><img src="http://css.yhdmtu.com/focus/2019/07/01/20190701064539790.jpg" alt="魔术学姐"><p>魔术学姐<span>每周一更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em></li> 
-     <li><a href="/show/3330.html" title="一拳超人第二季"><img src="http://css.yhdmtu.com/focus/2019/05/18/20190518074245252.jpg" alt="一拳超人第二季"><p>一拳超人第二季<span>每周三02:05更新1集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em></li> 
-     <li><a href="/show/4433.html" title="奥特英雄新生代英雄传"><img src="http://css.yhdmtu.com/focus/2019/05/18/20190518074154269.jpg" alt="奥特英雄新生代英雄传"><p>奥特英雄新生代英雄传<span></span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">26集全</em></li> 
-    </ul>
-    <ul class="heros">
-     <li><a href="/show/4264.html" title="魔法禁书目录第三季 第21话"><img src="http://css.yhdmtu.com/comic/focus/2018/10/201810070912.jpg" alt="魔法禁书目录第三季 第21话"><p>魔法禁书目录第三季 第21话<span></span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">26集全</em></li> 
-     <li><a href="/show/3849.html" title="火影忍者 博人传之火影次世代  第95话"><img src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229035942761.jpg" alt="火影忍者 博人传之火影次世代  第95话"><p>火影忍者 博人传之火影次世代 第95话<span>每周日18:00更新一集</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至250</em></li> 
-     <li><a href="/show/4189.html" title="东京食尸鬼第四季 第12话"><img src="http://css.yhdmtu.com/comic/focus/2018/04/04/20180404045452339.jpg" alt="东京食尸鬼第四季 第12话"><p>东京食尸鬼第四季 第12话<span>大结局</span></p></a><em style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em></li> 
-    </ul>
-   </div>
-   <div class="helper">
-    <div class="mask-left"></div>
-    <div class="mask-right"></div><a href="javascript:void(0)" class="prev icon-arrow-a-left" target="_self"></a><a href="javascript:void(0)" class="next icon-arrow-a-right" target="_self"></a>
-   </div>
-  </div>
-  <script type="text/javascript">$.foucs({ direction: 'left' });</script> 
-  <div class="blank"></div> 
-  <div class="area box">
-   <div class="box1 l">
-    <label>按地区/时间</label> 
-    <ul>
-     <li><a href="/ribendongman/">日本</a></li>
-     <li><a href="/guochandongman/">大陆</a></li>
-     <li><a href="/meiguodongman/">美国</a></li>
-     <li><a href="/england/">英国</a></li>
-     <li><a href="/2022/">2022</a></li>
-     <li><a href="/2021/">2021</a></li>
-     <li><a href="/2020/">2020</a></li>
-     <li><a href="/2019/">2019</a></li>
-    </ul>
-   </div>
-   <div class="box2 l">
-    <label>按类型</label>
-    <ul>
-     <li><a href="/66/">热血</a></li>
-     <li><a href="/64/">格斗</a></li>
-     <li><a href="/91/">恋爱</a></li>
-     <li><a href="/70/">校园</a></li>
-     <li><a href="/67/">搞笑</a></li>
-     <li><a href="/111/">LOLI</a></li>
-     <li><a href="/83/">神魔</a></li>
-     <li><a href="/81/">机战</a></li>
-     <li><a href="/75/">科幻</a></li>
-     <li><a href="/74/">真人</a></li>
-     <li><a href="/84/">青春</a></li>
-     <li><a href="/73/">魔法</a></li>
-     <li><a href="/72/">美少女</a></li>
-     <li><a href="/102/">神话</a></li>
-     <li><a href="/61/">冒险</a></li>
-     <li><a href="/69/">运动</a></li>
-     <li><a href="/62/">竞技</a></li>
-     <li><a href="/103/">童话</a></li>
-     <li><a href="/63/">亲子</a></li>
-     <li><a href="/95/">教育</a></li>
-     <li><a href="/85/">励志</a></li>
-     <li><a href="/77/">剧情</a></li>
-     <li><a href="/79/">社会</a></li>
-     <li><a href="/99/">后宫</a></li>
-     <li><a href="/80/">战争</a></li>
-     <li><a href="/119/">吸血鬼</a></li>
-    </ul>
-   </div> 
-   <div class="box3 r">
-    <label>按语言</label>
-    <ul>
-     <li><a href="/29/">日语</a></li>
-     <li><a href="/30/">国语</a></li>
-     <li><a href="/31/">粤语</a></li>
-     <li><a href="/32/">英语</a></li>
-     <li><a href="/33/">韩语</a></li>
-     <li><a href="/34/">方言</a></li>
-    </ul>
-   </div> 
-  </div> 
-  <div class="blank"></div> 
-  <div class="area"> 
-   <div class="firs l">
+</div>
+<div class="blank"></div>
+<div class="foucs bg">
+    <div class="hero-wrap">
+        <ul class="heros">
+            <li><a href="/show/273.html" title="妖精的尾巴"><img
+                    src="http://css.yhdmtu.com/comic/focus/2018/10/201810070913.jpg" alt="妖精的尾巴">
+                <p>妖精的尾巴<span></span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">328集全</em>
+            </li>
+            <li><a href="/show/3303.html" title="宠物小精灵 太阳·月亮"><img
+                    src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229042521996.jpg"
+                    alt="宠物小精灵 太阳·月亮">
+                <p>宠物小精灵 太阳·月亮<span>每周四21:00更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">全集</em>
+            </li>
+            <li><a href="/show/3833.html" title="游戏王vrains"><img
+                    src="http://css.yhdmtu.com/comic/focus/2017/05/11/20170511093023893.jpg"
+                    alt="游戏王vrains">
+                <p>游戏王vrains<span>每周四更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">120集全</em>
+            </li>
+        </ul>
+        <ul class="heros">
+            <li><a href="/show/1412.html" title="名侦探柯南"><img
+                    src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229040456369.jpg"
+                    alt="名侦探柯南">
+                <p>名侦探柯南<span>每周六19:30更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至1101</em>
+            </li>
+            <li><a href="/show/2.html" title="海贼王"><img
+                    src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229035524924.jpg"
+                    alt="海贼王">
+                <p>海贼王<span>每周日11:30左右更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至1019</em>
+            </li>
+            <li><a href="/show/4604.html" title="你遭难了吗？"><img
+                    src="http://css.yhdmtu.com/focus/2019/07/01/20190701064912277.jpg" alt="你遭难了吗？">
+                <p>你遭难了吗？<span></span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);"></em>
+            </li>
+        </ul>
+        <ul class="heros">
+            <li><a href="/show/4607.html" title="魔术学姐"><img
+                    src="http://css.yhdmtu.com/focus/2019/07/01/20190701064539790.jpg" alt="魔术学姐">
+                <p>魔术学姐<span>每周一更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em>
+            </li>
+            <li><a href="/show/3330.html" title="一拳超人第二季"><img
+                    src="http://css.yhdmtu.com/focus/2019/05/18/20190518074245252.jpg"
+                    alt="一拳超人第二季">
+                <p>一拳超人第二季<span>每周三02:05更新1集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em>
+            </li>
+            <li><a href="/show/4433.html" title="奥特英雄新生代英雄传"><img
+                    src="http://css.yhdmtu.com/focus/2019/05/18/20190518074154269.jpg"
+                    alt="奥特英雄新生代英雄传">
+                <p>奥特英雄新生代英雄传<span></span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">26集全</em>
+            </li>
+        </ul>
+        <ul class="heros">
+            <li><a href="/show/4264.html" title="魔法禁书目录第三季 第21话"><img
+                    src="http://css.yhdmtu.com/comic/focus/2018/10/201810070912.jpg"
+                    alt="魔法禁书目录第三季 第21话">
+                <p>魔法禁书目录第三季 第21话<span></span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">26集全</em>
+            </li>
+            <li><a href="/show/3849.html" title="火影忍者 博人传之火影次世代  第95话"><img
+                    src="http://css.yhdmtu.com/comic/focus/2016/12/29/20161229035942761.jpg"
+                    alt="火影忍者 博人传之火影次世代  第95话">
+                <p>火影忍者 博人传之火影次世代 第95话<span>每周日18:00更新一集</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">更新至250</em>
+            </li>
+            <li><a href="/show/4189.html" title="东京食尸鬼第四季 第12话"><img
+                    src="http://css.yhdmtu.com/comic/focus/2018/04/04/20180404045452339.jpg"
+                    alt="东京食尸鬼第四季 第12话">
+                <p>东京食尸鬼第四季 第12话<span>大结局</span></p></a><em
+                    style="filter:progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand',M11=0.7,M12=0.7,M21=-0.7,M22=0.7);">12集全</em>
+            </li>
+        </ul>
+    </div>
+    <div class="helper">
+        <div class="mask-left"></div>
+        <div class="mask-right"></div>
+        <a href="javascript:void(0)" class="prev icon-arrow-a-left" target="_self"></a><a
+            href="javascript:void(0)" class="next icon-arrow-a-right" target="_self"></a>
+    </div>
+</div>
+<script type="text/javascript">$.foucs({ direction: 'left' });</script>
+<div class="blank"></div>
+<div class="area box">
+    <div class="box1 l">
+        <label>按地区/时间</label>
+        <ul>
+            <li><a href="/ribendongman/">日本</a></li>
+            <li><a href="/guochandongman/">大陆</a></li>
+            <li><a href="/meiguodongman/">美国</a></li>
+            <li><a href="/england/">英国</a></li>
+            <li><a href="/2022/">2022</a></li>
+            <li><a href="/2021/">2021</a></li>
+            <li><a href="/2020/">2020</a></li>
+            <li><a href="/2019/">2019</a></li>
+        </ul>
+    </div>
+    <div class="box2 l">
+        <label>按类型</label>
+        <ul>
+            <li><a href="/66/">热血</a></li>
+            <li><a href="/64/">格斗</a></li>
+            <li><a href="/91/">恋爱</a></li>
+            <li><a href="/70/">校园</a></li>
+            <li><a href="/67/">搞笑</a></li>
+            <li><a href="/111/">LOLI</a></li>
+            <li><a href="/83/">神魔</a></li>
+            <li><a href="/81/">机战</a></li>
+            <li><a href="/75/">科幻</a></li>
+            <li><a href="/74/">真人</a></li>
+            <li><a href="/84/">青春</a></li>
+            <li><a href="/73/">魔法</a></li>
+            <li><a href="/72/">美少女</a></li>
+            <li><a href="/102/">神话</a></li>
+            <li><a href="/61/">冒险</a></li>
+            <li><a href="/69/">运动</a></li>
+            <li><a href="/62/">竞技</a></li>
+            <li><a href="/103/">童话</a></li>
+            <li><a href="/63/">亲子</a></li>
+            <li><a href="/95/">教育</a></li>
+            <li><a href="/85/">励志</a></li>
+            <li><a href="/77/">剧情</a></li>
+            <li><a href="/79/">社会</a></li>
+            <li><a href="/99/">后宫</a></li>
+            <li><a href="/80/">战争</a></li>
+            <li><a href="/119/">吸血鬼</a></li>
+        </ul>
+    </div>
+    <div class="box3 r">
+        <label>按语言</label>
+        <ul>
+            <li><a href="/29/">日语</a></li>
+            <li><a href="/30/">国语</a></li>
+            <li><a href="/31/">粤语</a></li>
+            <li><a href="/32/">英语</a></li>
+            <li><a href="/33/">韩语</a></li>
+            <li><a href="/34/">方言</a></li>
+        </ul>
+    </div>
+</div>
+<div class="blank"></div>
+<div class="area">
+    <div class="firs l">
+        <div class="dtit">
+            <h2><a href="/new/">最新更新</a></h2><span><a href="/new/">更多</a></span>
+        </div>
+        <div class="img">
+            <ul>
+                <li><a href="/show/5519.html"><img
+                        src="http://css.yhdmtu.com/news/2022/02/06/20220206092038940.jpg"
+                        alt="Delicious Party 光之美少女"></a>
+                    <p class="tname"><a href="/show/5519.html">Delicious Party 光之美少女</a></p>
+                    <p>最新:<a target="_blank" href="/v/5519-12.html">第12集</a></p></li>
+                <li><a href="/show/5408.html"><img
+                        src="http://css.yhdmtu.com/news/2021/09/10/20210910101939605.jpg"
+                        alt="数码宝贝：幽灵游戏"></a>
+                    <p class="tname"><a href="/show/5408.html">数码宝贝：幽灵游戏</a></p>
+                    <p>最新:<a target="_blank" href="/v/5408-27.html">第27集</a></p></li>
+                <li><a href="/show/5586.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/29/20220529112849659.jpg"
+                        alt="雄兵连3雷霆万钧"></a>
+                    <p class="tname"><a href="/show/5586.html">雄兵连3雷霆万钧</a></p>
+                    <p>最新:<a target="_blank" href="/v/5586-2.html">第2集</a></p></li>
+                <li><a href="/show/5031.html"><img
+                        src="http://css.yhdmtu.com/down/1/725494381252740.jpg" alt="凡人修仙传"></a>
+                    <p class="tname"><a href="/show/5031.html">凡人修仙传</a></p>
+                    <p>最新:<a target="_blank" href="/v/5031-52.html">第52集</a></p></li>
+                <li><a href="/show/5562.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/10/20220410085824363.jpg"
+                        alt="王者天下 第四季"></a>
+                    <p class="tname"><a href="/show/5562.html">王者天下 第四季</a></p>
+                    <p>最新:<a target="_blank" href="/v/5562-8.html">第8集</a></p></li>
+                <li><a href="/show/2.html"><img
+                        src="http://css.yhdmtu.com/comic/acg/2016/12/13/414cf1da374075dd241e77d2f8f231f665f23dc8.jpg"
+                        alt="海贼王"></a>
+                    <p class="tname"><a href="/show/2.html">海贼王</a></p>
+                    <p>最新:<a target="_blank" href="/v/2-1020.html">第1019集</a></p></li>
+                <li><a href="/show/5574.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/01/20220501104743508.jpg"
+                        alt="武动乾坤 第三季"></a>
+                    <p class="tname"><a href="/show/5574.html">武动乾坤 第三季</a></p>
+                    <p>最新:<a target="_blank" href="/v/5574-6.html">第6集</a></p></li>
+                <li><a href="/show/5097.html"><img
+                        src="http://css.yhdmtu.com/down/1/B04565188984531.jpg" alt="绝世武魂"></a>
+                    <p class="tname"><a href="/show/5097.html">绝世武魂</a></p>
+                    <p>最新:<a target="_blank" href="/v/5097-170.html">第170集</a></p></li>
+            </ul>
+        </div>
+        <div class="dtit">
+            <h2><a href="/japan/">日本动漫</a></h2><span><a href="/japan/">更多</a></span>
+        </div>
+        <div class="img">
+            <ul>
+                <li><a href="/show/5135.html"><img
+                        src="http://css.yhdmtu.com/down/1/108210097748345.jpg" alt="我家女友可不止可爱呢"></a>
+                    <p class="tname"><a href="/show/5135.html">我家女友可不止可爱呢</a></p>
+                    <p>最新:<a target="_blank" href="/v/5135-7.html">第7集</a></p></li>
+                <li><a href="/show/5546.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/02/20220402102205566.jpg"
+                        alt="Build Divide -#FFFFFF-"></a>
+                    <p class="tname"><a href="/show/5546.html">Build Divide -#FFFFFF-</a></p>
+                    <p>最新:<a target="_blank" href="/v/5546-8.html">第20集</a></p></li>
+                <li><a href="/show/5545.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/02/20220402102038719.jpg"
+                        alt="杜鹃的婚约"></a>
+                    <p class="tname"><a href="/show/5545.html">杜鹃的婚约</a></p>
+                    <p>最新:<a target="_blank" href="/v/5545-11.html">第6集</a></p></li>
+                <li><a href="/show/5563.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/10/20220410085950520.jpg"
+                        alt="女忍者椿的心事"></a>
+                    <p class="tname"><a href="/show/5563.html">女忍者椿的心事</a></p>
+                    <p>最新:<a target="_blank" href="/v/5563-8.html">第8集</a></p></li>
+                <li><a href="/show/4792.html"><img
+                        src="http://css.yhdmtu.com/down/1/jB17060201080053.jpg" alt="精灵宝可梦"></a>
+                    <p class="tname"><a href="/show/4792.html">精灵宝可梦</a></p>
+                    <p>最新:<a target="_blank" href="/v/4792-112.html">第112集</a></p></li>
+                <li><a href="/show/5547.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/03/20220403100754633.jpg"
+                        alt="群青的号角"></a>
+                    <p class="tname"><a href="/show/5547.html">群青的号角</a></p>
+                    <p>最新:<a target="_blank" href="/v/5547-9.html">第9集</a></p></li>
+                <li><a href="/show/5453.html"><img
+                        src="http://css.yhdmtu.com/news/2021/11/03/20211103113625406.jpg"
+                        alt="间谍过家家"></a>
+                    <p class="tname"><a href="/show/5453.html">间谍过家家</a></p>
+                    <p>最新:<a target="_blank" href="/v/5453-8.html">第8集</a></p></li>
+                <li><a href="/show/5542.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/02/20220402101428520.jpg"
+                        alt="Love Live! 虹咲学园校园偶像同好会 第二季"></a>
+                    <p class="tname"><a href="/show/5542.html">Love Live! 虹咲学园校园偶像同好会 第二季</a></p>
+                    <p>最新:<a target="_blank" href="/v/5542-9.html">第9集</a></p></li>
+            </ul>
+        </div>
+        <div class="dtit">
+            <h2><a href="/china/">国产动漫</a></h2><span><a href="/china/">更多</a></span>
+        </div>
+        <div class="img">
+            <ul>
+                <li><a href="/show/4939.html"><img
+                        src="http://css.yhdmtu.com/acg/2020/03/24/20200324035337604.jpg" alt="武神主宰"></a>
+                    <p class="tname"><a href="/show/4939.html">武神主宰</a></p>
+                    <p>最新:<a target="_blank" href="/v/4939-235.html">第235集</a></p></li>
+                <li><a href="/show/5350.html"><img
+                        src="http://css.yhdmtu.com/acg/2021/08/09/20210809102456916.jpg"
+                        alt="我气哭了百万修炼者"></a>
+                    <p class="tname"><a href="/show/5350.html">我气哭了百万修炼者</a></p>
+                    <p>最新:<a target="_blank" href="/v/5350-85.html">第85集</a></p></li>
+                <li><a href="/show/5464.html"><img
+                        src="http://css.yhdmtu.com/news/2021/12/05/20211205114802639.jpg"
+                        alt="九霄帝神"></a>
+                    <p class="tname"><a href="/show/5464.html">九霄帝神</a></p>
+                    <p>最新:<a target="_blank" href="/v/5464-39.html">第39集</a></p></li>
+                <li><a href="/show/5568.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/23/20220423122807303.jpg"
+                        alt="你真是个天才"></a>
+                    <p class="tname"><a href="/show/5568.html">你真是个天才</a></p>
+                    <p>最新:<a target="_blank" href="/v/5568-12.html">第12集</a></p></li>
+                <li><a href="/show/5457.html"><img
+                        src="http://css.yhdmtu.com/news/2021/11/06/20211106120831374.jpg"
+                        alt="万古剑神"></a>
+                    <p class="tname"><a href="/show/5457.html">万古剑神</a></p>
+                    <p>最新:<a target="_blank" href="/v/5457-33.html">第33集</a></p></li>
+                <li><a href="/show/4066.html"><img
+                        src="http://css.yhdmtu.com/acg/2021/07/17/20210717112154268.jpg" alt="斗罗大陆"></a>
+                    <p class="tname"><a href="/show/4066.html">斗罗大陆</a></p>
+                    <p>最新:<a target="_blank" href="/v/4066-210.html">第210集</a></p></li>
+                <li><a href="/show/3878.html"><img
+                        src="http://css.yhdmtu.com/comic/acg/2017/05/19/e4681926d97e1b2e0b2ae06e7ea73feda3913336.jpg"
+                        alt="妖神记"></a>
+                    <p class="tname"><a href="/show/3878.html">妖神记</a></p>
+                    <p>最新:<a target="_blank" href="/v/3878-234.html">第234集</a></p></li>
+                <li><a href="/show/4380.html"><img
+                        src="http://css.yhdmtu.com/comic/acg/2019/01/01/20190101512.jpg" alt="万界神主"></a>
+                    <p class="tname"><a href="/show/4380.html">万界神主</a></p>
+                    <p>最新:<a target="_blank" href="/v/4380-236.html">第236集</a></p></li>
+            </ul>
+        </div>
+        <div class="dtit">
+            <h2><a href="/american/">美国动漫</a></h2><span><a href="/american/">更多</a></span>
+        </div>
+        <div class="img">
+            <ul>
+                <li><a href="/show/5367.html"><img
+                        src="http://css.yhdmtu.com/news/2021/08/30/20210830014427285.jpg"
+                        alt="猎魔人：狼之噩梦"></a>
+                    <p class="tname"><a href="/show/5367.html">猎魔人：狼之噩梦</a></p>
+                    <p>最新:<a target="_blank" href="/v/5367-2.html">全集</a></p></li>
+                <li><a href="/show/4807.html"><img
+                        src="http://css.yhdmtu.com/down/1/jC01118527008897.jpg" alt="红白黑黄 第七季"></a>
+                    <p class="tname"><a href="/show/4807.html">红白黑黄 第七季</a></p>
+                    <p>最新:<a target="_blank" href="/v/4807-14.html">13全集</a></p></li>
+                <li><a href="/show/4407.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j330785141333678.jpg"
+                        alt="大炮破坏者"></a>
+                    <p class="tname"><a href="/show/4407.html">大炮破坏者</a></p>
+                    <p>最新:<a target="_blank" href="/v/4407-12.html">12集全</a></p></li>
+                <li><a href="/show/4543.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j418467109069774.jpg"
+                        alt="少年泰坦出击第五季"></a>
+                    <p class="tname"><a href="/show/4543.html">少年泰坦出击第五季</a></p>
+                    <p></p></li>
+                <li><a href="/show/4470.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j402034099129790.jpg" alt="星蝶公主 第四季"></a>
+                    <p class="tname"><a href="/show/4470.html">星蝶公主 第四季</a></p>
+                    <p></p></li>
+                <li><a href="/show/4460.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j331461418304056.jpg"
+                        alt="开心汉堡店 第九季"></a>
+                    <p class="tname"><a href="/show/4460.html">开心汉堡店 第九季</a></p>
+                    <p>最新:<a target="_blank" href="/v/4460-22.html">第20集</a></p></li>
+                <li><a href="/show/4566.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j502700744868258.jpg" alt="铁卫雄狮第二季"></a>
+                    <p class="tname"><a href="/show/4566.html">铁卫雄狮第二季</a></p>
+                    <p>最新:<a target="_blank" href="/v/4566-29.html">第29集</a></p></li>
+                <li><a href="/show/4583.html"><img
+                        src="http://css.yhdmtu.com/comic/image/j507273062034616.jpg" alt="怪诞小镇第二季"></a>
+                    <p class="tname"><a href="/show/4583.html">怪诞小镇第二季</a></p>
+                    <p>最新:<a target="_blank" href="/v/4583-20.html">20集全</a></p></li>
+            </ul>
+        </div>
+        <div class="dtit">
+            <h2><a href="/movie/">动漫电影</a></h2><span><a href="/movie/">更多</a></span>
+        </div>
+        <div class="img">
+            <ul>
+                <li><a href="/show/5344.html"><img
+                        src="http://css.yhdmtu.com/acg/2021/08/01/20210801010130386.jpg"
+                        alt="我让最想被拥抱的男人给威胁了。～西班牙篇～"></a>
+                    <p class="tname"><a href="/show/5344.html">我让最想被拥抱的男人给威胁了。～西班牙篇～</a></p>
+                    <p>最新:<a target="_blank" href="/v/5344-1.html">全集</a></p></li>
+                <li><a href="/show/5582.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/12/20220512081806392.jpg"
+                        alt="咒术回战 0"></a>
+                    <p class="tname"><a href="/show/5582.html">咒术回战 0</a></p>
+                    <p>最新:<a target="_blank" href="/v/5582-1.html">全集</a></p></li>
+                <li><a href="/show/5581.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/10/20220510072604430.jpg"
+                        alt="渔港的肉子酱"></a>
+                    <p class="tname"><a href="/show/5581.html">渔港的肉子酱</a></p>
+                    <p>最新:<a target="_blank" href="/v/5581-1.html">全集</a></p></li>
+                <li><a href="/show/5575.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/02/20220502063417865.jpg"
+                        alt="黄金拼图 Thank you!!"></a>
+                    <p class="tname"><a href="/show/5575.html">黄金拼图 Thank you!!</a></p>
+                    <p>最新:<a target="_blank" href="/v/5575-1.html">全集</a></p></li>
+                <li><a href="/show/5573.html"><img
+                        src="http://css.yhdmtu.com/news/2022/05/01/20220501094612205.jpg"
+                        alt="假面骑士OOO 10th 复活的核心硬币"></a>
+                    <p class="tname"><a href="/show/5573.html">假面骑士OOO 10th 复活的核心硬币</a></p>
+                    <p>最新:<a target="_blank" href="/v/5573-1.html">全集</a></p></li>
+                <li><a href="/show/5570.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/29/20220429092537682.jpg" alt="泡泡"></a>
+                    <p class="tname"><a href="/show/5570.html">泡泡</a></p>
+                    <p>最新:<a target="_blank" href="/v/5570-1.html">全集</a></p></li>
+                <li><a href="/show/4913.html"><img
+                        src="http://css.yhdmtu.com/acg/2020/02/29/20200229033813136.jpg"
+                        alt="公主准则 Crown Handler"></a>
+                    <p class="tname"><a href="/show/4913.html">公主准则 Crown Handler</a></p>
+                    <p>最新:<a target="_blank" href="/v/4913-4.html">第2集</a></p></li>
+                <li><a href="/show/5561.html"><img
+                        src="http://css.yhdmtu.com/news/2022/04/08/20220408075027598.jpg"
+                        alt="夏日幽灵"></a>
+                    <p class="tname"><a href="/show/5561.html">夏日幽灵</a></p>
+                    <p>最新:<a target="_blank" href="/v/5561-1.html">全集</a></p></li>
+            </ul>
+        </div>
+    </div>
+    <div class="side r">
+        <div class="bg">
+            <div class="dtit">
+                <h2>每日更新列表</h2><span><a href="/2022/">更多</a></span>
+            </div>
+            <div class="tag">
+                <span tab="0" class="mv">周一</span><span tab="1">周二</span><span
+                    tab="2">周三</span><span tab="3">周四</span><span tab="4">周五</span><span
+                    tab="5">周六</span><span tab="6">周日</span>
+            </div>
+            <div class="tlist">
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5550-8.html">第8集</a></span><a
+                            href="/show/5550.html" title="治疗女孩">治疗女孩</a></li>
+                    <li><span> <a target="_blank" href="/v/5507-12.html">12全集</a></span><a
+                            href="/show/5507.html" title="进击的巨人 最终季 Part.2">进击的巨人 最终季 Part.2</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/5209-12.html">12全集</a></span><a
+                            href="/show/5209.html" title="食锈末世录">食锈末世录</a></li>
+                    <li><span> <a target="_blank" href="/v/5508-12.html">12全集</a></span><a
+                            href="/show/5508.html" title="公主连结！Re:Dive 第二季">公主连结！Re:Dive 第二季</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/5509-12.html">12全集</a></span><a
+                            href="/show/5509.html" title="TRIBE NINE">TRIBE NINE</a></li>
+                    <li><span> <a target="_blank" href="/v/5351-12.html">12全集</a></span><a
+                            href="/show/5351.html" title="佐佐木与宫野">佐佐木与宫野</a></li>
+                    <li><span> <a target="_blank" href="/v/5395-24.html">24全集</a></span><a
+                            href="/show/5395.html"
+                            title="无职转生～到了异世界就拿出真本事～第二季">无职转生～到了异世界就拿出真本事～第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5372-12.html">13全集</a></span><a
+                            href="/show/5372.html" title="加油！同期酱">加油！同期酱</a></li>
+                    <li><span> <a target="_blank" href="/v/5414-13.html">13全集</a></span><a
+                            href="/show/5414.html" title="星期一的丰满 第二季">星期一的丰满 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5425-13.html">25全集</a></span><a
+                            href="/show/5425.html" title="卡片战斗先导者overDress 第二季">卡片战斗先导者overDress
+                        第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5298-11.html">12全集</a></span><a
+                            href="/show/5298.html" title="逆转世界的电池少女">逆转世界的电池少女</a></li>
+                    <li><span> <a target="_blank" href="/v/5227-12.html">12全集</a></span><a
+                            href="/show/5227.html" title="吸血鬼马上死">吸血鬼马上死</a></li>
+                    <li><span> <a target="_blank" href="/v/5215-12.html">12全集</a></span><a
+                            href="/show/5215.html" title="月与莱卡与吸血公主">月与莱卡与吸血公主</a></li>
+                    <li><span> <a target="_blank" href="/v/4889-26.html">第26集</a></span><a
+                            href="/show/4889.html" title="王者天下 第三季">王者天下 第三季</a></li>
+                    <li><span> <a target="_blank" href="/v/5316-13.html">12全集</a></span><a
+                            href="/show/5316.html" title="Love Live! Superstar!!">Love Live!
+                        Superstar!!</a></li>
+                    <li><span> <a target="_blank" href="/v/5288-13.html">13全集</a></span><a
+                            href="/show/5288.html" title="暗芝居 第九季">暗芝居 第九季</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5440-8.html">第8集</a></span><a
+                            href="/show/5440.html" title="勇者辞职不干了">勇者辞职不干了</a></li>
+                    <li><span> <a target="_blank" href="/v/5534-9.html">第33集</a></span><a
+                            href="/show/5534.html" title="爱书的下克上～为了成为图书管理员不择手段～ 第三季">爱书的下克上～为了成为图书管理员不择手段～
+                        第三季</a></li>
+                    <li><span> <a target="_blank" href="/v/5564-7.html">第20集</a></span><a
+                            href="/show/5564.html" title="境界战机 第二季">境界战机 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5552-6.html">全集</a></span><a
+                            href="/show/5552.html" title="名侦探柯南 零的日常">名侦探柯南 零的日常</a></li>
+                    <li><span> <a target="_blank" href="/v/5221-12.html">12全集</a></span><a
+                            href="/show/5221.html" title="自称贤者弟子的贤者">自称贤者弟子的贤者</a></li>
+                    <li><span> <a target="_blank" href="/v/5494-12.html">12全集</a></span><a
+                            href="/show/5494.html" title="与变成了异世界美少女的大叔一起冒险">与变成了异世界美少女的大叔一起冒险</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/5225-12.html">12全集</a></span><a
+                            href="/show/5225.html" title="天才王子的赤字国家振兴术">天才王子的赤字国家振兴术</a></li>
+                    <li><span> <a target="_blank" href="/v/5396-12.html">12全集</a></span><a
+                            href="/show/5396.html" title="幻想三国志 天元灵心记">幻想三国志 天元灵心记</a></li>
+                    <li><span> <a target="_blank" href="/v/5216-13.html">13全集</a></span><a
+                            href="/show/5216.html" title="境界战机">境界战机</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5555-8.html">第8集</a></span><a
+                            href="/show/5555.html" title="朋友游戏">朋友游戏</a></li>
+                    <li><span> <a target="_blank" href="/v/5529-11.html">第11集</a></span><a
+                            href="/show/5529.html" title="Estab Life">Estab Life</a></li>
+                    <li><span> <a target="_blank" href="/v/5415-8.html">第8集</a></span><a
+                            href="/show/5415.html" title="相合之物">相合之物</a></li>
+                    <li><span> <a target="_blank" href="/v/5530-8.html">第8集</a></span><a
+                            href="/show/5530.html" title="盾之勇者成名录 第二季">盾之勇者成名录 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5557-8.html">第8集</a></span><a
+                            href="/show/5557.html" title="史上最强大魔王转生为村民A">史上最强大魔王转生为村民A</a></li>
+                    <li><span> <a target="_blank" href="/v/5450-8.html">第8集</a></span><a
+                            href="/show/5450.html" title="BIRDIE WING -Golf Girls' Story-">BIRDIE
+                        WING -Golf Girls' Story-</a></li>
+                    <li><span> <a target="_blank" href="/v/5402-7.html">第7集</a></span><a
+                            href="/show/5402.html" title="键等">键等</a></li>
+                    <li><span> <a target="_blank" href="/v/5345-13.html">13全集</a></span><a
+                            href="/show/5345.html" title="秘密内幕～女警的逆袭～">秘密内幕～女警的逆袭～</a></li>
+                    <li><span> <a target="_blank" href="/v/5496-12.html">12全集</a></span><a
+                            href="/show/5496.html" title="东方少年">东方少年</a></li>
+                    <li><span> <a target="_blank" href="/v/5470-12.html">12全集</a></span><a
+                            href="/show/5470.html" title="里亚德录大地">里亚德录大地</a></li>
+                    <li><span> <a target="_blank" href="/v/5469-8.html">第8集</a></span><a
+                            href="/show/5469.html" title="彩绿">彩绿</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5253-8.html">第8集</a></span><a
+                            href="/show/5253.html" title="骸骨骑士大人异世界冒险中">骸骨骑士大人异世界冒险中</a></li>
+                    <li><span> <a target="_blank" href="/v/5538-9.html">第9集</a></span><a
+                            href="/show/5538.html" title="派对浪客诸葛孔明">派对浪客诸葛孔明</a></li>
+                    <li><span> <a target="_blank" href="/v/5560-8.html">第8集</a></span><a
+                            href="/show/5560.html" title="身为女主角！被厌恶的女主角和秘密工作">身为女主角！被厌恶的女主角和秘密工作</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/5559-8.html">第8集</a></span><a
+                            href="/show/5559.html" title="社畜小姐想被幽灵幼女治愈">社畜小姐想被幽灵幼女治愈</a></li>
+                    <li><span> <a target="_blank" href="/v/5498-8.html">第20集</a></span><a
+                            href="/show/5498.html" title="古见同学有交流障碍症 第二季">古见同学有交流障碍症 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5232-52.html">52全集</a></span><a
+                            href="/show/5232.html" title="通灵王(2021)">通灵王(2021)</a></li>
+                    <li><span> <a target="_blank" href="/v/5497-13.html">12全集</a></span><a
+                            href="/show/5497.html" title="东京二十四区">东京二十四区</a></li>
+                    <li><span> <a target="_blank" href="/v/5499-13.html">12全集</a></span><a
+                            href="/show/5499.html" title="平凡职业成就世界最强 第二季">平凡职业成就世界最强 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5472-13.html">13全集</a></span><a
+                            href="/show/5472.html" title="最游记 RELOAD -ZEROIN-">最游记 RELOAD
+                        -ZEROIN-</a></li>
+                    <li><span> <a target="_blank" href="/v/5349-12.html">12全集</a></span><a
+                            href="/show/5349.html" title="杀爱">杀爱</a></li>
+                    <li><span> <a target="_blank" href="/v/5261-13.html">12全集</a></span><a
+                            href="/show/5261.html" title="古见同学有交流障碍症">古见同学有交流障碍症</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5476-24.html">第20集</a></span><a
+                            href="/show/5476.html" title="CUE!指名">CUE!指名</a></li>
+                    <li><span> <a target="_blank" href="/v/5348-8.html">第8集</a></span><a
+                            href="/show/5348.html" title="恋爱要在世界征服后">恋爱要在世界征服后</a></li>
+                    <li><span> <a target="_blank" href="/v/5206-8.html">第8集</a></span><a
+                            href="/show/5206.html" title="约会大作战 第四季">约会大作战 第四季</a></li>
+                    <li><span> <a target="_blank" href="/v/5449-7.html">第7集</a></span><a
+                            href="/show/5449.html" title="魔法使黎明期">魔法使黎明期</a></li>
+                    <li><span> <a target="_blank" href="/v/5399-24.html">24全集</a></span><a
+                            href="/show/5399.html" title="铂金终局">铂金终局</a></li>
+                    <li><span> <a target="_blank" href="/v/5505-12.html">12全集</a></span><a
+                            href="/show/5505.html" title="Slow Loop">Slow Loop</a></li>
+                    <li><span> <a target="_blank" href="/v/5403-23.html">第23集</a></span><a
+                            href="/show/5403.html" title="国王排名">国王排名</a></li>
+                    <li><span> <a target="_blank" href="/v/5385-13.html">13全集</a></span><a
+                            href="/show/5385.html" title="百万吨级武藏">百万吨级武藏</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5542-9.html">第9集</a></span><a
+                            href="/show/5542.html" title="Love Live! 虹咲学园校园偶像同好会 第二季">Love Live!
+                        虹咲学园校园偶像同好会 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5541-9.html">第9集</a></span><a
+                            href="/show/5541.html" title="Love All Play">Love All Play</a></li>
+                    <li><span> <a target="_blank" href="/v/5373-8.html">第8集</a></span><a
+                            href="/show/5373.html" title="舞动不止">舞动不止</a></li>
+                    <li><span> <a target="_blank" href="/v/5072-80.html">第79集</a></span><a
+                            href="/show/5072.html" title="勇者斗恶龙 达伊的大冒险">勇者斗恶龙 达伊的大冒险</a></li>
+                    <li><span> <a target="_blank" href="/v/4066-210.html">第210集</a></span><a
+                            href="/show/4066.html" title="斗罗大陆">斗罗大陆</a></li>
+                    <li><span> <a target="_blank" href="/v/5476-24.html">第20集</a></span><a
+                            href="/show/5476.html" title="CUE!指名">CUE!指名</a></li>
+                    <li><span> <a target="_blank" href="/v/5343-9.html">第9集</a></span><a
+                            href="/show/5343.html" title="测不准的阿波连同学">测不准的阿波连同学</a></li>
+                    <li><span> <a target="_blank" href="/v/5170-9.html">第9集</a></span><a
+                            href="/show/5170.html" title="处刑少女的生存之道">处刑少女的生存之道</a></li>
+                    <li><span> <a target="_blank" href="/v/5540-9.html">第9集</a></span><a
+                            href="/show/5540.html" title="理科生坠入情网故尝试证明 第二季">理科生坠入情网故尝试证明 第二季</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/1412-1101.html">第1101集</a></span><a
+                            href="/show/1412.html" title="名侦探柯南">名侦探柯南</a></li>
+                    <li><span> <a target="_blank" href="/v/5474-12.html">全集</a></span><a
+                            href="/show/5474.html" title="瓦尼塔斯的笔记 第二季">瓦尼塔斯的笔记 第二季</a></li>
+                    <li><span> <a target="_blank" href="/v/5430-12.html">第11集</a></span><a
+                            href="/show/5430.html" title="终末的后宫">终末的后宫</a></li>
+                    <li><span> <a target="_blank" href="/v/5356-12.html">第12集</a></span><a
+                            href="/show/5356.html" title="失格纹的最强贤者">失格纹的最强贤者</a></li>
+                </ul>
+                <ul>
+                    <li><span> <a target="_blank" href="/v/5562-8.html">第8集</a></span><a
+                            href="/show/5562.html" title="王者天下 第四季">王者天下 第四季</a></li>
+                    <li><span> <a target="_blank" href="/v/2-1020.html">第1019集</a></span><a
+                            href="/show/2.html" title="海贼王">海贼王</a></li>
+                    <li><span> <a target="_blank" href="/v/5135-7.html">第7集</a></span><a
+                            href="/show/5135.html" title="我家女友可不止可爱呢">我家女友可不止可爱呢</a></li>
+                    <li><span> <a target="_blank" href="/v/5546-8.html">第20集</a></span><a
+                            href="/show/5546.html" title="Build Divide -#FFFFFF-">Build Divide
+                        -#FFFFFF-</a></li>
+                    <li><span> <a target="_blank" href="/v/5563-8.html">第8集</a></span><a
+                            href="/show/5563.html" title="女忍者椿的心事">女忍者椿的心事</a></li>
+                    <li><span> <a target="_blank" href="/v/5547-9.html">第9集</a></span><a
+                            href="/show/5547.html" title="群青的号角">群青的号角</a></li>
+                    <li><span> <a target="_blank" href="/v/5453-8.html">第8集</a></span><a
+                            href="/show/5453.html" title="间谍过家家">间谍过家家</a></li>
+                    <li><span> <a target="_blank" href="/v/3849-248.html">第250集</a></span><a
+                            href="/show/3849.html" title="火影忍者 博人传之火影次世代">火影忍者 博人传之火影次世代</a></li>
+                    <li><span> <a target="_blank" href="/v/5543-8.html">第8集</a></span><a
+                            href="/show/5543.html" title="黑岩射手 DAWN FALL">黑岩射手 DAWN FALL</a></li>
+                    <li><span> <a target="_blank" href="/v/5483-20.html">第19集</a></span><a
+                            href="/show/5483.html" title="蔷薇王的葬列">蔷薇王的葬列</a></li>
+                    <li><span> <a target="_blank" href="/v/5544-8.html">第8集</a></span><a
+                            href="/show/5544.html" title="乙女游戏世界对路人角色很不友好">乙女游戏世界对路人角色很不友好</a></li>
+                    <li><span> <a target="_blank" href="/v/5441-7.html">第7集</a></span><a
+                            href="/show/5441.html" title="这个补师有够麻烦">这个补师有够麻烦</a></li>
+                    <li><span> <a target="_blank" href="/v/5393-32.html">第31集</a></span><a
+                            href="/show/5393.html" title="美妙魔法">美妙魔法</a></li>
+                    <li><span> <a target="_blank" href="/v/5487-12.html">第12集</a></span><a
+                            href="/show/5487.html" title="RYMANS CLUB">RYMANS CLUB</a></li>
+                    <li><span> <a target="_blank" href="/v/5481-12.html">12全集</a></span><a
+                            href="/show/5481.html" title="怪人开发部的黑井津">怪人开发部的黑井津</a></li>
+                    <li><span> <a target="_blank" href="/v/5480-13.html">13全集</a></span><a
+                            href="/show/5480.html" title="现实主义勇者的王国再建记 第二季">现实主义勇者的王国再建记 第二季</a>
+                    </li>
+                    <li><span> <a target="_blank" href="/v/5482-12.html">12全集</a></span><a
+                            href="/show/5482.html" title="锖色护甲">锖色护甲</a></li>
+                    <li><span> <a target="_blank" href="/v/5273-25.html">第24集</a></span><a
+                            href="/show/5273.html" title="鲁邦三世 PART6">鲁邦三世 PART6</a></li>
+                    <li><span> <a target="_blank" href="/v/5479-12.html">12全集</a></span><a
+                            href="/show/5479.html" title="明日酱的水手服">明日酱的水手服</a></li>
+                    <li><span> <a target="_blank" href="/v/5478-12.html">12全集</a></span><a
+                            href="/show/5478.html" title="更衣人偶坠入爱河">更衣人偶坠入爱河</a></li>
+                    <li><span> <a target="_blank" href="/v/5254-12.html">12全集</a></span><a
+                            href="/show/5254.html" title="Build Divide -#000000-">Build Divide
+                        -#000000-</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="blank"></div>
+        <div class="bg">
+            <div class="dtit">
+                <h2>一周动漫排行榜</h2><span><a href="/top/">更多</a></span>
+            </div>
+            <div class="pics">
+                <ul>
+                    <li><a href="/show/5031.html"><img
+                            src="http://css.yhdmtu.com/down/1/725494381252740.jpg" alt="凡人修仙传"></a>
+                        <h2><a href="/show/5031.html">凡人修仙传</a></h2><span>状态：<font color="red">更新至52集</font></span><span>类型： <a
+                                href="/60/" target="_blank">奇幻</a> <a href="/159/" target="_blank">武侠</a> <a
+                                href="/66/" target="_blank">热血</a> </span>
+                        <p>简介：平凡少年韩立出生贫困，为了让家人过上更好的生活...</p></li>
+                    <li><a href="/show/5562.html"><img
+                            src="http://css.yhdmtu.com/news/2022/04/10/20220410085824363.jpg"
+                            alt="王者天下 第四季"></a>
+                        <h2><a href="/show/5562.html">王者天下 第四季</a></h2><span>状态：<font color="red">更新至8集</font></span><span>类型： <a
+                                href="/87/" target="_blank">历史</a> <a href="/80/"
+                                                                      target="_blank">战争</a> <a
+                                href="/66/" target="_blank">热血</a> </span>
+                        <p>简介：故事以未曾经历统一、战乱不止的中国战国时代为舞...</p></li>
+                    <li><a href="/show/2.html"><img
+                            src="http://css.yhdmtu.com/comic/acg/2016/12/13/414cf1da374075dd241e77d2f8f231f665f23dc8.jpg"
+                            alt="海贼王"></a>
+                        <h2><a href="/show/2.html">海贼王</a></h2><span>状态：<font
+                                color="red">更新至1019集</font></span><span>类型： <a href="/66/"
+                                                                               target="_blank">热血</a> <a
+                                href="/67/" target="_blank">搞笑</a> <a href="/61/"
+                                                                      target="_blank">冒险</a> </span>
+                        <p>简介：传奇海贼哥尔·D·罗杰在临死前曾留下关于其毕生的...</p></li>
+                    <li><a href="/show/5135.html"><img
+                            src="http://css.yhdmtu.com/down/1/108210097748345.jpg" alt="我家女友可不止可爱呢"></a>
+                        <h2><a href="/show/5135.html">我家女友可不止可爱呢</a></h2><span>状态：<font color="red">更新至7集</font></span><span>类型： <a
+                                href="/67/" target="_blank">搞笑</a> <a href="/70/"
+                                                                      target="_blank">校园</a> <a
+                                href="/141/" target="_blank">爱情</a> </span>
+                        <p>简介：电视动画《我家女友可不止可爱呢》改编自真木萤五...</p></li>
+                    <li><a href="/show/5546.html"><img
+                            src="http://css.yhdmtu.com/news/2022/04/02/20220402102205566.jpg"
+                            alt="Build Divide -#FFFFFF-"></a>
+                        <h2><a href="/show/5546.html">Build Divide -#FFFFFF-</a></h2><span>状态：<font
+                                color="red">更新至20集</font></span><span>类型： <a href="/60/"
+                                                                             target="_blank">奇幻</a> <a
+                                href="/149/" target="_blank">战斗</a> </span>
+                        <p>简介：我能看见。 我的胜利之路……” “这次一定要打...</p></li>
+                    <li><a href="/show/5545.html"><img
+                            src="http://css.yhdmtu.com/news/2022/04/02/20220402102038719.jpg"
+                            alt="杜鹃的婚约"></a>
+                        <h2><a href="/show/5545.html">杜鹃的婚约</a></h2><span>状态：<font
+                                color="red">更新至6集</font></span><span>类型： <a href="/91/"
+                                                                            target="_blank">恋爱</a> <a
+                                href="/70/" target="_blank">校园</a> </span>
+                        <p>简介：电视动画片《杜鹃的婚约》改编自吉河美希著作的同...</p></li>
+                    <li><a href="/show/5563.html"><img
+                            src="http://css.yhdmtu.com/news/2022/04/10/20220410085950520.jpg"
+                            alt="女忍者椿的心事"></a>
+                        <h2><a href="/show/5563.html">女忍者椿的心事</a></h2><span>状态：<font color="red">更新至8集</font></span><span>类型： <a
+                                href="/147/" target="_blank">百合</a> <a href="/149/" target="_blank">战斗</a> <a
+                                href="/91/" target="_blank">恋爱</a> </span>
+                        <p>简介：椿是女忍者“茜组”的优等生。一直与男忍者分开上...</p></li>
+                    <li><a href="/show/4792.html"><img
+                            src="http://css.yhdmtu.com/down/1/jB17060201080053.jpg" alt="精灵宝可梦"></a>
+                        <h2><a href="/show/4792.html">精灵宝可梦</a></h2><span>状态：<font color="red">更新至112集</font></span><span>类型： <a
+                                href="/60/" target="_blank">奇幻</a> <a href="/61/"
+                                                                      target="_blank">冒险</a> <a
+                                href="/85/" target="_blank">励志</a> </span>
+                        <p>简介：PocketMonster，简称为宝可梦Pokemon。它们是这颗...</p></li>
+                    <li><a href="/show/5547.html"><img
+                            src="http://css.yhdmtu.com/news/2022/04/03/20220403100754633.jpg"
+                            alt="群青的号角"></a>
+                        <h2><a href="/show/5547.html">群青的号角</a></h2><span>状态：<font
+                                color="red">更新至9集</font></span><span>类型： <a href="/84/"
+                                                                            target="_blank">青春</a> <a
+                                href="/345/" target="_blank">偶像</a> </span>
+                        <p>简介：原创TV动画《群青的号角》（群青のファンファーレ...</p></li>
+                    <li><a href="/show/5453.html"><img
+                            src="http://css.yhdmtu.com/news/2021/11/03/20211103113625406.jpg"
+                            alt="间谍过家家"></a>
+                        <h2><a href="/show/5453.html">间谍过家家</a></h2><span>状态：<font
+                                color="red">更新至8集</font></span><span>类型： <a href="/67/"
+                                                                            target="_blank">搞笑</a> <a
+                                href="/143/" target="_blank">治愈</a> </span>
+                        <p>简介：电视动画《间谍×过家家》改编自远藤达哉创作的同...</p></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="area">
     <div class="dtit">
-     <h2><a href="/new/">最新更新</a></h2><span><a href="/new/">更多</a></span>
+        <h2>友情链接</h2>
     </div>
-    <div class="img">
-     <ul> 
-      <li><a href="/show/5519.html"><img src="http://css.yhdmtu.com/news/2022/02/06/20220206092038940.jpg" alt="Delicious Party 光之美少女"></a><p class="tname"><a href="/show/5519.html">Delicious Party 光之美少女</a></p><p>最新:<a target="_blank" href="/v/5519-12.html">第12集</a></p></li>
-      <li><a href="/show/5408.html"><img src="http://css.yhdmtu.com/news/2021/09/10/20210910101939605.jpg" alt="数码宝贝：幽灵游戏"></a><p class="tname"><a href="/show/5408.html">数码宝贝：幽灵游戏</a></p><p>最新:<a target="_blank" href="/v/5408-27.html">第27集</a></p></li>
-      <li><a href="/show/5586.html"><img src="http://css.yhdmtu.com/news/2022/05/29/20220529112849659.jpg" alt="雄兵连3雷霆万钧"></a><p class="tname"><a href="/show/5586.html">雄兵连3雷霆万钧</a></p><p>最新:<a target="_blank" href="/v/5586-2.html">第2集</a></p></li>
-      <li><a href="/show/5031.html"><img src="http://css.yhdmtu.com/down/1/725494381252740.jpg" alt="凡人修仙传"></a><p class="tname"><a href="/show/5031.html">凡人修仙传</a></p><p>最新:<a target="_blank" href="/v/5031-52.html">第52集</a></p></li>
-      <li><a href="/show/5562.html"><img src="http://css.yhdmtu.com/news/2022/04/10/20220410085824363.jpg" alt="王者天下 第四季"></a><p class="tname"><a href="/show/5562.html">王者天下 第四季</a></p><p>最新:<a target="_blank" href="/v/5562-8.html">第8集</a></p></li>
-      <li><a href="/show/2.html"><img src="http://css.yhdmtu.com/comic/acg/2016/12/13/414cf1da374075dd241e77d2f8f231f665f23dc8.jpg" alt="海贼王"></a><p class="tname"><a href="/show/2.html">海贼王</a></p><p>最新:<a target="_blank" href="/v/2-1020.html">第1019集</a></p></li>
-      <li><a href="/show/5574.html"><img src="http://css.yhdmtu.com/news/2022/05/01/20220501104743508.jpg" alt="武动乾坤 第三季"></a><p class="tname"><a href="/show/5574.html">武动乾坤 第三季</a></p><p>最新:<a target="_blank" href="/v/5574-6.html">第6集</a></p></li>
-      <li><a href="/show/5097.html"><img src="http://css.yhdmtu.com/down/1/B04565188984531.jpg" alt="绝世武魂"></a><p class="tname"><a href="/show/5097.html">绝世武魂</a></p><p>最新:<a target="_blank" href="/v/5097-170.html">第170集</a></p></li> 
-     </ul>
-    </div> 
-    <div class="dtit">
-     <h2><a href="/japan/">日本动漫</a></h2><span><a href="/japan/">更多</a></span>
+    <div class="link">
+        <a href="http://www.yinghuacd.com" target="_blank">樱花动漫</a><a
+            href="http://www.yinghuacd.com" target="_blank">樱花动漫网</a>
     </div>
-    <div class="img">
-     <ul> 
-      <li><a href="/show/5135.html"><img src="http://css.yhdmtu.com/down/1/108210097748345.jpg" alt="我家女友可不止可爱呢"></a><p class="tname"><a href="/show/5135.html">我家女友可不止可爱呢</a></p><p>最新:<a target="_blank" href="/v/5135-7.html">第7集</a></p></li>
-      <li><a href="/show/5546.html"><img src="http://css.yhdmtu.com/news/2022/04/02/20220402102205566.jpg" alt="Build Divide -#FFFFFF-"></a><p class="tname"><a href="/show/5546.html">Build Divide -#FFFFFF-</a></p><p>最新:<a target="_blank" href="/v/5546-8.html">第20集</a></p></li>
-      <li><a href="/show/5545.html"><img src="http://css.yhdmtu.com/news/2022/04/02/20220402102038719.jpg" alt="杜鹃的婚约"></a><p class="tname"><a href="/show/5545.html">杜鹃的婚约</a></p><p>最新:<a target="_blank" href="/v/5545-11.html">第6集</a></p></li>
-      <li><a href="/show/5563.html"><img src="http://css.yhdmtu.com/news/2022/04/10/20220410085950520.jpg" alt="女忍者椿的心事"></a><p class="tname"><a href="/show/5563.html">女忍者椿的心事</a></p><p>最新:<a target="_blank" href="/v/5563-8.html">第8集</a></p></li>
-      <li><a href="/show/4792.html"><img src="http://css.yhdmtu.com/down/1/jB17060201080053.jpg" alt="精灵宝可梦"></a><p class="tname"><a href="/show/4792.html">精灵宝可梦</a></p><p>最新:<a target="_blank" href="/v/4792-112.html">第112集</a></p></li>
-      <li><a href="/show/5547.html"><img src="http://css.yhdmtu.com/news/2022/04/03/20220403100754633.jpg" alt="群青的号角"></a><p class="tname"><a href="/show/5547.html">群青的号角</a></p><p>最新:<a target="_blank" href="/v/5547-9.html">第9集</a></p></li>
-      <li><a href="/show/5453.html"><img src="http://css.yhdmtu.com/news/2021/11/03/20211103113625406.jpg" alt="间谍过家家"></a><p class="tname"><a href="/show/5453.html">间谍过家家</a></p><p>最新:<a target="_blank" href="/v/5453-8.html">第8集</a></p></li>
-      <li><a href="/show/5542.html"><img src="http://css.yhdmtu.com/news/2022/04/02/20220402101428520.jpg" alt="Love Live! 虹咲学园校园偶像同好会 第二季"></a><p class="tname"><a href="/show/5542.html">Love Live! 虹咲学园校园偶像同好会 第二季</a></p><p>最新:<a target="_blank" href="/v/5542-9.html">第9集</a></p></li> 
-     </ul>
-    </div> 
-    <div class="dtit">
-     <h2><a href="/china/">国产动漫</a></h2><span><a href="/china/">更多</a></span>
-    </div>
-    <div class="img">
-     <ul> 
-      <li><a href="/show/4939.html"><img src="http://css.yhdmtu.com/acg/2020/03/24/20200324035337604.jpg" alt="武神主宰"></a><p class="tname"><a href="/show/4939.html">武神主宰</a></p><p>最新:<a target="_blank" href="/v/4939-235.html">第235集</a></p></li>
-      <li><a href="/show/5350.html"><img src="http://css.yhdmtu.com/acg/2021/08/09/20210809102456916.jpg" alt="我气哭了百万修炼者"></a><p class="tname"><a href="/show/5350.html">我气哭了百万修炼者</a></p><p>最新:<a target="_blank" href="/v/5350-85.html">第85集</a></p></li>
-      <li><a href="/show/5464.html"><img src="http://css.yhdmtu.com/news/2021/12/05/20211205114802639.jpg" alt="九霄帝神"></a><p class="tname"><a href="/show/5464.html">九霄帝神</a></p><p>最新:<a target="_blank" href="/v/5464-39.html">第39集</a></p></li>
-      <li><a href="/show/5568.html"><img src="http://css.yhdmtu.com/news/2022/04/23/20220423122807303.jpg" alt="你真是个天才"></a><p class="tname"><a href="/show/5568.html">你真是个天才</a></p><p>最新:<a target="_blank" href="/v/5568-12.html">第12集</a></p></li>
-      <li><a href="/show/5457.html"><img src="http://css.yhdmtu.com/news/2021/11/06/20211106120831374.jpg" alt="万古剑神"></a><p class="tname"><a href="/show/5457.html">万古剑神</a></p><p>最新:<a target="_blank" href="/v/5457-33.html">第33集</a></p></li>
-      <li><a href="/show/4066.html"><img src="http://css.yhdmtu.com/acg/2021/07/17/20210717112154268.jpg" alt="斗罗大陆"></a><p class="tname"><a href="/show/4066.html">斗罗大陆</a></p><p>最新:<a target="_blank" href="/v/4066-210.html">第210集</a></p></li>
-      <li><a href="/show/3878.html"><img src="http://css.yhdmtu.com/comic/acg/2017/05/19/e4681926d97e1b2e0b2ae06e7ea73feda3913336.jpg" alt="妖神记"></a><p class="tname"><a href="/show/3878.html">妖神记</a></p><p>最新:<a target="_blank" href="/v/3878-234.html">第234集</a></p></li>
-      <li><a href="/show/4380.html"><img src="http://css.yhdmtu.com/comic/acg/2019/01/01/20190101512.jpg" alt="万界神主"></a><p class="tname"><a href="/show/4380.html">万界神主</a></p><p>最新:<a target="_blank" href="/v/4380-236.html">第236集</a></p></li> 
-     </ul>
-    </div> 
-    <div class="dtit">
-     <h2><a href="/american/">美国动漫</a></h2><span><a href="/american/">更多</a></span>
-    </div>
-    <div class="img">
-     <ul> 
-      <li><a href="/show/5367.html"><img src="http://css.yhdmtu.com/news/2021/08/30/20210830014427285.jpg" alt="猎魔人：狼之噩梦"></a><p class="tname"><a href="/show/5367.html">猎魔人：狼之噩梦</a></p><p>最新:<a target="_blank" href="/v/5367-2.html">全集</a></p></li>
-      <li><a href="/show/4807.html"><img src="http://css.yhdmtu.com/down/1/jC01118527008897.jpg" alt="红白黑黄 第七季"></a><p class="tname"><a href="/show/4807.html">红白黑黄 第七季</a></p><p>最新:<a target="_blank" href="/v/4807-14.html">13全集</a></p></li>
-      <li><a href="/show/4407.html"><img src="http://css.yhdmtu.com/comic/image/j330785141333678.jpg" alt="大炮破坏者"></a><p class="tname"><a href="/show/4407.html">大炮破坏者</a></p><p>最新:<a target="_blank" href="/v/4407-12.html">12集全</a></p></li>
-      <li><a href="/show/4543.html"><img src="http://css.yhdmtu.com/comic/image/j418467109069774.jpg" alt="少年泰坦出击第五季"></a><p class="tname"><a href="/show/4543.html">少年泰坦出击第五季</a></p><p></p></li>
-      <li><a href="/show/4470.html"><img src="http://css.yhdmtu.com/comic/image/j402034099129790.jpg" alt="星蝶公主 第四季"></a><p class="tname"><a href="/show/4470.html">星蝶公主 第四季</a></p><p></p></li>
-      <li><a href="/show/4460.html"><img src="http://css.yhdmtu.com/comic/image/j331461418304056.jpg" alt="开心汉堡店 第九季"></a><p class="tname"><a href="/show/4460.html">开心汉堡店 第九季</a></p><p>最新:<a target="_blank" href="/v/4460-22.html">第20集</a></p></li>
-      <li><a href="/show/4566.html"><img src="http://css.yhdmtu.com/comic/image/j502700744868258.jpg" alt="铁卫雄狮第二季"></a><p class="tname"><a href="/show/4566.html">铁卫雄狮第二季</a></p><p>最新:<a target="_blank" href="/v/4566-29.html">第29集</a></p></li>
-      <li><a href="/show/4583.html"><img src="http://css.yhdmtu.com/comic/image/j507273062034616.jpg" alt="怪诞小镇第二季"></a><p class="tname"><a href="/show/4583.html">怪诞小镇第二季</a></p><p>最新:<a target="_blank" href="/v/4583-20.html">20集全</a></p></li> 
-     </ul>
-    </div> 
-    <div class="dtit">
-     <h2><a href="/movie/">动漫电影</a></h2><span><a href="/movie/">更多</a></span>
-    </div>
-    <div class="img">
-     <ul> 
-      <li><a href="/show/5344.html"><img src="http://css.yhdmtu.com/acg/2021/08/01/20210801010130386.jpg" alt="我让最想被拥抱的男人给威胁了。～西班牙篇～"></a><p class="tname"><a href="/show/5344.html">我让最想被拥抱的男人给威胁了。～西班牙篇～</a></p><p>最新:<a target="_blank" href="/v/5344-1.html">全集</a></p></li>
-      <li><a href="/show/5582.html"><img src="http://css.yhdmtu.com/news/2022/05/12/20220512081806392.jpg" alt="咒术回战 0"></a><p class="tname"><a href="/show/5582.html">咒术回战 0</a></p><p>最新:<a target="_blank" href="/v/5582-1.html">全集</a></p></li>
-      <li><a href="/show/5581.html"><img src="http://css.yhdmtu.com/news/2022/05/10/20220510072604430.jpg" alt="渔港的肉子酱"></a><p class="tname"><a href="/show/5581.html">渔港的肉子酱</a></p><p>最新:<a target="_blank" href="/v/5581-1.html">全集</a></p></li>
-      <li><a href="/show/5575.html"><img src="http://css.yhdmtu.com/news/2022/05/02/20220502063417865.jpg" alt="黄金拼图 Thank you!!"></a><p class="tname"><a href="/show/5575.html">黄金拼图 Thank you!!</a></p><p>最新:<a target="_blank" href="/v/5575-1.html">全集</a></p></li>
-      <li><a href="/show/5573.html"><img src="http://css.yhdmtu.com/news/2022/05/01/20220501094612205.jpg" alt="假面骑士OOO 10th 复活的核心硬币"></a><p class="tname"><a href="/show/5573.html">假面骑士OOO 10th 复活的核心硬币</a></p><p>最新:<a target="_blank" href="/v/5573-1.html">全集</a></p></li>
-      <li><a href="/show/5570.html"><img src="http://css.yhdmtu.com/news/2022/04/29/20220429092537682.jpg" alt="泡泡"></a><p class="tname"><a href="/show/5570.html">泡泡</a></p><p>最新:<a target="_blank" href="/v/5570-1.html">全集</a></p></li>
-      <li><a href="/show/4913.html"><img src="http://css.yhdmtu.com/acg/2020/02/29/20200229033813136.jpg" alt="公主准则 Crown Handler"></a><p class="tname"><a href="/show/4913.html">公主准则 Crown Handler</a></p><p>最新:<a target="_blank" href="/v/4913-4.html">第2集</a></p></li>
-      <li><a href="/show/5561.html"><img src="http://css.yhdmtu.com/news/2022/04/08/20220408075027598.jpg" alt="夏日幽灵"></a><p class="tname"><a href="/show/5561.html">夏日幽灵</a></p><p>最新:<a target="_blank" href="/v/5561-1.html">全集</a></p></li> 
-     </ul>
-    </div> 
-   </div> 
-   <div class="side r"> 
-    <div class="bg"> 
-     <div class="dtit">
-      <h2>每日更新列表</h2><span><a href="/2022/">更多</a></span>
-     </div>
-     <div class="tag">
-      <span tab="0" class="mv">周一</span><span tab="1">周二</span><span tab="2">周三</span><span tab="3">周四</span><span tab="4">周五</span><span tab="5">周六</span><span tab="6">周日</span>
-     </div> 
-     <div class="tlist"> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5550-8.html">第8集</a></span><a href="/show/5550.html" title="治疗女孩">治疗女孩</a></li> 
-       <li><span> <a target="_blank" href="/v/5507-12.html">12全集</a></span><a href="/show/5507.html" title="进击的巨人 最终季 Part.2">进击的巨人 最终季 Part.2</a></li> 
-       <li><span> <a target="_blank" href="/v/5209-12.html">12全集</a></span><a href="/show/5209.html" title="食锈末世录">食锈末世录</a></li> 
-       <li><span> <a target="_blank" href="/v/5508-12.html">12全集</a></span><a href="/show/5508.html" title="公主连结！Re:Dive 第二季">公主连结！Re:Dive 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5509-12.html">12全集</a></span><a href="/show/5509.html" title="TRIBE NINE">TRIBE NINE</a></li> 
-       <li><span> <a target="_blank" href="/v/5351-12.html">12全集</a></span><a href="/show/5351.html" title="佐佐木与宫野">佐佐木与宫野</a></li> 
-       <li><span> <a target="_blank" href="/v/5395-24.html">24全集</a></span><a href="/show/5395.html" title="无职转生～到了异世界就拿出真本事～第二季">无职转生～到了异世界就拿出真本事～第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5372-12.html">13全集</a></span><a href="/show/5372.html" title="加油！同期酱">加油！同期酱</a></li> 
-       <li><span> <a target="_blank" href="/v/5414-13.html">13全集</a></span><a href="/show/5414.html" title="星期一的丰满 第二季">星期一的丰满 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5425-13.html">25全集</a></span><a href="/show/5425.html" title="卡片战斗先导者overDress 第二季">卡片战斗先导者overDress 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5298-11.html">12全集</a></span><a href="/show/5298.html" title="逆转世界的电池少女">逆转世界的电池少女</a></li> 
-       <li><span> <a target="_blank" href="/v/5227-12.html">12全集</a></span><a href="/show/5227.html" title="吸血鬼马上死">吸血鬼马上死</a></li> 
-       <li><span> <a target="_blank" href="/v/5215-12.html">12全集</a></span><a href="/show/5215.html" title="月与莱卡与吸血公主">月与莱卡与吸血公主</a></li> 
-       <li><span> <a target="_blank" href="/v/4889-26.html">第26集</a></span><a href="/show/4889.html" title="王者天下 第三季">王者天下 第三季</a></li> 
-       <li><span> <a target="_blank" href="/v/5316-13.html">12全集</a></span><a href="/show/5316.html" title="Love Live! Superstar!!">Love Live! Superstar!!</a></li> 
-       <li><span> <a target="_blank" href="/v/5288-13.html">13全集</a></span><a href="/show/5288.html" title="暗芝居 第九季">暗芝居 第九季</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5440-8.html">第8集</a></span><a href="/show/5440.html" title="勇者辞职不干了">勇者辞职不干了</a></li> 
-       <li><span> <a target="_blank" href="/v/5534-9.html">第33集</a></span><a href="/show/5534.html" title="爱书的下克上～为了成为图书管理员不择手段～ 第三季">爱书的下克上～为了成为图书管理员不择手段～ 第三季</a></li> 
-       <li><span> <a target="_blank" href="/v/5564-7.html">第20集</a></span><a href="/show/5564.html" title="境界战机 第二季">境界战机 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5552-6.html">全集</a></span><a href="/show/5552.html" title="名侦探柯南 零的日常">名侦探柯南 零的日常</a></li> 
-       <li><span> <a target="_blank" href="/v/5221-12.html">12全集</a></span><a href="/show/5221.html" title="自称贤者弟子的贤者">自称贤者弟子的贤者</a></li> 
-       <li><span> <a target="_blank" href="/v/5494-12.html">12全集</a></span><a href="/show/5494.html" title="与变成了异世界美少女的大叔一起冒险">与变成了异世界美少女的大叔一起冒险</a></li> 
-       <li><span> <a target="_blank" href="/v/5225-12.html">12全集</a></span><a href="/show/5225.html" title="天才王子的赤字国家振兴术">天才王子的赤字国家振兴术</a></li> 
-       <li><span> <a target="_blank" href="/v/5396-12.html">12全集</a></span><a href="/show/5396.html" title="幻想三国志 天元灵心记">幻想三国志 天元灵心记</a></li> 
-       <li><span> <a target="_blank" href="/v/5216-13.html">13全集</a></span><a href="/show/5216.html" title="境界战机">境界战机</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5555-8.html">第8集</a></span><a href="/show/5555.html" title="朋友游戏">朋友游戏</a></li> 
-       <li><span> <a target="_blank" href="/v/5529-11.html">第11集</a></span><a href="/show/5529.html" title="Estab Life">Estab Life</a></li> 
-       <li><span> <a target="_blank" href="/v/5415-8.html">第8集</a></span><a href="/show/5415.html" title="相合之物">相合之物</a></li> 
-       <li><span> <a target="_blank" href="/v/5530-8.html">第8集</a></span><a href="/show/5530.html" title="盾之勇者成名录 第二季">盾之勇者成名录 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5557-8.html">第8集</a></span><a href="/show/5557.html" title="史上最强大魔王转生为村民A">史上最强大魔王转生为村民A</a></li> 
-       <li><span> <a target="_blank" href="/v/5450-8.html">第8集</a></span><a href="/show/5450.html" title="BIRDIE WING -Golf Girls' Story-">BIRDIE WING -Golf Girls' Story-</a></li> 
-       <li><span> <a target="_blank" href="/v/5402-7.html">第7集</a></span><a href="/show/5402.html" title="键等">键等</a></li> 
-       <li><span> <a target="_blank" href="/v/5345-13.html">13全集</a></span><a href="/show/5345.html" title="秘密内幕～女警的逆袭～">秘密内幕～女警的逆袭～</a></li> 
-       <li><span> <a target="_blank" href="/v/5496-12.html">12全集</a></span><a href="/show/5496.html" title="东方少年">东方少年</a></li> 
-       <li><span> <a target="_blank" href="/v/5470-12.html">12全集</a></span><a href="/show/5470.html" title="里亚德录大地">里亚德录大地</a></li> 
-       <li><span> <a target="_blank" href="/v/5469-8.html">第8集</a></span><a href="/show/5469.html" title="彩绿">彩绿</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5253-8.html">第8集</a></span><a href="/show/5253.html" title="骸骨骑士大人异世界冒险中">骸骨骑士大人异世界冒险中</a></li> 
-       <li><span> <a target="_blank" href="/v/5538-9.html">第9集</a></span><a href="/show/5538.html" title="派对浪客诸葛孔明">派对浪客诸葛孔明</a></li> 
-       <li><span> <a target="_blank" href="/v/5560-8.html">第8集</a></span><a href="/show/5560.html" title="身为女主角！被厌恶的女主角和秘密工作">身为女主角！被厌恶的女主角和秘密工作</a></li> 
-       <li><span> <a target="_blank" href="/v/5559-8.html">第8集</a></span><a href="/show/5559.html" title="社畜小姐想被幽灵幼女治愈">社畜小姐想被幽灵幼女治愈</a></li> 
-       <li><span> <a target="_blank" href="/v/5498-8.html">第20集</a></span><a href="/show/5498.html" title="古见同学有交流障碍症 第二季">古见同学有交流障碍症 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5232-52.html">52全集</a></span><a href="/show/5232.html" title="通灵王(2021)">通灵王(2021)</a></li> 
-       <li><span> <a target="_blank" href="/v/5497-13.html">12全集</a></span><a href="/show/5497.html" title="东京二十四区">东京二十四区</a></li> 
-       <li><span> <a target="_blank" href="/v/5499-13.html">12全集</a></span><a href="/show/5499.html" title="平凡职业成就世界最强 第二季">平凡职业成就世界最强 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5472-13.html">13全集</a></span><a href="/show/5472.html" title="最游记 RELOAD -ZEROIN-">最游记 RELOAD -ZEROIN-</a></li> 
-       <li><span> <a target="_blank" href="/v/5349-12.html">12全集</a></span><a href="/show/5349.html" title="杀爱">杀爱</a></li> 
-       <li><span> <a target="_blank" href="/v/5261-13.html">12全集</a></span><a href="/show/5261.html" title="古见同学有交流障碍症">古见同学有交流障碍症</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5476-24.html">第20集</a></span><a href="/show/5476.html" title="CUE!指名">CUE!指名</a></li> 
-       <li><span> <a target="_blank" href="/v/5348-8.html">第8集</a></span><a href="/show/5348.html" title="恋爱要在世界征服后">恋爱要在世界征服后</a></li> 
-       <li><span> <a target="_blank" href="/v/5206-8.html">第8集</a></span><a href="/show/5206.html" title="约会大作战 第四季">约会大作战 第四季</a></li> 
-       <li><span> <a target="_blank" href="/v/5449-7.html">第7集</a></span><a href="/show/5449.html" title="魔法使黎明期">魔法使黎明期</a></li> 
-       <li><span> <a target="_blank" href="/v/5399-24.html">24全集</a></span><a href="/show/5399.html" title="铂金终局">铂金终局</a></li> 
-       <li><span> <a target="_blank" href="/v/5505-12.html">12全集</a></span><a href="/show/5505.html" title="Slow Loop">Slow Loop</a></li> 
-       <li><span> <a target="_blank" href="/v/5403-23.html">第23集</a></span><a href="/show/5403.html" title="国王排名">国王排名</a></li> 
-       <li><span> <a target="_blank" href="/v/5385-13.html">13全集</a></span><a href="/show/5385.html" title="百万吨级武藏">百万吨级武藏</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5542-9.html">第9集</a></span><a href="/show/5542.html" title="Love Live! 虹咲学园校园偶像同好会 第二季">Love Live! 虹咲学园校园偶像同好会 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5541-9.html">第9集</a></span><a href="/show/5541.html" title="Love All Play">Love All Play</a></li> 
-       <li><span> <a target="_blank" href="/v/5373-8.html">第8集</a></span><a href="/show/5373.html" title="舞动不止">舞动不止</a></li> 
-       <li><span> <a target="_blank" href="/v/5072-80.html">第79集</a></span><a href="/show/5072.html" title="勇者斗恶龙 达伊的大冒险">勇者斗恶龙 达伊的大冒险</a></li> 
-       <li><span> <a target="_blank" href="/v/4066-210.html">第210集</a></span><a href="/show/4066.html" title="斗罗大陆">斗罗大陆</a></li> 
-       <li><span> <a target="_blank" href="/v/5476-24.html">第20集</a></span><a href="/show/5476.html" title="CUE!指名">CUE!指名</a></li> 
-       <li><span> <a target="_blank" href="/v/5343-9.html">第9集</a></span><a href="/show/5343.html" title="测不准的阿波连同学">测不准的阿波连同学</a></li> 
-       <li><span> <a target="_blank" href="/v/5170-9.html">第9集</a></span><a href="/show/5170.html" title="处刑少女的生存之道">处刑少女的生存之道</a></li> 
-       <li><span> <a target="_blank" href="/v/5540-9.html">第9集</a></span><a href="/show/5540.html" title="理科生坠入情网故尝试证明 第二季">理科生坠入情网故尝试证明 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/1412-1101.html">第1101集</a></span><a href="/show/1412.html" title="名侦探柯南">名侦探柯南</a></li> 
-       <li><span> <a target="_blank" href="/v/5474-12.html">全集</a></span><a href="/show/5474.html" title="瓦尼塔斯的笔记 第二季">瓦尼塔斯的笔记 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5430-12.html">第11集</a></span><a href="/show/5430.html" title="终末的后宫">终末的后宫</a></li> 
-       <li><span> <a target="_blank" href="/v/5356-12.html">第12集</a></span><a href="/show/5356.html" title="失格纹的最强贤者">失格纹的最强贤者</a></li> 
-      </ul> 
-      <ul>
-       <li><span> <a target="_blank" href="/v/5562-8.html">第8集</a></span><a href="/show/5562.html" title="王者天下 第四季">王者天下 第四季</a></li> 
-       <li><span> <a target="_blank" href="/v/2-1020.html">第1019集</a></span><a href="/show/2.html" title="海贼王">海贼王</a></li> 
-       <li><span> <a target="_blank" href="/v/5135-7.html">第7集</a></span><a href="/show/5135.html" title="我家女友可不止可爱呢">我家女友可不止可爱呢</a></li> 
-       <li><span> <a target="_blank" href="/v/5546-8.html">第20集</a></span><a href="/show/5546.html" title="Build Divide -#FFFFFF-">Build Divide -#FFFFFF-</a></li> 
-       <li><span> <a target="_blank" href="/v/5563-8.html">第8集</a></span><a href="/show/5563.html" title="女忍者椿的心事">女忍者椿的心事</a></li> 
-       <li><span> <a target="_blank" href="/v/5547-9.html">第9集</a></span><a href="/show/5547.html" title="群青的号角">群青的号角</a></li> 
-       <li><span> <a target="_blank" href="/v/5453-8.html">第8集</a></span><a href="/show/5453.html" title="间谍过家家">间谍过家家</a></li> 
-       <li><span> <a target="_blank" href="/v/3849-248.html">第250集</a></span><a href="/show/3849.html" title="火影忍者 博人传之火影次世代">火影忍者 博人传之火影次世代</a></li> 
-       <li><span> <a target="_blank" href="/v/5543-8.html">第8集</a></span><a href="/show/5543.html" title="黑岩射手 DAWN FALL">黑岩射手 DAWN FALL</a></li> 
-       <li><span> <a target="_blank" href="/v/5483-20.html">第19集</a></span><a href="/show/5483.html" title="蔷薇王的葬列">蔷薇王的葬列</a></li> 
-       <li><span> <a target="_blank" href="/v/5544-8.html">第8集</a></span><a href="/show/5544.html" title="乙女游戏世界对路人角色很不友好">乙女游戏世界对路人角色很不友好</a></li> 
-       <li><span> <a target="_blank" href="/v/5441-7.html">第7集</a></span><a href="/show/5441.html" title="这个补师有够麻烦">这个补师有够麻烦</a></li> 
-       <li><span> <a target="_blank" href="/v/5393-32.html">第31集</a></span><a href="/show/5393.html" title="美妙魔法">美妙魔法</a></li> 
-       <li><span> <a target="_blank" href="/v/5487-12.html">第12集</a></span><a href="/show/5487.html" title="RYMANS CLUB">RYMANS CLUB</a></li> 
-       <li><span> <a target="_blank" href="/v/5481-12.html">12全集</a></span><a href="/show/5481.html" title="怪人开发部的黑井津">怪人开发部的黑井津</a></li> 
-       <li><span> <a target="_blank" href="/v/5480-13.html">13全集</a></span><a href="/show/5480.html" title="现实主义勇者的王国再建记 第二季">现实主义勇者的王国再建记 第二季</a></li> 
-       <li><span> <a target="_blank" href="/v/5482-12.html">12全集</a></span><a href="/show/5482.html" title="锖色护甲">锖色护甲</a></li> 
-       <li><span> <a target="_blank" href="/v/5273-25.html">第24集</a></span><a href="/show/5273.html" title="鲁邦三世 PART6">鲁邦三世 PART6</a></li> 
-       <li><span> <a target="_blank" href="/v/5479-12.html">12全集</a></span><a href="/show/5479.html" title="明日酱的水手服">明日酱的水手服</a></li> 
-       <li><span> <a target="_blank" href="/v/5478-12.html">12全集</a></span><a href="/show/5478.html" title="更衣人偶坠入爱河">更衣人偶坠入爱河</a></li> 
-       <li><span> <a target="_blank" href="/v/5254-12.html">12全集</a></span><a href="/show/5254.html" title="Build Divide -#000000-">Build Divide -#000000-</a></li> 
-      </ul> 
-     </div>
-    </div> 
-    <div class="blank"></div>
-    <div class="bg">
-     <div class="dtit">
-      <h2>一周动漫排行榜</h2><span><a href="/top/">更多</a></span>
-     </div> 
-     <div class="pics">
-      <ul>
-       <li><a href="/show/5031.html"><img src="http://css.yhdmtu.com/down/1/725494381252740.jpg" alt="凡人修仙传"></a><h2><a href="/show/5031.html">凡人修仙传</a></h2><span>状态：<font color="red">更新至52集</font></span><span>类型： <a href="/60/" target="_blank">奇幻</a> <a href="/159/" target="_blank">武侠</a> <a href="/66/" target="_blank">热血</a> </span><p>简介：平凡少年韩立出生贫困，为了让家人过上更好的生活...</p></li>
-       <li><a href="/show/5562.html"><img src="http://css.yhdmtu.com/news/2022/04/10/20220410085824363.jpg" alt="王者天下 第四季"></a><h2><a href="/show/5562.html">王者天下 第四季</a></h2><span>状态：<font color="red">更新至8集</font></span><span>类型： <a href="/87/" target="_blank">历史</a> <a href="/80/" target="_blank">战争</a> <a href="/66/" target="_blank">热血</a> </span><p>简介：故事以未曾经历统一、战乱不止的中国战国时代为舞...</p></li>
-       <li><a href="/show/2.html"><img src="http://css.yhdmtu.com/comic/acg/2016/12/13/414cf1da374075dd241e77d2f8f231f665f23dc8.jpg" alt="海贼王"></a><h2><a href="/show/2.html">海贼王</a></h2><span>状态：<font color="red">更新至1019集</font></span><span>类型： <a href="/66/" target="_blank">热血</a> <a href="/67/" target="_blank">搞笑</a> <a href="/61/" target="_blank">冒险</a> </span><p>简介：传奇海贼哥尔·D·罗杰在临死前曾留下关于其毕生的...</p></li>
-       <li><a href="/show/5135.html"><img src="http://css.yhdmtu.com/down/1/108210097748345.jpg" alt="我家女友可不止可爱呢"></a><h2><a href="/show/5135.html">我家女友可不止可爱呢</a></h2><span>状态：<font color="red">更新至7集</font></span><span>类型： <a href="/67/" target="_blank">搞笑</a> <a href="/70/" target="_blank">校园</a> <a href="/141/" target="_blank">爱情</a> </span><p>简介：电视动画《我家女友可不止可爱呢》改编自真木萤五...</p></li>
-       <li><a href="/show/5546.html"><img src="http://css.yhdmtu.com/news/2022/04/02/20220402102205566.jpg" alt="Build Divide -#FFFFFF-"></a><h2><a href="/show/5546.html">Build Divide -#FFFFFF-</a></h2><span>状态：<font color="red">更新至20集</font></span><span>类型： <a href="/60/" target="_blank">奇幻</a> <a href="/149/" target="_blank">战斗</a> </span><p>简介：我能看见。 我的胜利之路……” “这次一定要打...</p></li>
-       <li><a href="/show/5545.html"><img src="http://css.yhdmtu.com/news/2022/04/02/20220402102038719.jpg" alt="杜鹃的婚约"></a><h2><a href="/show/5545.html">杜鹃的婚约</a></h2><span>状态：<font color="red">更新至6集</font></span><span>类型： <a href="/91/" target="_blank">恋爱</a> <a href="/70/" target="_blank">校园</a> </span><p>简介：电视动画片《杜鹃的婚约》改编自吉河美希著作的同...</p></li>
-       <li><a href="/show/5563.html"><img src="http://css.yhdmtu.com/news/2022/04/10/20220410085950520.jpg" alt="女忍者椿的心事"></a><h2><a href="/show/5563.html">女忍者椿的心事</a></h2><span>状态：<font color="red">更新至8集</font></span><span>类型： <a href="/147/" target="_blank">百合</a> <a href="/149/" target="_blank">战斗</a> <a href="/91/" target="_blank">恋爱</a> </span><p>简介：椿是女忍者“茜组”的优等生。一直与男忍者分开上...</p></li>
-       <li><a href="/show/4792.html"><img src="http://css.yhdmtu.com/down/1/jB17060201080053.jpg" alt="精灵宝可梦"></a><h2><a href="/show/4792.html">精灵宝可梦</a></h2><span>状态：<font color="red">更新至112集</font></span><span>类型： <a href="/60/" target="_blank">奇幻</a> <a href="/61/" target="_blank">冒险</a> <a href="/85/" target="_blank">励志</a> </span><p>简介：PocketMonster，简称为宝可梦Pokemon。它们是这颗...</p></li>
-       <li><a href="/show/5547.html"><img src="http://css.yhdmtu.com/news/2022/04/03/20220403100754633.jpg" alt="群青的号角"></a><h2><a href="/show/5547.html">群青的号角</a></h2><span>状态：<font color="red">更新至9集</font></span><span>类型： <a href="/84/" target="_blank">青春</a> <a href="/345/" target="_blank">偶像</a> </span><p>简介：原创TV动画《群青的号角》（群青のファンファーレ...</p></li>
-       <li><a href="/show/5453.html"><img src="http://css.yhdmtu.com/news/2021/11/03/20211103113625406.jpg" alt="间谍过家家"></a><h2><a href="/show/5453.html">间谍过家家</a></h2><span>状态：<font color="red">更新至8集</font></span><span>类型： <a href="/67/" target="_blank">搞笑</a> <a href="/143/" target="_blank">治愈</a> </span><p>简介：电视动画《间谍×过家家》改编自远藤达哉创作的同...</p></li>
-      </ul>
-     </div> 
-    </div>
-   </div> 
-  </div> 
-  <div class="area"> 
-   <div class="dtit">
-    <h2>友情链接</h2>
-   </div> 
-   <div class="link">
-    <a href="http://www.yinghuacd.com" target="_blank">樱花动漫</a><a href="http://www.yinghuacd.com" target="_blank">樱花动漫网</a>
-   </div> 
-   <script>var week = (new Date()).getDay();week=week==0?6:week-1;$('.tag span').eq(week).addClass('av');$('.tlist ul').eq(week).show();qike123.switchTab($('.tag span'),$('.tlist ul'),{trigger:'click'});</script> 
-   <script type="text/javascript" id="bdshare_js" data="type=slide&amp;img=4&amp;pos=right&amp;uid=631103"></script>
-   <script type="text/javascript" id="bdshell_js"></script>
-   <script type="text/javascript">var bds_config={"snsKey":"{}","bdTop":180};document.getElementById("bdshell_js").src="http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion="+Math.ceil(new Date()/3600000);</script> 
-   <script>
+    <script>
+        var week = (new Date()).getDay();week=week==0?6:week-1;$('.tag span').eq(week).addClass('av');$('.tlist ul').eq(week).show();qike123.switchTab($('.tag span'),$('.tlist ul'),{trigger:'click'});
+    </script>
+    <script type="text/javascript" id="bdshare_js"
+            data="type=slide&amp;img=4&amp;pos=right&amp;uid=631103"></script>
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script type="text/javascript">
+        var bds_config={"snsKey":"{}","bdTop":180};document.getElementById("bdshell_js").src="http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion="+Math.ceil(new Date()/3600000);
+    </script>
+    <script>
 (function(){
     var bp = document.createElement('script');
     var curProtocol = window.location.protocol.split(':')[0];
@@ -393,9 +786,10 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script> 
-   <script type="text/javascript" src="/bar/yhgg.js"></script> 
-   <script>
+
+    </script>
+    <script type="text/javascript" src="/bar/yhgg.js"></script>
+    <script>
 var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
@@ -403,20 +797,23 @@ var _hmt = _hmt || [];
   var s = document.getElementsByTagName("script")[0]; 
   s.parentNode.insertBefore(hm, s);
 })();
-</script> 
-   <div class="blank"></div>
-   <div class="foot">
-    <div class="footbg">
-     <a href="/new/">最新更新</a> | <a href="/top/">动漫排行榜</a> | <a href="/sitemap/">网站地图</a> | <a href="/all/">动漫大全</a> | <a href="/topic/">动漫专题</a>
+
+    </script>
+    <div class="blank"></div>
+    <div class="foot">
+        <div class="footbg">
+            <a href="/new/">最新更新</a> | <a href="/top/">动漫排行榜</a> | <a href="/sitemap/">网站地图</a> | <a
+                href="/all/">动漫大全</a> | <a href="/topic/">动漫专题</a>
+        </div>
+        <p>本网站提供的资源均系收集于各大视频网站，本网站只提供web页面服务，并不提供影片资源存储，也不参与录制、上传</p>
+        <p>若本站收录的节目无意侵犯了贵司版权，请给网页底部邮箱地址来信，我们会及时处理和回复，谢谢</p>
+        <p>Copyright © 2022 <a href="http://www.yinghuacd.com/">樱花动漫</a> <a
+                href="http://www.yinghuacd.com/">www.yinghuacd.com</a></p>
     </div>
-    <p>本网站提供的资源均系收集于各大视频网站，本网站只提供web页面服务，并不提供影片资源存储，也不参与录制、上传</p>
-    <p>若本站收录的节目无意侵犯了贵司版权，请给网页底部邮箱地址来信，我们会及时处理和回复，谢谢</p>
-    <p>Copyright © 2022 <a href="http://www.yinghuacd.com/">樱花动漫</a> <a href="http://www.yinghuacd.com/">www.yinghuacd.com</a></p>
-   </div>
-   <script type="text/javascript" src="/js/js/changes.js"></script>
-   <div class="o">
-    <script type="text/javascript" src="/js/js/51yh.js"></script>
-   </div>
-  </div>
- </body>
+    <script type="text/javascript" src="/js/js/changes.js"></script>
+    <div class="o">
+        <script type="text/javascript" src="/js/js/51yh.js"></script>
+    </div>
+</div>
+</body>
 </html>
