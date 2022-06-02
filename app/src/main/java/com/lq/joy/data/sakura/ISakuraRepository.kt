@@ -9,4 +9,6 @@ interface ISakuraRepository {
     suspend fun getHomeData(): BaseResult<HomeBean>
 
     suspend fun getDetailData(url:String):BaseResult<DetailBean>
+
+    suspend fun getPlayUrl(url:String):BaseResult<String>
 }

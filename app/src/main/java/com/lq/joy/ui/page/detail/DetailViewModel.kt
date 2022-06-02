@@ -68,6 +68,36 @@ class DetailViewModel(
         }
     }
 
+    fun getUrlAndPlay(index: Int) {
+        viewModelState.update { it.copy(isLoading = true, currentIndex = index) }
+
+        viewModelScope.launch {
+            viewModelState.value.detailBean?.episodes?.get(index)?.let { playBean ->
+                playBean.playUrl?.let {
+                    //
+
+                } ?: let {
+                    playBean.playHtmlUrl?.also {
+                        val result = sakuraRepository.getPlayUrl(it)
+                        viewModelState.update {
+                            when (result) {
+                                is BaseResult.Success -> {
+                                    it.updateUrl(index, result.data).copy(isLoading = false)
+                                }
+                                is BaseResult.Error -> {
+                                    it.copy(isLoading = false)
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+    }
 
 
 }

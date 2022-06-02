@@ -67,9 +67,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     //状态栏
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    //html解析
     implementation 'org.jsoup:jsoup:1.13.1'
+    //okhttp
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-
-
 
 }

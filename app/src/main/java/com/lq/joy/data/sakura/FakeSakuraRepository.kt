@@ -26,4 +26,8 @@ class FakeSakuraRepository(private val context: Context) : ISakuraRepository {
             BaseResult.Success(bean)
         }
     }
+
+    override suspend fun getPlayUrl(url: String): BaseResult<String> {
+        return BaseResult.Success("")
+    }
 }

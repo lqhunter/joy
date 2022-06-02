@@ -18,4 +18,8 @@ class SakuraRepository : ISakuraRepository {
     override suspend fun getDetailData(url: String): BaseResult<DetailBean> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getPlayUrl(url: String): BaseResult<String> {
+        TODO("Not yet implemented")
+    }
 }
