@@ -1,23 +1,23 @@
 package com.lq.joy
 
+import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 
-object JoyDestinations {
-    const val HOME = "home"
-    const val SEARCH = "search"
+sealed class Destinations(val route: String) {
+    object Home : Destinations("home")
+    object Search : Destinations("search")
+    object More : Destinations("more")
 
-    const val DETAIL = "detail"
-    const val DETAIL_PARAMS_ID = "id"
-    const val DETAIL_WITH_PARAMS = "${DETAIL}/{${DETAIL_PARAMS_ID}}"
-
-    const val MORE = "more"
+    object Detail : Destinations("detail/{episodeUri}") {
+        fun createRoute(episodeUri: String) = "detail/$episodeUri"
+    }
 }
 
 
 class NavigationActions(navController: NavController) {
     val navigateToHome: () -> Unit = {
-        navController.navigate(JoyDestinations.HOME) {
+        navController.navigate(Destinations.Home.route) {
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
@@ -33,7 +33,7 @@ class NavigationActions(navController: NavController) {
     }
 
     val navigateToSearch: () -> Unit = {
-        navController.navigate(JoyDestinations.SEARCH) {
+        navController.navigate(Destinations.Search.route) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -43,7 +43,7 @@ class NavigationActions(navController: NavController) {
     }
 
     val navigateToDetail: (String) -> Unit = {
-        navController.navigate("${JoyDestinations.DETAIL}/$it") {
+        navController.navigate(Destinations.Detail.createRoute(Uri.encode(it))) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -53,7 +53,7 @@ class NavigationActions(navController: NavController) {
     }
 
     val navigationToMore: (String) -> Unit = {
-        navController.navigate(JoyDestinations.MORE) {
+        navController.navigate(Destinations.More.route) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

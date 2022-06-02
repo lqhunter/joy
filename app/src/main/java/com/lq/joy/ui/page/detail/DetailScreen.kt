@@ -16,14 +16,7 @@ import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.page.common.CenterLoadingContent
 
 @Composable
-fun DetailScreen(
-    appContainer: AppContainer,
-    url: String
-) {
-    val viewModel: DetailViewModel =
-        viewModel(factory = DetailViewModel.providerFactory(appContainer.sakuraRepository))
-
-
+fun DetailScreen(viewModel: DetailViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     CenterLoadingContent(

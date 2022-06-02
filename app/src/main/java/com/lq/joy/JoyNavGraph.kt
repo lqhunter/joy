@@ -6,13 +6,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.lq.joy.JoyDestinations.DETAIL_PARAMS_ID
 import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.page.detail.DetailScreen
+import com.lq.joy.ui.page.detail.DetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
 
 @Composable
@@ -21,29 +22,35 @@ fun JoyNavGraph(
     navController: NavHostController,
     navigationActions: NavigationActions
 ) {
-    NavHost(navController = navController, startDestination = JoyDestinations.HOME) {
-        composable(JoyDestinations.HOME) {
+    NavHost(navController = navController, startDestination = Destinations.Home.route) {
+        composable(Destinations.Home.route) {
             HomeScreen(
                 appContainer,
                 onSearchClick = { navigationActions.navigateToSearch() },
-                onAnimationClick = { navigationActions.navigateToDetail(it.id) },
-                onMoreClick = { navigationActions.navigationToMore(it)}
+                onAnimationClick = { navigationActions.navigateToDetail(it.detailUrl) },
+                onMoreClick = { navigationActions.navigationToMore(it) }
             )
         }
 
-        composable(JoyDestinations.SEARCH) {
+        composable(Destinations.Search.route) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = "搜索页面")
             }
         }
 
-        composable(JoyDestinations.DETAIL_WITH_PARAMS, arguments = listOf(navArgument(DETAIL_PARAMS_ID) {})) {
-            it.arguments?.getString(DETAIL_PARAMS_ID)?.let { url ->
-                DetailScreen(appContainer, url)
-            }
+        composable(Destinations.Detail.route) { backStackEntry ->
+            val viewModel: DetailViewModel =
+                viewModel(
+                    factory = DetailViewModel.providerFactory(
+                        sakuraRepository = appContainer.sakuraRepository,
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
+            DetailScreen(viewModel)
         }
 
-        composable(JoyDestinations.MORE) {
+        composable(Destinations.More.route) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = "更多页面")
             }
