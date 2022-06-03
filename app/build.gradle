@@ -71,5 +71,9 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.13.1'
     //okhttp
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.14.1'
+
+    implementation "androidx.window:window:1.0.0"
 
 }

@@ -28,6 +28,6 @@ class FakeSakuraRepository(private val context: Context) : ISakuraRepository {
     }
 
     override suspend fun getPlayUrl(url: String): BaseResult<String> {
-        return BaseResult.Success("")
+        return BaseResult.Success("https://yun.66dm.net/SBDM/OtomeGameSekai01.m3u8")
     }
 }

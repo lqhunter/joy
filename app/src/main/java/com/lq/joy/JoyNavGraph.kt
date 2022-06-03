@@ -1,5 +1,6 @@
 package com.lq.joy
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
@@ -19,6 +20,7 @@ import com.lq.joy.ui.page.home.HomeScreen
 @Composable
 fun JoyNavGraph(
     appContainer: AppContainer,
+    isExpandedScreen:Boolean,
     navController: NavHostController,
     navigationActions: NavigationActions
 ) {
@@ -47,7 +49,7 @@ fun JoyNavGraph(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-            DetailScreen(viewModel)
+            DetailScreen(viewModel, isExpandedScreen)
         }
 
         composable(Destinations.More.route) {

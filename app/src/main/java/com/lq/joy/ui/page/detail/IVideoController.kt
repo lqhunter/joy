@@ -2,7 +2,7 @@ package com.lq.joy.ui.page.detail
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface VideoPlayerController {
+interface IVideoController {
 
     fun setSource(url: String)
 
@@ -16,9 +16,11 @@ interface VideoPlayerController {
 
     fun quickSeekRewind()
 
-    fun seekTo(position: Long)
+    fun seekTo(position: Int)
 
     fun reset()
 
     val state: StateFlow<VideoPlayerState>
+
+    fun release()
 }

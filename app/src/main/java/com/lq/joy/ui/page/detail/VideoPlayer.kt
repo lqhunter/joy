@@ -1,6 +1,5 @@
 package com.lq.joy.ui.page.detail
 
-import android.widget.VideoView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,37 +19,80 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.lq.joy.ui.theme.Grey500
+import java.io.Serializable
+
+internal val LocalVideoPlayerController =
+    compositionLocalOf<DefaultVideoController> { error("VideoPlayerController is not initialized") }
+
+@Composable
+fun rememberVideoController(
+    url: String? = null
+): DefaultVideoController {
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+     val controller = rememberSaveable(
+        context, coroutineScope,
+        saver = object : Saver<DefaultVideoController, VideoPlayerState> {
+            override fun restore(value: VideoPlayerState): DefaultVideoController {
+
+                return DefaultVideoController(
+                    context = context,
+                    initialState = value,
+                    coroutineScope = coroutineScope
+                )
+            }
+
+            override fun SaverScope.save(value: DefaultVideoController): VideoPlayerState {
+                return value.state.value
+            }
+        },
+        init = {
+            DefaultVideoController(
+                context = context,
+                initialState = VideoPlayerState(),
+                coroutineScope = coroutineScope
+            )
+        }
+    )
+
+    url?.let { controller.setSource(it) }
+
+    println("video $controller")
+    return controller
+}
 
 @Composable
 fun VideoPlayer(
     modifier: Modifier = Modifier,
-    videoPlayerState: VideoPlayerState,
-    onSeekChange: (Float) -> Unit,
-    onPlayOrPause: (Boolean) -> Unit
+    videoController: DefaultVideoController,
 ) {
     Box(modifier = modifier) {
-        val context = LocalContext.current
-        val videoView by rememberSaveable { mutableStateOf(VideoView(context)) }
-
         AndroidView(
             factory = {
-                videoView
+                val playerView = PlayerView(it)
+                videoController.playerViewAvailable(playerView)
+                playerView
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
 
-        VideoPlayerView(
-            videoPlayerState = videoPlayerState,
-            onSeekChange = onSeekChange,
-            onPlay = onPlayOrPause
-        )
+        /*CompositionLocalProvider(LocalVideoPlayerController provides videoController) {
+            VideoPlayerView(
+                onSeekChange = { videoController.seekTo(it.toInt()) },
+                onPlay = { if (it) videoController.play() else videoController.pause() }
+            )
+        }*/
     }
 }
 
 
 data class VideoPlayerState(
-    val isPlaying: Boolean = true,
+    val isPlaying: Boolean = false,
+    val isReady:Boolean = false,
     val controlsVisible: Boolean = true,
     val controlsEnabled: Boolean = true,
     val gesturesEnabled: Boolean = true,
@@ -59,15 +103,17 @@ data class VideoPlayerState(
 /*    val draggingProgress: DraggingProgress? = null,
     val playbackState: PlaybackState = PlaybackState.IDLE,
     val quickSeekAction: QuickSeekAction = QuickSeekAction.none()*/
-)
+): Serializable
 
 @Composable
 private fun VideoPlayerView(
-    videoPlayerState: VideoPlayerState,
     modifier: Modifier = Modifier,
     onSeekChange: (Float) -> Unit,
     onPlay: (Boolean) -> Unit
 ) {
+    val videoController = LocalVideoPlayerController.current
+    val state by videoController.state.collectAsState()
+
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
@@ -76,9 +122,9 @@ private fun VideoPlayerView(
                 .background(Grey500.copy(alpha = 0.5f))
         ) {
 
-            IconButton(onClick = { onPlay(!videoPlayerState.isPlaying) }) {
+            IconButton(onClick = { onPlay(!state.isPlaying) }) {
                 Image(
-                    imageVector = if (videoPlayerState.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                    imageVector = if (state.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                     contentDescription = "playOrPause",
                     colorFilter = ColorFilter.tint(Color.White),
                     modifier = Modifier
@@ -86,7 +132,7 @@ private fun VideoPlayerView(
                         .align(Alignment.CenterVertically)
                 )
             }
-            val currentPosition = videoPlayerState.currentPosition.toFloat()
+            val currentPosition = state.currentPosition.toFloat()
             var seek by remember {
                 mutableStateOf(currentPosition)
             }
@@ -96,7 +142,7 @@ private fun VideoPlayerView(
                     .weight(1f)
                     .padding(start = 8.dp, end = 16.dp),
                 value = currentPosition,
-                valueRange = 0f..videoPlayerState.duration.toFloat(),
+                valueRange = 0f..state.duration.toFloat(),
                 onValueChange = { seek = it },
                 onValueChangeFinished = {
                     onSeekChange(seek)

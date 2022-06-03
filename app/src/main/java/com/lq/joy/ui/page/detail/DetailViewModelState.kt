@@ -6,16 +6,18 @@ data class DetailViewModelState(
     val isLoading: Boolean = false,
     val detailBean: DetailBean? = null,
     val currentIndex: Int = 0,
+    val isPlaying: Boolean = false
 //    val isVideoLoading:Boolean = false
 ) {
     fun toUiState(): DetailUiState {
         return if (detailBean == null) {
-            DetailUiState.NoData(isLoading)
+            DetailUiState.NoData(isLoading, isPlaying = isPlaying)
         } else {
             DetailUiState.HasData(
                 isLoading,
                 data = detailBean,
                 currentIndex = currentIndex,
+                isPlaying = isPlaying
 //                isVideoLoading = isVideoLoading
             )
         }
@@ -36,17 +38,25 @@ data class DetailViewModelState(
 
 sealed interface DetailUiState {
     val isLoading: Boolean
+    val isPlaying: Boolean
 
     data class NoData(
-        override val isLoading: Boolean
+        override val isLoading: Boolean,
+        override val isPlaying: Boolean
     ) : DetailUiState
 
     data class HasData(
         override val isLoading: Boolean,
         val data: DetailBean,
         val currentIndex: Int,
+        override val isPlaying: Boolean,
 //        val isVideoLoading:Boolean
-    ) : DetailUiState
+    ) : DetailUiState {
+
+        fun getCurrentPlayUrl(): String? {
+            return data.episodes[currentIndex].playUrl
+        }
+    }
 
 
 }

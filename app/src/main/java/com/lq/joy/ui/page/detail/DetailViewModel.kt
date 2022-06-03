@@ -50,7 +50,6 @@ class DetailViewModel(
     }
 
     private fun getDetailHtml(url: String) {
-        println("detail getDetailHtml:${url}")
         viewModelState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
@@ -69,12 +68,15 @@ class DetailViewModel(
     }
 
     fun getUrlAndPlay(index: Int) {
+        println("video getUrlAndPlay:${index}")
+
         viewModelState.update { it.copy(isLoading = true, currentIndex = index) }
 
         viewModelScope.launch {
             viewModelState.value.detailBean?.episodes?.get(index)?.let { playBean ->
                 playBean.playUrl?.let {
                     //
+                    println("video 缓存中存在")
 
                 } ?: let {
                     playBean.playHtmlUrl?.also {
@@ -89,14 +91,10 @@ class DetailViewModel(
                                 }
                             }
                         }
-
                     }
                 }
-
             }
-
         }
-
     }
 
 

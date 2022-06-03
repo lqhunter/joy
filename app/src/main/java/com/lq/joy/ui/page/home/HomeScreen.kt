@@ -1,5 +1,6 @@
 package com.lq.joy.ui.page.home
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.lq.joy.LockScreenOrientation
 import com.lq.joy.R
 import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.theme.Blue500
