@@ -2,8 +2,10 @@ package com.lq.joy.ui.page.detail
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.sakura.ISakuraRepository
@@ -68,7 +70,7 @@ class DetailViewModel(
     }
 
     fun getUrlAndPlay(index: Int) {
-        println("video getUrlAndPlay:${index}")
+        Log.d(TAG, "video getUrlAndPlay:${index}")
 
         viewModelState.update { it.copy(isLoading = true, currentIndex = index) }
 
@@ -76,17 +78,19 @@ class DetailViewModel(
             viewModelState.value.detailBean?.episodes?.get(index)?.let { playBean ->
                 playBean.playUrl?.let {
                     //
-                    println("video 缓存中存在")
+                    Log.d(TAG, "video 缓存中存在")
 
                 } ?: let {
                     playBean.playHtmlUrl?.also {
-                        val result = sakuraRepository.getPlayUrl(it)
+                        val result = sakuraRepository.getPlayUrl(Api.HOME + it)
                         viewModelState.update {
                             when (result) {
                                 is BaseResult.Success -> {
+                                    Log.d(TAG, "BaseResult.Success")
                                     it.updateUrl(index, result.data).copy(isLoading = false)
                                 }
                                 is BaseResult.Error -> {
+                                    Log.d(TAG, "BaseResult.Error")
                                     it.copy(isLoading = false)
                                 }
                             }

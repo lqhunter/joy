@@ -84,15 +84,23 @@ object Converter {
 
     fun parseDetail(html: String): DetailBean? {
         val document = Jsoup.parse(html)
+        var score = "--"
+        val scoreClass = document.getElementsByClass("score")
+        if (scoreClass.isNotEmpty()) {
+            val emClass = scoreClass[0].getElementsByTag("em")
+            if (emClass.isNotEmpty()) {
+                score = (emClass[0].childNode(0) as TextNode).text()
+            }
+        }
+
 
         var result: DetailBean? = null
         val list = mutableListOf<PlayBean>()
         val thumb = document.getElementsByClass("thumb l")
         if (thumb.isNotEmpty()) {
             val attrs = thumb[0].getElementsByTag("img")[0].attributes()
-            result = DetailBean(attrs["alt"], attrs["src"], list)
+            result = DetailBean(attrs["alt"], attrs["src"], score, list)
         }
-
 
         val movurl = document.getElementsByClass("movurl")
         if (movurl.isNotEmpty()) {
@@ -103,5 +111,18 @@ object Converter {
             }
         }
         return result
+    }
+
+    fun parsePlayPath(html: String):String? {
+        val document = Jsoup.parse(html)
+        val bofang = document.getElementsByClass("bofang")
+        if (bofang.isNotEmpty()) {
+            val dataVid = bofang[0].getElementsByAttribute("data-vid")[0]
+            val url = dataVid.attributes()["data-vid"]
+            return if (url.contains("$")) {
+                 url.substring(0, url.indexOf("$"))
+            } else url
+        }
+        return null
     }
 }

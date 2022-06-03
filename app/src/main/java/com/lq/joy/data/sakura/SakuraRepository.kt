@@ -16,10 +16,20 @@ class SakuraRepository : ISakuraRepository {
     }
 
     override suspend fun getDetailData(url: String): BaseResult<DetailBean> {
-        TODO("Not yet implemented")
+        val bean = SakuraService.getDetailData(url)
+        return if (bean == null) {
+            BaseResult.Error(IllegalStateException())
+        } else {
+            BaseResult.Success(bean)
+        }
     }
 
     override suspend fun getPlayUrl(url: String): BaseResult<String> {
-        TODO("Not yet implemented")
+        val bean = SakuraService.getVideoPath(url)
+        return if (bean == null) {
+            BaseResult.Error(IllegalStateException())
+        } else {
+            BaseResult.Success(bean)
+        }
     }
 }

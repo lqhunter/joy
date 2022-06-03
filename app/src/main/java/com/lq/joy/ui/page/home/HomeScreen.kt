@@ -1,6 +1,5 @@
 package com.lq.joy.ui.page.home
 
-import android.content.pm.ActivityInfo
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,12 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.lq.joy.LockScreenOrientation
 import com.lq.joy.R
 import com.lq.joy.data.AppContainer
-import com.lq.joy.ui.theme.Blue500
 import com.lq.joy.data.sakura.bean.HomeItemBean
 import com.lq.joy.ui.page.common.SwipeRefreshContent
+import com.lq.joy.ui.theme.Blue500
 
 @Composable
 fun HomeScreen(
@@ -102,7 +100,7 @@ fun HomeTopBar(onSearchClick: () -> Unit) {
     }, actions = {
         IconButton(onClick = onSearchClick) {
             Icon(
-                imageVector = Icons.Filled.Search,
+                imageVector = Icons.Rounded.Search,
                 contentDescription = null
             )
         }

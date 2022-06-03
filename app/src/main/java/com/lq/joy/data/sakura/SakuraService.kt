@@ -60,6 +60,25 @@ object SakuraService {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun getDetailData(url:String): DetailBean? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = okHttpClient.newCall(getRequest(url)).execute()
+                if (response.isSuccessful) {
+                    response.body?.string()?.let {
+                        Converter.parseDetail(it)
+                    }
+                } else {
+                    null
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
     suspend fun getLocalDetailData(context: Context): DetailBean? {
         return withContext(Dispatchers.IO) {
 
@@ -71,6 +90,24 @@ object SakuraService {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun getVideoPath(url: String):String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = okHttpClient.newCall(getRequest(url)).execute()
+                if (response.isSuccessful) {
+                    response.body?.string()?.let {
+                        Converter.parsePlayPath(it)
+                    }
+                } else {
+                    null
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
 
     private fun getLocalString(context: Context, fileName: String): String? {
         var inputStream: InputStream? = null

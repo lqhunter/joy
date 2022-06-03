@@ -19,10 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-val SinglePlayer = SimpleExoPlayer
-    .Builder(JoyApplication.context)
-    .build()
-
 class DefaultVideoController(
     private val context: Context,
     private val initialState: VideoPlayerState,
@@ -122,7 +118,10 @@ class DefaultVideoController(
     }
 
     override fun reset() {
-
+        exoPlayer.stop()
+        _state.update {
+            it.copy(isPlaying = false, isReady = false)
+        }
     }
 
     override fun release() {

@@ -105,6 +105,7 @@ data class VideoPlayerState(
     val quickSeekAction: QuickSeekAction = QuickSeekAction.none()*/
 ): Serializable
 
+/*
 @Composable
 private fun VideoPlayerView(
     modifier: Modifier = Modifier,
@@ -150,4 +151,4 @@ private fun VideoPlayerView(
             )
         }
     }
-}
+}*/

@@ -23,7 +23,8 @@ private val LightColorPalette = lightColors(
     onPrimary = DarkBlue900,
     onSecondary = DarkBlue900,
     onBackground = Grey800,
-    onSurface = Color.Black
+    onSurface = Color.Black,
+    onError = Color.Red
 )
 
 @Composable

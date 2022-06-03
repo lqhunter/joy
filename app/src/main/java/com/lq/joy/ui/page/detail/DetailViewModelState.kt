@@ -5,9 +5,8 @@ import com.lq.joy.data.sakura.bean.DetailBean
 data class DetailViewModelState(
     val isLoading: Boolean = false,
     val detailBean: DetailBean? = null,
-    val currentIndex: Int = 0,
+    val currentIndex: Int = -1,
     val isPlaying: Boolean = false
-//    val isVideoLoading:Boolean = false
 ) {
     fun toUiState(): DetailUiState {
         return if (detailBean == null) {
@@ -17,8 +16,9 @@ data class DetailViewModelState(
                 isLoading,
                 data = detailBean,
                 currentIndex = currentIndex,
-                isPlaying = isPlaying
-//                isVideoLoading = isVideoLoading
+                isPlaying = isPlaying,
+                isFavorite = true,
+                isDetailExpended = false
             )
         }
     }
@@ -47,14 +47,18 @@ sealed interface DetailUiState {
 
     data class HasData(
         override val isLoading: Boolean,
+        override val isPlaying: Boolean,
         val data: DetailBean,
         val currentIndex: Int,
-        override val isPlaying: Boolean,
-//        val isVideoLoading:Boolean
+        val isFavorite: Boolean,
+        val isDetailExpended: Boolean
     ) : DetailUiState {
 
         fun getCurrentPlayUrl(): String? {
-            return data.episodes[currentIndex].playUrl
+            return if (currentIndex == -1)
+                null
+            else
+                data.episodes[currentIndex].playUrl
         }
     }
 
