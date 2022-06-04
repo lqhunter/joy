@@ -4,7 +4,7 @@ data class HomeBean(val banners: List<HomeBannerBean>, val groups: List<HomeGrou
 
 data class HomeBannerBean(
     //show/5519.html解析出id
-    val id:String,
+    val id: String,
     val name: String,
     val coverUrl: String,
     val updateTime: String,
@@ -18,10 +18,14 @@ data class HomeGroupBean(
 )
 
 data class HomeItemBean(
-    val id:String,
+    val id: String,
     val name: String,
     val coverUrl: String,
-    val newestEpisode: String,
-    val newestEpisodeUrl: String,
-    val detailUrl: String
+    val newestEpisode: String? = null,
+    val newestEpisodeUrl: String? = null,
+    val detailUrl: String,
+    val tags: List<Tag>? = null
 )
+
+//path: "/143/" eg.http://www.yinghuacd.com/143/
+data class Tag(val name: String, val path: String)

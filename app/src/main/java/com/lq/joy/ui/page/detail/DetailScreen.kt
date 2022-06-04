@@ -2,6 +2,7 @@ package com.lq.joy.ui.page.detail
 
 import android.content.pm.ActivityInfo
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -40,6 +42,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.ui.page.common.CenterLoadingContent
+import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.ui.theme.Grey500
 import com.lq.joy.ui.theme.VipYellow
 
@@ -48,6 +51,7 @@ fun DetailScreen(
     viewModel: DetailViewModel,
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    onRecommendClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -90,7 +94,8 @@ fun DetailScreen(
                 onEpisodeSelected = {
                     videoController.reset()
                     viewModel.getUrlAndPlay(it)
-                }
+                },
+                onRecommendClick = onRecommendClick
             )
         } else {
             VideoPlayer(
@@ -134,17 +139,19 @@ fun DetailScreen(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun VideoViewWithDetail(
     videoController: DefaultVideoController,
     localUiState: DetailUiState.HasData,
     onCoverClick: () -> Unit,
-    onEpisodeSelected: (Int) -> Unit
-
+    onEpisodeSelected: (Int) -> Unit,
+    onRecommendClick: (String) -> Unit
 ) {
     val width = LocalConfiguration.current.screenWidthDp
     val height = (9 * width) / 16
     Column(modifier = Modifier.fillMaxSize()) {
+
         if (localUiState.currentIndex != -1) {
             VideoPlayer(
                 modifier = Modifier
@@ -182,7 +189,45 @@ private fun VideoViewWithDetail(
             }
         }
 
-        EpisodeDetails(localUiState, localUiState.isFavorite, onEpisodeSelected = onEpisodeSelected)
+
+        LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            item {
+                Spacer(modifier = Modifier.padding(5.dp))
+            }
+
+            item {
+                EpisodeDetails(
+                    localUiState,
+                    localUiState.isFavorite,
+                    onEpisodeSelected = onEpisodeSelected
+                )
+            }
+
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.background),
+                ) {
+                    Text(
+                        text = "推荐", color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp
+                    )
+                }
+
+            }
+            itemsIndexed(localUiState.data.recommend) { index, item ->
+                ItemRow(
+                    item = item,
+                    modifier = Modifier.padding(start = 16.dp),
+                    onClick = onRecommendClick
+                )
+                Divider(thickness = Dp.Hairline)
+            }
+        }
+
 
     }
 }
@@ -199,11 +244,12 @@ private fun EpisodeDetails(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
             Text(
                 text = uiState.data.animationName, color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
@@ -273,8 +319,10 @@ private fun EpisodeDetails(
         )
 
         LazyRow {
+            item {
+                Spacer(modifier = Modifier.width(16.dp))
+            }
             itemsIndexed(uiState.data.episodes) { index, episode ->
-                Spacer(modifier = Modifier.width(5.dp))
                 Row(
                     modifier = Modifier
                         .clickable {
@@ -284,7 +332,7 @@ private fun EpisodeDetails(
                         .height(50.dp)
                         .border(
                             width = 1.dp,
-                            if (uiState.currentIndex == index) MaterialTheme.colors.primaryVariant else Grey500,
+                            if (uiState.currentIndex == index) MaterialTheme.colors.secondaryVariant else Grey500,
                             shape = RoundedCornerShape(5.dp)
                         ),
                     verticalAlignment = Alignment.CenterVertically
@@ -293,7 +341,7 @@ private fun EpisodeDetails(
                     Text(text = episode.episodeName, color = MaterialTheme.colors.onSurface)
                     Spacer(modifier = Modifier.width(5.dp))
                 }
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(10.dp))
             }
         }
     }

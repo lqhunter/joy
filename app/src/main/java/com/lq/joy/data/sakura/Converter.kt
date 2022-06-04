@@ -62,8 +62,8 @@ object Converter {
                 val name = attributes["alt"]
 
                 val newests = li.getElementsByAttribute("target")
-                var newestUrl = ""
-                var newestEpisode = ""
+                var newestUrl: String? = null
+                var newestEpisode: String? = null
                 if (newests.isNotEmpty()) {
                     newestUrl = newests[0].attributes()["href"]
                     newestEpisode = (newests[0].childNode(0) as TextNode).text()
@@ -93,13 +93,14 @@ object Converter {
             }
         }
 
-
         var result: DetailBean? = null
         val list = mutableListOf<PlayBean>()
+        val recommend = mutableListOf<HomeItemBean>()
+
         val thumb = document.getElementsByClass("thumb l")
         if (thumb.isNotEmpty()) {
             val attrs = thumb[0].getElementsByTag("img")[0].attributes()
-            result = DetailBean(attrs["alt"], attrs["src"], score, list)
+            result = DetailBean(attrs["alt"], attrs["src"], score, list, recommend)
         }
 
         val movurl = document.getElementsByClass("movurl")
@@ -110,17 +111,47 @@ object Converter {
                 list.add(PlayBean(episodeName, playHtmlUrl))
             }
         }
+
+        val pics = document.getElementsByClass("pics")
+        if (pics.isNotEmpty()) {
+            val lis = pics[0].getElementsByTag("li")
+            lis.forEach { li ->
+                val attributes = li.getElementsByTag("img")[0].attributes()
+                val cover = attributes["src"]
+                val name = attributes["alt"]
+                val detailUrl = li.getElementsByAttribute("href")[0].attributes()["href"]
+                val newest = (li.getElementsByTag("font")[0].childNode(0) as TextNode).text()
+                val tags = mutableListOf<Tag>()
+                var types = li.getElementsByAttribute("target")
+                types.forEach { e ->
+                    tags.add(Tag(name = (e.childNode(0) as TextNode).text(), path = e.attributes()["href"]))
+                }
+
+                recommend.add(
+                    HomeItemBean(
+                        detailUrl.substring(6, detailUrl.length - 5),
+                        name,
+                        cover,
+                        newestEpisode = newest,
+                        detailUrl = detailUrl,
+                        tags = tags
+                    )
+                )
+            }
+        }
+
+
         return result
     }
 
-    fun parsePlayPath(html: String):String? {
+    fun parsePlayPath(html: String): String? {
         val document = Jsoup.parse(html)
         val bofang = document.getElementsByClass("bofang")
         if (bofang.isNotEmpty()) {
             val dataVid = bofang[0].getElementsByAttribute("data-vid")[0]
             val url = dataVid.attributes()["data-vid"]
             return if (url.contains("$")) {
-                 url.substring(0, url.indexOf("$"))
+                url.substring(0, url.indexOf("$"))
             } else url
         }
         return null

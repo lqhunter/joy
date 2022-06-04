@@ -4,7 +4,8 @@ data class DetailBean(
     val animationName: String,
     val coverUrl: String,
     val score: String,
-    val episodes: List<PlayBean>
+    val episodes: List<PlayBean>,
+    val recommend: List<HomeItemBean>
 )
 
 data class PlayBean(

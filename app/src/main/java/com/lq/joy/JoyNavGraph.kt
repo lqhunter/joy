@@ -49,7 +49,7 @@ fun JoyNavGraph(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-            DetailScreen(viewModel, isExpandedScreen)
+            DetailScreen(viewModel, isExpandedScreen, onRecommendClick = { navigationActions.navigateToDetail(it) })
         }
 
         composable(Destinations.More.route) {

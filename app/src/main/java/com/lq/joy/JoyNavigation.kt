@@ -44,11 +44,6 @@ class NavigationActions(navController: NavController) {
 
     val navigateToDetail: (String) -> Unit = {
         navController.navigate(Destinations.Detail.createRoute(Uri.encode(it))) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
         }
     }
 
