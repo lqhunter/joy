@@ -2,7 +2,6 @@ package com.lq.joy
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +15,7 @@ import com.lq.joy.ui.page.detail.DetailScreen
 import com.lq.joy.ui.page.detail.DetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
 import com.lq.joy.ui.page.search.SearchScreen
+import com.lq.joy.ui.page.search.SearchViewModel
 
 @Composable
 fun JoyNavGraph(
@@ -35,7 +35,10 @@ fun JoyNavGraph(
         }
 
         jump(Destinations.Search) {
-            SearchScreen()
+            val viewModel: SearchViewModel =
+                viewModel(factory = SearchViewModel.providerFactory(appContainer.sakuraRepository, appContainer.naifeiRepository))
+
+            SearchScreen(viewModel)
         }
 
         jump(Destinations.Detail) { backStackEntry ->

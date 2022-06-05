@@ -4,6 +4,11 @@ import android.graphics.Rect
 import android.view.ViewTreeObserver
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalView
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 enum class Keyboard {
     Opened, Closed
@@ -33,4 +38,28 @@ fun keyboardAsState(): State<Keyboard> {
     }
 
     return keyboardState
+}
+
+/**
+ * ViewModel扩展方法：启动协程
+ * @param block 协程逻辑
+ * @param onError 错误回调方法
+ * @param onComplete 完成回调方法
+ */
+fun ViewModel.launch(
+    block: suspend CoroutineScope.() -> Unit,
+    onError: (e: Throwable) -> Unit = { _: Throwable -> },
+    onComplete: () -> Unit = {}
+) {
+    viewModelScope.launch(
+        CoroutineExceptionHandler { _, throwable ->
+            onError(throwable)
+        }
+    ) {
+        try {
+            block.invoke(this)
+        } finally {
+            onComplete()
+        }
+    }
 }

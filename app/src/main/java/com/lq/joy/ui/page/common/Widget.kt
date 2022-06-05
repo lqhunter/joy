@@ -25,7 +25,7 @@ import com.lq.joy.data.sakura.bean.HomeItemBean
 import com.lq.joy.ui.theme.Blue500
 
 @Composable
-private fun FullScreenLoading() {
+fun FullScreenLoading() {
     Box(
         modifier = Modifier
             .fillMaxSize()

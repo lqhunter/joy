@@ -1,35 +1,104 @@
 package com.lq.joy.ui.page.search
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.lq.joy.TAG
+import com.lq.joy.data.Api
+import com.lq.joy.ui.page.common.FullScreenLoading
 import com.lq.joy.utils.Keyboard
 import com.lq.joy.utils.keyboardAsState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(viewModel: SearchViewModel) {
 
+    val uiState by viewModel.uiState.collectAsState()
+    var isInitUi by remember {
+        mutableStateOf(true)
+    }
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    SearchBoxWithContent(uiState, focusManager = focusManager, resultContent = {
+        viewModel.searchFlow?.run {
+            val data = collectAsLazyPagingItems()
+            if (data.itemCount > 0) {
+                LazyColumn {
+                    items(data) { item ->
+                        if (item != null) {
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(150.dp)
+                            ) {
+                                Log.d(TAG, Api.NAIFEI_HOST + "/" + item.vod_pic)
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(Api.NAIFEI_HOST + "/" + item.vod_pic)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = item.vod_name,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .aspectRatio(3f / 4f)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Divider()
+                        }
+                    }
+                }
+            } else {
+                FullScreenLoading()
+            }
+        }
+    }, onSearch = {
+        viewModel.search(it)
+        isInitUi = false
+        keyboardController?.hide()
+    }, isInitUi = isInitUi)
+}
+
+@Composable
+fun SearchBoxWithContent(
+    uiState: SearchViewModelState,
+    resultContent: @Composable() (BoxScope.() -> Unit),
+    onSearch: (String) -> Unit,
+    isInitUi: Boolean,
+    focusManager: FocusManager
+) {
+    var searchInCenter by remember {
+        mutableStateOf(true)
+    }
 
     Box(
         modifier = Modifier
@@ -37,22 +106,55 @@ fun SearchScreen() {
             .onGloballyPositioned {
                 Log.d(TAG, "parent:${it.size}")
             }
-            .clickable(//去掉点击水波纹
-                interactionSource = MutableInteractionSource(),
-                indication = null,
-                onClick = {
-                    //去掉当前焦点
-                    focusManager.clearFocus()
-                })
     ) {
-        var searchContent by remember { mutableStateOf("") }
-        var isSearching by remember {
-            mutableStateOf(false)
+
+        AnimatedVisibility(
+            visible = !searchInCenter,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = (64 + 10).dp)
+            ) {
+                resultContent()
+            }
         }
 
+        SearchBox(
+            searchInCenter = searchInCenter,
+            focusManager = focusManager,
+            onFocusGet = {
+                Log.d(TAG, "set searchInCenter:${!it}")
+                if (isInitUi) {
+                    searchInCenter = !it
+                }
+
+            },
+            onSearch = onSearch
+        )
+    }
+
+}
+
+@Composable
+private fun SearchBox(
+    searchInCenter: Boolean,
+    focusManager: FocusManager,
+    onFocusGet: (Boolean) -> Unit,
+    onSearch: (String) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+
+        var searchContent by remember { mutableStateOf("") }
         val y = remember {
             Animatable(0f)
         }
+
         val scope = rememberCoroutineScope()
         val screenWidth = LocalConfiguration.current.screenWidthDp
         val width = screenWidth * 0.8
@@ -60,8 +162,8 @@ fun SearchScreen() {
         var distance by remember {
             mutableStateOf(-1f)
         }
-
         with(LocalDensity.current) {
+            val statusBarHeight = WindowInsets.statusBars.getTop(LocalDensity.current)
             OutlinedTextField(
                 value = searchContent,
                 onValueChange = { searchContent = it },
@@ -71,23 +173,24 @@ fun SearchScreen() {
                     .height(64.dp)
                     .offset(y = y.value.toDp())
                     .onFocusChanged {
-                        isSearching = it.isFocused
+                        onFocusGet(it.isFocused)
                     }
                     .onGloballyPositioned { coordinates ->
                         if (distance == -1f) {
-                            val positionInParent = coordinates.positionInParent()
+
+                            val positionInParent = coordinates.positionInWindow()
                             Log.d(
                                 TAG,
                                 "search box position:$positionInParent height:${coordinates.size.height}"
                             )
-                            distance = positionInParent.y - 10.dp.toPx()
+                            distance = positionInParent.y - 10.dp.toPx() - statusBarHeight
                         }
                     },
                 shape = RoundedCornerShape(18.dp),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        Log.d(TAG, "onDone")
+                        onSearch(searchContent)
                     },
                     onGo = {
                         Log.d(TAG, "onGo")
@@ -105,14 +208,16 @@ fun SearchScreen() {
             )
         }
 
-        LaunchedEffect(key1 = isSearching) {
+        LaunchedEffect(key1 = searchInCenter) {
             scope.launch {
-                if (isSearching) {
+                if (!searchInCenter) {
                     if (y.value == 0f) {
+                        //向上
                         y.animateTo(-distance, animationSpec = tween(300))
                     }
                 } else {
                     if (y.value == -distance) {
+                        //向下
                         y.animateTo(0f, animationSpec = tween(300))
                     }
 
@@ -125,14 +230,11 @@ fun SearchScreen() {
             scope.launch {
                 when (keyboardAsState.value) {
                     Keyboard.Closed -> {
-                        if (isSearching) focusManager.clearFocus()
+                        Log.d(TAG, "Keyboard.Closed,searchInCenter:${searchInCenter}")
+                        if (!searchInCenter) focusManager.clearFocus()
                     }
                 }
             }
         }
-
-
     }
-
-
 }
