@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.lq.joy.data.Api
 import com.lq.joy.data.netfix.bean.NaifeiSearchItem
+import com.lq.joy.data.ui.SearchBean
 import com.lq.joy.ui.page.search.SearchSource
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
@@ -34,7 +35,7 @@ class NaifeiRepository : INaifeiRepository {
     override fun search(
         limit: Int,
         wd: String
-    ): Flow<PagingData<NaifeiSearchItem>> {
+    ): Flow<PagingData<SearchBean>> {
         return Pager(PagingConfig(limit)) {
             SearchSource(service, wd)
         }.flow

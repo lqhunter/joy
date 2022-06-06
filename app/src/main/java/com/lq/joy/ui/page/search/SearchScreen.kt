@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -23,14 +24,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.lq.joy.R
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
+import com.lq.joy.data.ui.SearchBean
 import com.lq.joy.ui.page.common.FullScreenLoading
+import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.utils.Keyboard
 import com.lq.joy.utils.keyboardAsState
 import kotlinx.coroutines.launch
@@ -52,28 +57,19 @@ fun SearchScreen(viewModel: SearchViewModel) {
                 LazyColumn {
                     items(data) { item ->
                         if (item != null) {
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(150.dp)
-                            ) {
-                                Log.d(TAG, Api.NAIFEI_HOST + "/" + item.vod_pic)
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(Api.NAIFEI_HOST + "/" + item.vod_pic)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = item.vod_name,
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .aspectRatio(3f / 4f)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
+                            when (item) {
+                                is SearchBean.Title -> {
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        Text(text = item.title)
+                                    }
+                                }
+                                is SearchBean.NaifeiBean -> {
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    ItemRow(item = item, modifier = Modifier.padding(start = 5.dp))
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    Divider(thickness = Dp.Hairline)
+                                }
                             }
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Divider()
                         }
                     }
                 }

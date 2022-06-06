@@ -1,19 +1,18 @@
 package com.lq.joy.data.ui
 
-import com.lq.joy.data.netfix.bean.NaifeiSearchBean
-import com.lq.joy.data.sakura.bean.SakuraSearchBean
+import com.lq.joy.data.netfix.bean.NaifeiSearchItem
 
-enum class SOURCE {
-    SAKURA,
-    NAIFEI_ORG
-}
 
-sealed class SearchGroup(val source: SOURCE) {
-    data class Sakura(
-        val size: Int,
-        val items: List<SakuraSearchBean>
-    ) : SearchGroup(SOURCE.SAKURA)
+sealed class SearchBean() {
+    data class Title(val title: String) : SearchBean()
 
-    data class NaifeiGroup(val size: Int, val item: NaifeiSearchBean) :
-        SearchGroup(SOURCE.NAIFEI_ORG)
+    data class NaifeiBean(val origin: NaifeiSearchItem) : SearchBean() {
+        val name = origin.vod_name
+        val coverUrl = origin.vod_pic
+        val area: String = origin.vod_area
+        val type: String = origin.vod_class
+        val remarks: String = origin.vod_remarks
+        val score: String = origin.vod_douban_score
+    }
+
 }

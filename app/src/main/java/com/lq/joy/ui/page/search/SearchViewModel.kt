@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.netfix.bean.NaifeiSearchItem
 import com.lq.joy.data.sakura.ISakuraRepository
+import com.lq.joy.data.ui.SearchBean
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -21,12 +23,17 @@ class SearchViewModel(
 
     val uiState: StateFlow<SearchViewModelState> = viewModelState
 
-    var searchFlow: Flow<PagingData<NaifeiSearchItem>>? = null
+    var searchFlow: Flow<PagingData<SearchBean>>? = null
 
 
     fun search(key: String) {
         viewModelScope.launch {
             searchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
+                /*.map {
+                    it.map {
+
+                    }
+                }*/
             viewModelState.update { it.copy(isSearching = true, key = key) }
         }
 
