@@ -1,4 +1,4 @@
-package com.lq.joy.ui.page.detail
+package com.lq.joy.ui.page.detail.sakura
 
 import android.content.pm.ActivityInfo
 import android.util.Log
@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,14 +20,11 @@ import androidx.compose.material.icons.rounded.PlayCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,12 +39,15 @@ import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.common.ItemRow
+import com.lq.joy.ui.page.detail.DefaultVideoController
+import com.lq.joy.ui.page.detail.VideoPlayer
+import com.lq.joy.ui.page.detail.rememberVideoController
 import com.lq.joy.ui.theme.Grey500
 import com.lq.joy.ui.theme.VipYellow
 
 @Composable
-fun DetailScreen(
-    viewModel: DetailViewModel,
+fun SakuraDetailScreen(
+    viewModel: SakuraDetailViewModel,
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     onRecommendClick: (String) -> Unit,
@@ -67,8 +66,8 @@ fun DetailScreen(
     CenterLoadingContent(
         isLoading = uiState.isLoading,
         isEmpty = when (uiState) {
-            is DetailUiState.HasData -> false
-            is DetailUiState.NoData -> true
+            is DetailUiState.SakuraHasData -> false
+            is DetailUiState.SakuraNoData -> true
         },
         modifier = Modifier.fillMaxSize(),
         contentEmpty = {
@@ -76,7 +75,7 @@ fun DetailScreen(
         }) {
         //https://stackoverflow.com/questions/69558033/kotlin-error-smart-cast-to-x-is-impossible-because-state-is-a-property-that
         val localUiState: DetailUiState = uiState
-        check(localUiState is DetailUiState.HasData)
+        check(localUiState is DetailUiState.SakuraHasData)
 
         val playUrl = localUiState.getCurrentPlayUrl()
 
@@ -143,7 +142,7 @@ fun DetailScreen(
 @Composable
 private fun VideoViewWithDetail(
     videoController: DefaultVideoController,
-    localUiState: DetailUiState.HasData,
+    localUiState: DetailUiState.SakuraHasData,
     onCoverClick: () -> Unit,
     onEpisodeSelected: (Int) -> Unit,
     onRecommendClick: (String) -> Unit
@@ -234,7 +233,7 @@ private fun VideoViewWithDetail(
 
 @Composable
 private fun EpisodeDetails(
-    uiState: DetailUiState.HasData,
+    uiState: DetailUiState.SakuraHasData,
     isFavorite: Boolean,
     onEpisodeSelected: (Int) -> Unit
 ) {

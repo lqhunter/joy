@@ -10,6 +10,6 @@ data class DetailBean(
 
 data class PlayBean(
     val episodeName: String,
+    val playUrl: String? = null,
     val playHtmlUrl: String? = null,
-    val playUrl: String? = null
 )

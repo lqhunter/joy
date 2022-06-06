@@ -1,17 +1,23 @@
 package com.lq.joy
 
 import android.net.Uri
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
+import com.lq.joy.data.ui.SearchBean
 
 sealed class Destinations(val route: String) {
     object Home : Destinations("home")
     object Search : Destinations("search")
     object More : Destinations("more")
 
-    object Detail : Destinations("detail/{episodeUri}") {
-        fun createRoute(episodeUri: String) = "detail/$episodeUri"
+    object SakuraDetail : Destinations("sakuraDetail/{episodeUri}") {
+        fun createRoute(episodeUri: String) = "sakuraDetail/$episodeUri"
     }
+
+    object NaifeiDetail : Destinations("naifeiDetail")
 }
 
 
@@ -42,9 +48,16 @@ class NavigationActions(navController: NavController) {
         }
     }
 
-    val navigateToDetail: (String) -> Unit = {
-        navController.navigate(Destinations.Detail.createRoute(Uri.encode(it))) {
+    val navigateToSakuraDetail: (String) -> Unit = {
+        navController.navigate(Destinations.SakuraDetail.createRoute(Uri.encode(it))) {
         }
+    }
+
+    val navigateToNaifeiDetail: (SearchBean) -> Unit = {
+        navController.navigateAndArgument(
+            Destinations.NaifeiDetail.route,
+            listOf(Pair("search", it))
+        )
     }
 
     val navigationToMore: (String) -> Unit = {
@@ -55,5 +68,26 @@ class NavigationActions(navController: NavController) {
             launchSingleTop = true
             restoreState = true
         }
+    }
+}
+
+
+fun NavController.navigateAndArgument(
+    route: String,
+    args: List<Pair<String, Any>>? = null,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null,
+) {
+    navigate(route = route, navOptions = navOptions, navigatorExtras = navigatorExtras)
+
+    if (args == null && args?.isEmpty() == true) {
+        return
+    }
+
+    val bundle = backQueue.lastOrNull()?.arguments
+    if (bundle != null) {
+        bundle.putAll(bundleOf(*args?.toTypedArray()!!))
+    } else {
+        println("The last argument of NavBackStackEntry is NULL")
     }
 }

@@ -1,8 +1,8 @@
-package com.lq.joy.ui.page.detail
+package com.lq.joy.ui.page.detail.sakura
 
 import com.lq.joy.data.sakura.bean.DetailBean
 
-data class DetailViewModelState(
+data class SakuraDetailVMState(
     val isLoading: Boolean = false,
     val detailBean: DetailBean? = null,
     val currentIndex: Int = -1,
@@ -10,9 +10,9 @@ data class DetailViewModelState(
 ) {
     fun toUiState(): DetailUiState {
         return if (detailBean == null) {
-            DetailUiState.NoData(isLoading, isPlaying = isPlaying)
+            DetailUiState.SakuraNoData(isLoading, isPlaying = isPlaying)
         } else {
-            DetailUiState.HasData(
+            DetailUiState.SakuraHasData(
                 isLoading,
                 data = detailBean,
                 currentIndex = currentIndex,
@@ -23,7 +23,7 @@ data class DetailViewModelState(
         }
     }
 
-    fun updateUrl(index: Int, playUrl: String): DetailViewModelState {
+    fun updateUrl(index: Int, playUrl: String): SakuraDetailVMState {
         return copy(detailBean = detailBean?.episodes?.let {
             val old = it[index]
             val new = old.copy(playUrl = playUrl)
@@ -34,18 +34,21 @@ data class DetailViewModelState(
             return@let detailBean.copy(episodes = changeList)
         })
     }
+
+
+
 }
 
 sealed interface DetailUiState {
     val isLoading: Boolean
     val isPlaying: Boolean
 
-    data class NoData(
+    data class SakuraNoData(
         override val isLoading: Boolean,
         override val isPlaying: Boolean
     ) : DetailUiState
 
-    data class HasData(
+    data class SakuraHasData(
         override val isLoading: Boolean,
         override val isPlaying: Boolean,
         val data: DetailBean,

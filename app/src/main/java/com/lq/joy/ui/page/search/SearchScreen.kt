@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,8 +43,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchScreen(viewModel: SearchViewModel) {
-
+fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     var isInitUi by remember {
         mutableStateOf(true)
@@ -64,10 +64,18 @@ fun SearchScreen(viewModel: SearchViewModel) {
                                     }
                                 }
                                 is SearchBean.NaifeiBean -> {
-                                    Spacer(modifier = Modifier.padding(5.dp))
-                                    ItemRow(item = item, modifier = Modifier.padding(start = 5.dp))
-                                    Spacer(modifier = Modifier.padding(5.dp))
-                                    Divider(thickness = Dp.Hairline)
+                                    Column(modifier = Modifier.clickable {
+                                        onVideoSelected(item)
+                                    }) {
+                                        Spacer(modifier = Modifier.padding(5.dp))
+                                        ItemRow(
+                                            item = item,
+                                            modifier = Modifier.padding(start = 5.dp)
+                                        )
+                                        Spacer(modifier = Modifier.padding(5.dp))
+                                        Divider(thickness = Dp.Hairline)
+                                    }
+
                                 }
                             }
                         }

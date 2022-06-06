@@ -1,4 +1,4 @@
-package com.lq.joy.ui.page.detail
+package com.lq.joy.ui.page.detail.sakura
 
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +12,7 @@ import com.lq.joy.data.sakura.ISakuraRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class DetailViewModel(
+class SakuraDetailViewModel(
     private val sakuraRepository: ISakuraRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,12 +32,12 @@ class DetailViewModel(
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return DetailViewModel(sakuraRepository, handle) as T
+                return SakuraDetailViewModel(sakuraRepository, handle) as T
             }
         }
     }
 
-    private val viewModelState = MutableStateFlow(DetailViewModelState(isLoading = true))
+    private val viewModelState = MutableStateFlow(SakuraDetailVMState(isLoading = true))
     val uiState = viewModelState
         .map {
             it.toUiState()

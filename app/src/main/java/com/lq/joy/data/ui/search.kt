@@ -3,7 +3,7 @@ package com.lq.joy.data.ui
 import com.lq.joy.data.netfix.bean.NaifeiSearchItem
 
 
-sealed class SearchBean() {
+sealed class SearchBean {
     data class Title(val title: String) : SearchBean()
 
     data class NaifeiBean(val origin: NaifeiSearchItem) : SearchBean() {

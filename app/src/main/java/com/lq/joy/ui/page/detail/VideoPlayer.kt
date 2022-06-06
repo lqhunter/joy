@@ -1,30 +1,18 @@
 package com.lq.joy.ui.page.detail
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.IconButton
-import androidx.compose.material.Slider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.lq.joy.ui.theme.Grey500
 import java.io.Serializable
 
-internal val LocalVideoPlayerController =
-    compositionLocalOf<DefaultVideoController> { error("VideoPlayerController is not initialized") }
 
 @Composable
 fun rememberVideoController(
@@ -79,13 +67,6 @@ fun VideoPlayer(
             },
             modifier = Modifier.fillMaxSize(),
         )
-
-        /*CompositionLocalProvider(LocalVideoPlayerController provides videoController) {
-            VideoPlayerView(
-                onSeekChange = { videoController.seekTo(it.toInt()) },
-                onPlay = { if (it) videoController.play() else videoController.pause() }
-            )
-        }*/
     }
 }
 
@@ -105,50 +86,3 @@ data class VideoPlayerState(
     val quickSeekAction: QuickSeekAction = QuickSeekAction.none()*/
 ): Serializable
 
-/*
-@Composable
-private fun VideoPlayerView(
-    modifier: Modifier = Modifier,
-    onSeekChange: (Float) -> Unit,
-    onPlay: (Boolean) -> Unit
-) {
-    val videoController = LocalVideoPlayerController.current
-    val state by videoController.state.collectAsState()
-
-    Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(Grey500.copy(alpha = 0.5f))
-        ) {
-
-            IconButton(onClick = { onPlay(!state.isPlaying) }) {
-                Image(
-                    imageVector = if (state.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                    contentDescription = "playOrPause",
-                    colorFilter = ColorFilter.tint(Color.White),
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
-            val currentPosition = state.currentPosition.toFloat()
-            var seek by remember {
-                mutableStateOf(currentPosition)
-            }
-            Slider(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
-                    .padding(start = 8.dp, end = 16.dp),
-                value = currentPosition,
-                valueRange = 0f..state.duration.toFloat(),
-                onValueChange = { seek = it },
-                onValueChangeFinished = {
-                    onSeekChange(seek)
-                }
-            )
-        }
-    }
-}*/

@@ -11,8 +11,8 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lq.joy.data.AppContainer
-import com.lq.joy.ui.page.detail.DetailScreen
-import com.lq.joy.ui.page.detail.DetailViewModel
+import com.lq.joy.ui.page.detail.sakura.SakuraDetailScreen
+import com.lq.joy.ui.page.detail.sakura.SakuraDetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
 import com.lq.joy.ui.page.search.SearchScreen
 import com.lq.joy.ui.page.search.SearchViewModel
@@ -24,12 +24,12 @@ fun JoyNavGraph(
     navController: NavHostController,
     navigationActions: NavigationActions
 ) {
-    NavHost(navController = navController, startDestination = Destinations.Home.route) {
+    NavHost(navController = navController, startDestination = Destinations.Search.route) {
         jump(Destinations.Home) {
             HomeScreen(
                 appContainer,
                 onSearchClick = { navigationActions.navigateToSearch() },
-                onAnimationClick = { navigationActions.navigateToDetail(it.detailUrl) },
+                onAnimationClick = {  },
                 onMoreClick = { navigationActions.navigationToMore(it) }
             )
         }
@@ -38,28 +38,36 @@ fun JoyNavGraph(
             val viewModel: SearchViewModel =
                 viewModel(factory = SearchViewModel.providerFactory(appContainer.sakuraRepository, appContainer.naifeiRepository))
 
-            SearchScreen(viewModel)
+            SearchScreen(viewModel) {
+//                navigationActions.navigateToNaifeiDetail(it)
+            }
         }
 
-        jump(Destinations.Detail) { backStackEntry ->
-            val viewModel: DetailViewModel =
+        jump(Destinations.SakuraDetail) { backStackEntry ->
+            val viewModel: SakuraDetailViewModel =
                 viewModel(
-                    factory = DetailViewModel.providerFactory(
+                    factory = SakuraDetailViewModel.providerFactory(
                         sakuraRepository = appContainer.sakuraRepository,
                         owner = backStackEntry,
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-            DetailScreen(
+            SakuraDetailScreen(
                 viewModel,
                 isExpandedScreen,
-                onRecommendClick = { navigationActions.navigateToDetail(it) })
+                onRecommendClick = { navigationActions.navigateToSakuraDetail(it) })
         }
 
         jump(Destinations.More) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = "更多页面")
             }
+        }
+
+        jump(Destinations.NaifeiDetail) { backStackEntry ->
+
+
+
         }
     }
 }
