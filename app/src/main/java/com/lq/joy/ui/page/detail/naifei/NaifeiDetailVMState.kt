@@ -1,6 +1,5 @@
 package com.lq.joy.ui.page.detail.naifei
 
-import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.ui.SearchBean
 
 data class NaifeiDetailVMState(
@@ -10,8 +9,5 @@ data class NaifeiDetailVMState(
     val isDetailExpended: Boolean = false,
     val searchBean: SearchBean.NaifeiBean
 ) {
-    val playBean:List<PlayBean> = searchBean.origin.run {
-        mutableListOf()
-    }
 
 }

@@ -1,18 +1,20 @@
 package com.lq.joy.data.ui
 
-import com.lq.joy.data.netfix.bean.NaifeiSearchItem
+import com.lq.joy.data.sakura.bean.PlayBean
+import java.io.Serializable
 
+sealed class SearchBean : Serializable {
 
-sealed class SearchBean {
     data class Title(val title: String) : SearchBean()
 
-    data class NaifeiBean(val origin: NaifeiSearchItem) : SearchBean() {
-        val name = origin.vod_name
-        val coverUrl = origin.vod_pic
-        val area: String = origin.vod_area
-        val type: String = origin.vod_class
-        val remarks: String = origin.vod_remarks
-        val score: String = origin.vod_douban_score
-    }
+    data class NaifeiBean(
+        val name: String,
+        val coverUrl: String,
+        val area: String,
+        val type: String,
+        val remarks: String,
+        val score: String,
+        val playBean: List<PlayBean>
+    ) : SearchBean()
 
 }

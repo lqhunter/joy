@@ -31,9 +31,9 @@ import com.lq.joy.data.ui.SearchBean
 import com.lq.joy.ui.theme.Blue500
 
 @Composable
-fun FullScreenLoading() {
+fun FullScreenLoading(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center)
     ) {

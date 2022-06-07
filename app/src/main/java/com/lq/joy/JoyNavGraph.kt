@@ -1,5 +1,6 @@
 package com.lq.joy
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
@@ -11,6 +12,8 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lq.joy.data.AppContainer
+import com.lq.joy.ui.page.detail.naifei.NaifeiDetailScreen
+import com.lq.joy.ui.page.detail.naifei.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.sakura.SakuraDetailScreen
 import com.lq.joy.ui.page.detail.sakura.SakuraDetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
@@ -29,17 +32,21 @@ fun JoyNavGraph(
             HomeScreen(
                 appContainer,
                 onSearchClick = { navigationActions.navigateToSearch() },
-                onAnimationClick = {  },
+                onAnimationClick = { },
                 onMoreClick = { navigationActions.navigationToMore(it) }
             )
         }
 
         jump(Destinations.Search) {
             val viewModel: SearchViewModel =
-                viewModel(factory = SearchViewModel.providerFactory(appContainer.sakuraRepository, appContainer.naifeiRepository))
-
+                viewModel(
+                    factory = SearchViewModel.providerFactory(
+                        appContainer.sakuraRepository,
+                        appContainer.naifeiRepository
+                    )
+                )
             SearchScreen(viewModel) {
-//                navigationActions.navigateToNaifeiDetail(it)
+                navigationActions.navigateToNaifeiDetail(it)
             }
         }
 
@@ -65,8 +72,17 @@ fun JoyNavGraph(
         }
 
         jump(Destinations.NaifeiDetail) { backStackEntry ->
+            val viewModel: NaifeiDetailViewModel =
+                viewModel(
+                    factory = NaifeiDetailViewModel.providerFactory(
+                        naifeiRepository = appContainer.naifeiRepository,
+                        owner = backStackEntry,
+                        defaultArgs = backStackEntry.arguments
+                    )
+                )
 
 
+            NaifeiDetailScreen(viewModel = viewModel, isExpandedScreen = isExpandedScreen, onRecommendClick = {})
 
         }
     }

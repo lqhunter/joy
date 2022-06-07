@@ -1,11 +1,13 @@
 package com.lq.joy.ui.page.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.lq.joy.TAG
 import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.netfix.bean.NaifeiSearchItem
 import com.lq.joy.data.sakura.ISakuraRepository
@@ -21,22 +23,19 @@ class SearchViewModel(
 
     private val viewModelState = MutableStateFlow(SearchViewModelState())
 
-    val uiState: StateFlow<SearchViewModelState> = viewModelState
+    val uiState: StateFlow<SearchViewModelState> = viewModelState.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        viewModelState.value
+    )
 
     var searchFlow: Flow<PagingData<SearchBean>>? = null
 
 
     fun search(key: String) {
-        viewModelScope.launch {
-            searchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
-                /*.map {
-                    it.map {
-
-                    }
-                }*/
-            viewModelState.update { it.copy(isSearching = true, key = key) }
-        }
-
+        Log.d(TAG, "search:${key}")
+        viewModelState.update { it.copy(reload = true, key = key) }
+        searchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
     }
 
     companion object {

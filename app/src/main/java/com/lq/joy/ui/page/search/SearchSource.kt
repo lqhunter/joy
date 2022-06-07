@@ -1,9 +1,12 @@
 package com.lq.joy.ui.page.search
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.lq.joy.TAG
 import com.lq.joy.data.netfix.NaifeiService
 import com.lq.joy.data.netfix.bean.NaifeiSearchItem
+import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.ui.SearchBean
 import retrofit2.HttpException
 import java.io.IOException
@@ -24,7 +27,26 @@ class SearchSource(
                 if (currentPage == 1) {
                     result.add(0, SearchBean.Title("奈飞"))
                 }
-                result.addAll(data.data.list.map { SearchBean.NaifeiBean(it) })
+                result.addAll(data.data.list.map { origin ->
+                    SearchBean.NaifeiBean(
+                        origin.vod_name,
+                        origin.vod_pic,
+                        origin.vod_area,
+                        origin.vod_class,
+                        origin.vod_remarks,
+                        origin.vod_douban_score,
+                        origin.run {
+                            val r = mutableListOf<PlayBean>()
+                            vod_play_url.split("#").forEach {
+                                val split = it.split("$")
+                                if (split.size == 2) {
+                                    r.add(PlayBean(split[0], split[1]))
+                                }
+                            }
+                            r
+                        }
+                    )
+                })
 
                 LoadResult.Page(
                     data = result,
