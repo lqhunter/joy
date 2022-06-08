@@ -1,23 +1,33 @@
 package com.lq.joy.ui.page.search
 
 import android.util.Log
+import android.widget.SearchView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Filter
+import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -27,13 +37,13 @@ import com.lq.joy.TAG
 import com.lq.joy.data.ui.SearchBean
 import com.lq.joy.ui.page.common.FullScreenLoading
 import com.lq.joy.ui.page.common.ItemRow
+import com.lq.joy.ui.page.mian.FakeSearchView
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
-    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var searchContent by remember {
@@ -42,35 +52,14 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
 
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
-        val screenWidth = LocalConfiguration.current.screenWidthDp
-        val width = screenWidth * 0.8
-        OutlinedTextField(
+
+        SearchView(
             value = searchContent,
             onValueChange = { searchContent = it },
-            modifier = Modifier
-                .width(width.dp)
-                .height(64.dp),
-            shape = RoundedCornerShape(18.dp),
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    viewModel.search(searchContent)
-                    keyboardController?.hide()
-                },
-                onGo = {
-                    Log.d(TAG, "onGo")
-
-                },
-                onSearch = {
-                    Log.d(TAG, "onSearch")
-
-                },
-                onSend = {
-                    Log.d(TAG, "onSend")
-
-                }
-            )
+            onSearch = { viewModel.search(it) },
+            modifier = Modifier.padding(top = 5.dp)
         )
+
 
         if (uiState.reload) {
             val data = viewModel.searchFlow!!.collectAsLazyPagingItems()
@@ -105,13 +94,15 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
                 data.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
-                            item { Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            } }
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                         }
                         loadState.append is LoadState.Loading -> {
                             item { CircularProgressIndicator() }
@@ -131,54 +122,82 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
                     }
                 }
             }
-
-
-
         }
     }
 
 }
 
 @Composable
-fun SearchBoxWithContent(
-    uiState: SearchViewModelState,
-    resultContent: @Composable() (BoxScope.() -> Unit),
-    onSearch: (String) -> Unit,
-    isInitUi: Boolean,
-    focusManager: FocusManager
+fun SearchView(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSearch: (String) -> Unit
 ) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
+    val focusManager = LocalFocusManager.current
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val width = screenWidth * 0.9
+    val focusRequester = remember { FocusRequester() }
+    Card(
+        elevation = 5.dp, shape = RoundedCornerShape(25.dp), modifier = modifier
+            .height(50.dp)
+            .width(width.dp)
     ) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = TextStyle(color = MaterialTheme.colors.onBackground, fontSize = 16.sp),
+            modifier = Modifier.fillMaxSize().focusRequester(focusRequester),
+            singleLine = true,
+            cursorBrush = SolidColor(MaterialTheme.colors.onBackground),
+            decorationBox = { innerTextField ->
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        innerTextField()
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .fillMaxHeight()
+                            .align(Alignment.CenterEnd),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                imageVector = Icons.Rounded.FilterAlt,
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
+                            )
+                        }
+                    }
 
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = (64 + 10).dp)
-        ) {
-            resultContent()
+                }
+
+            },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onSearch(value)
+                    focusManager.clearFocus()
+                }
+            )
+        )
+
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
         }
-
-
     }
 
-}
-
-@Composable
-private fun SearchBox(
-    onFocusGet: (Boolean) -> Unit,
-    onSearch: (String) -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-
-        var searchContent by remember { mutableStateOf("") }
-
-
-    }
 }

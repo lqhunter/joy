@@ -13,11 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.lq.joy.ui.theme.Blue100
 import com.lq.joy.ui.theme.JoyTheme
 import com.lq.joy.utils.WindowSize
 import com.lq.joy.utils.rememberWindowSizeClass
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 val darkIcons = MaterialTheme.colors.isLight
                 SideEffect {
                     Log.d(TAG, "setSystemBarsColor")
-                    systemUiController.setSystemBarsColor(Blue100, darkIcons = darkIcons)
+                    systemUiController.setSystemBarsColor(Color.White.copy(alpha = 0.5f), darkIcons = darkIcons)
                 }
 
                 val navController = rememberNavController()

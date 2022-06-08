@@ -30,12 +30,12 @@ private val LightColorPalette = lightColors(
     primaryVariant = Blue300,
     secondary = Blue500,
     secondaryVariant = Blue700,
-    surface = Blue50,
+    surface = Color.White,
     background = Color.White,
     onPrimary = DarkBlue900,
     onSecondary = DarkBlue900,
     onBackground = Color.Black,
-    onSurface = Grey800,
+    onSurface = Color.Black,
     onError = Color.Red
 )
 

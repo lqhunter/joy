@@ -10,6 +10,7 @@ import com.lq.joy.data.ui.SearchBean
 
 sealed class Destinations(val route: String) {
     object Home : Destinations("home")
+    object Main : Destinations("main")
     object Search : Destinations("search")
     object More : Destinations("more")
 
@@ -34,6 +35,16 @@ class NavigationActions(navController: NavController) {
             // reselecting the same item
             launchSingleTop = true
             // Restore state when reselecting a previously selected item
+            restoreState = true
+        }
+    }
+
+    val navigateToMain: () -> Unit = {
+        navController.navigate(Destinations.Main.route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
             restoreState = true
         }
     }

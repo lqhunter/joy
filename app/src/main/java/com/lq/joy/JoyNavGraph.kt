@@ -1,6 +1,5 @@
 package com.lq.joy
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
@@ -17,6 +16,7 @@ import com.lq.joy.ui.page.detail.naifei.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.sakura.SakuraDetailScreen
 import com.lq.joy.ui.page.detail.sakura.SakuraDetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
+import com.lq.joy.ui.page.mian.MainScreen
 import com.lq.joy.ui.page.search.SearchScreen
 import com.lq.joy.ui.page.search.SearchViewModel
 
@@ -27,7 +27,7 @@ fun JoyNavGraph(
     navController: NavHostController,
     navigationActions: NavigationActions
 ) {
-    NavHost(navController = navController, startDestination = Destinations.Search.route) {
+    NavHost(navController = navController, startDestination = Destinations.Main.route) {
         jump(Destinations.Home) {
             HomeScreen(
                 appContainer,
@@ -35,6 +35,10 @@ fun JoyNavGraph(
                 onAnimationClick = { },
                 onMoreClick = { navigationActions.navigationToMore(it) }
             )
+        }
+
+        jump(Destinations.Main) {
+            MainScreen(appContainer, onSearchClick = { navigationActions.navigateToSearch() })
         }
 
         jump(Destinations.Search) {
@@ -82,7 +86,10 @@ fun JoyNavGraph(
                 )
 
 
-            NaifeiDetailScreen(viewModel = viewModel, isExpandedScreen = isExpandedScreen, onRecommendClick = {})
+            NaifeiDetailScreen(
+                viewModel = viewModel,
+                isExpandedScreen = isExpandedScreen,
+                onRecommendClick = {})
 
         }
     }

@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.Joy" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:background">@color/white</item>
     </style>
 </resources>
