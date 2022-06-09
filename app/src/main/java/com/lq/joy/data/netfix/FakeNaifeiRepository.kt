@@ -1,28 +1,31 @@
-package com.lq.joy.ui.page.search
+package com.lq.joy.data.netfix
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import androidx.paging.*
 import com.google.gson.Gson
 import com.lq.joy.JoyApplication
-import com.lq.joy.data.netfix.NaifeiService
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.ui.SearchBean
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
 
-class SearchSource(
-    private val service: NaifeiService,
-    private val searchKey: String
-) : PagingSource<Int, SearchBean>() {
+class FakeNaifeiRepository : INaifeiRepository {
+    override fun search(limit: Int, wd: String): Flow<PagingData<SearchBean>> {
+        return Pager(PagingConfig(limit)) {
+            FakeSource()
+        }.flow
+    }
+}
+
+private class FakeSource : PagingSource<Int, SearchBean>() {
     override fun getRefreshKey(state: PagingState<Int, SearchBean>): Int = 1
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchBean> {
         return try {
             val currentPage = params.key ?: 1
-//            val data = service.search(currentPage, params.loadSize, searchKey)
             delay(3000)
             val data = fakeData()
 

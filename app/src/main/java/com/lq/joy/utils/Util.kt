@@ -1,7 +1,9 @@
 package com.lq.joy.utils
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.ViewTreeObserver
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModel
@@ -9,6 +11,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
 
 enum class Keyboard {
     Opened, Closed
@@ -63,3 +68,26 @@ fun ViewModel.launch(
         }
     }
 }
+
+fun getLocalString(context: Context, fileName: String): String? {
+    var inputStream: InputStream? = null
+    var reader: InputStreamReader? = null
+    try {
+        inputStream = context.assets.open(fileName)
+        reader = InputStreamReader(inputStream)
+        return reader.readText()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } finally {
+        try {
+            inputStream?.close()
+            reader?.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    return null
+}
+
+val LazyListState.isScrolled: Boolean
+    get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
