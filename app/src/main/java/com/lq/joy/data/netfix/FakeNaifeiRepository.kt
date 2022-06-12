@@ -15,12 +15,12 @@ import java.io.IOException
 class FakeNaifeiRepository : INaifeiRepository {
     override fun search(limit: Int, wd: String): Flow<PagingData<VideoSearchBean>> {
         return Pager(PagingConfig(limit)) {
-            FakeSource()
+            FakeSource(wd)
         }.flow
     }
 }
 
-private class FakeSource : PagingSource<Int, VideoSearchBean>() {
+private class FakeSource(private val searchKey: String) : PagingSource<Int, VideoSearchBean>() {
     override fun getRefreshKey(state: PagingState<Int, VideoSearchBean>): Int = 1
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoSearchBean> {
@@ -33,6 +33,7 @@ private class FakeSource : PagingSource<Int, VideoSearchBean>() {
                 val result = mutableListOf<VideoSearchBean>()
                 result.addAll(data.data.list.map { origin ->
                     VideoSearchBean.NaifeiBean(
+                        origin.vod_id,
                         origin.vod_name,
                         origin.vod_pic,
                         origin.vod_area,

@@ -4,7 +4,6 @@ package com.lq.joy.ui.page.search
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +25,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +59,7 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
         lazyListState.isScrolled
     }
 
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
         Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
@@ -69,161 +70,159 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
                 SearchView(
                     value = searchContent,
                     onValueChange = { searchContent = it },
-                    onSearch = { viewModel.search(it) },
+                    onSearch = {
+                        viewModel.search(it)
+                    },
                     modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
                 )
             }
         }
 
+        val naifeiPaging = uiState.naifeiFlow.collectAsLazyPagingItems()
+        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
 
-        if (uiState.reSearch) {
-            val dataNaifei = viewModel.naifeiSearchFlow!!.collectAsLazyPagingItems()
-            val dataSakura = viewModel.sakuraSearchFlow!!.collectAsLazyPagingItems()
-            LazyColumn(state = lazyListState) {
-                //后续增加tab切换功能再放开
-                /*item {
-                    TabRow(
-                        backgroundColor = MaterialTheme.colors.surface,
-                        selectedTabIndex = selectedIndex,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        divider = {
-                            Divider(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(2.dp)
-                                    .background(MaterialTheme.colors.surface)
+        LazyColumn(state = lazyListState) {
+            //后续增加tab切换功能再放开
+            /*item {
+                TabRow(
+                    backgroundColor = MaterialTheme.colors.surface,
+                    selectedTabIndex = selectedIndex,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    divider = {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(2.dp)
+                                .background(MaterialTheme.colors.surface)
+                        )
+                    }
+                ) {
+                    tabs.forEachIndexed { index, s ->
+                        Tab(
+                            selected = selectedIndex == index,
+                            onClick = { selectedIndex = index },
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            Text(
+                                text = s,
+                                style = TextStyle(color = MaterialTheme.colors.onBackground)
                             )
                         }
-                    ) {
-                        tabs.forEachIndexed { index, s ->
-                            Tab(
-                                selected = selectedIndex == index,
-                                onClick = { selectedIndex = index },
-                                modifier = Modifier.fillMaxHeight()
-                            ) {
-                                Text(
-                                    text = s,
-                                    style = TextStyle(color = MaterialTheme.colors.onBackground)
-                                )
-                            }
-                        }
-                    }
-                }*/
-
-                if (dataNaifei.itemCount != 0) {
-                    stickyHeader {
-                        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(text = "奈飞")
-                            }
-                        }
                     }
                 }
+            }*/
 
-                items(dataNaifei) { item ->
-                    if (item is VideoSearchBean.NaifeiBean) {
-                        Column(modifier = Modifier.clickable {
-                            onVideoSelected(item)
-                        }) {
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            ItemRow(
-                                item = item,
-                                modifier = Modifier.padding(start = 5.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Divider(thickness = Dp.Hairline)
-                        }
-                    }
-                }
-
-                dataNaifei.apply {
-                    when {
-                        loadState.refresh is LoadState.Loading -> {
-                            item {
-                                Log.d(TAG, "loadState.refresh is LoadState.Loading")
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                        }
-                        loadState.refresh is LoadState.Error -> {
-
-                        }
-                        loadState.append is LoadState.Loading -> {
-                            item {
-                                Log.d(TAG, "loadState.append is LoadState.Loading")
-                                CircularProgressIndicator()
-                            }
-                        }
-                        loadState.append is LoadState.Error -> {
-
-                        }
-                        loadState.append is LoadState.NotLoading -> {
-                            val e = dataNaifei.loadState.append as LoadState.NotLoading
-
-                        }
-                    }
-                }
-
-                if (dataNaifei.itemCount == 0 || dataNaifei.loadState.append !is LoadState.NotLoading) {
-                    return@LazyColumn
-                }
-
-
+            if (naifeiPaging.itemCount != 0) {
                 stickyHeader {
                     Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Text(text = "樱花动漫")
-                        }
-                    }
-                }
-
-
-                items(dataSakura) { item ->
-                    if (item is VideoSearchBean.SakuraBean) {
-                        Column(modifier = Modifier.clickable {
-
-                        }) {
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            ItemRow(
-                                item = item,
-                                modifier = Modifier.padding(start = 5.dp),
-                                onClick = {}
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Divider(thickness = Dp.Hairline)
-                        }
-                    }
-                }
-
-                dataSakura.apply {
-                    when {
-                        loadState.refresh is LoadState.Error -> {
-
-                        }
-                        loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
-                            item {
-                                CircularProgressIndicator()
-                            }
-                        }
-                        loadState.append is LoadState.Error -> {
-
-                        }
-                        loadState.append is LoadState.NotLoading -> {
-
+                            Text(text = "奈飞", modifier = Modifier.padding(start = 5.dp, bottom = 5.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
             }
+
+            items(naifeiPaging, key = {item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
+                if (item is VideoSearchBean.NaifeiBean) {
+                    Column(modifier = Modifier.clickable {
+                        onVideoSelected(item)
+                    }) {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        ItemRow(
+                            item = item,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Divider(thickness = Dp.Hairline)
+                    }
+                }
+            }
+
+            naifeiPaging.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Log.d(TAG, "loadState.refresh is LoadState.Loading")
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    loadState.refresh is LoadState.Error -> {
+
+                    }
+                    loadState.append is LoadState.Loading -> {
+                        item {
+                            Log.d(TAG, "loadState.append is LoadState.Loading")
+                            CircularProgressIndicator()
+                        }
+                    }
+                    loadState.append is LoadState.Error -> {
+
+                    }
+                    loadState.append is LoadState.NotLoading -> {
+                        val e = naifeiPaging.loadState.append as LoadState.NotLoading
+
+                    }
+                }
+            }
+
+            if (naifeiPaging.itemCount == 0 || naifeiPaging.loadState.append !is LoadState.NotLoading) {
+                return@LazyColumn
+            }
+
+
+            stickyHeader {
+                Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "樱花动漫", modifier = Modifier.padding(start = 5.dp, bottom = 5.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+
+            items(sakuraPaging) { item ->
+                if (item is VideoSearchBean.SakuraBean) {
+                    Column(modifier = Modifier.clickable {
+
+                    }) {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        ItemRow(
+                            item = item,
+                            modifier = Modifier.padding(start = 5.dp),
+                            onClick = {}
+                        )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Divider(thickness = Dp.Hairline)
+                    }
+                }
+            }
+
+            sakuraPaging.apply {
+                when {
+                    loadState.refresh is LoadState.Error -> {
+
+                    }
+                    loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
+                        item {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    loadState.append is LoadState.Error -> {
+
+                    }
+                    loadState.append is LoadState.NotLoading -> {
+
+                    }
+                }
+            }
         }
-
-
     }
 
 }

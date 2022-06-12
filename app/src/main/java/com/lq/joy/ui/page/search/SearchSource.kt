@@ -30,6 +30,7 @@ class SearchSource(
                 val result = mutableListOf<VideoSearchBean>()
                 result.addAll(data.data.list.map { origin ->
                     VideoSearchBean.NaifeiBean(
+                        origin.vod_id,
                         origin.vod_name,
                         origin.vod_pic,
                         origin.vod_area,

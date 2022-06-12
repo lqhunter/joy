@@ -7,6 +7,7 @@ import java.io.Serializable
 sealed class VideoSearchBean : Serializable {
 
     data class NaifeiBean(
+        val vodId:Int,
         val name: String,
         val coverUrl: String,
         val area: String,

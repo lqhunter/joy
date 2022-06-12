@@ -11,6 +11,7 @@ import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.sakura.ISakuraRepository
 import com.lq.joy.data.ui.VideoSearchBean
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val sakuraRepository: ISakuraRepository,
@@ -26,15 +27,22 @@ class SearchViewModel(
         viewModelState.value
     )
 
-    var naifeiSearchFlow: Flow<PagingData<VideoSearchBean>>? = null
-    var sakuraSearchFlow: Flow<PagingData<VideoSearchBean>>? = null
-
-
     fun search(key: String) {
-        Log.d(TAG, "search:${key}")
-        viewModelState.update { it.copy(reSearch = true, key = key) }
-        naifeiSearchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
-        sakuraSearchFlow = sakuraRepository.search("").cachedIn(viewModelScope)
+        viewModelState.update { it.copy(naifeiFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope), sakuraFlow = sakuraRepository.search(key).cachedIn(viewModelScope)) }
+    }
+
+    fun searchNaifei(key: String? = null): Flow<PagingData<VideoSearchBean>> {
+        return if (key == null) {
+            emptyFlow()
+        } else
+            naifeiRepository.search(10, key).cachedIn(viewModelScope)
+    }
+
+    fun searchSakura(key: String? = null): Flow<PagingData<VideoSearchBean>> {
+        return if (key == null) {
+            emptyFlow()
+        } else
+        return sakuraRepository.search(key).cachedIn(viewModelScope)
     }
 
     companion object {
