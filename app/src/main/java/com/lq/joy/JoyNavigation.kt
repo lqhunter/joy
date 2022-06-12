@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
-import com.lq.joy.data.ui.SearchBean
+import com.lq.joy.data.ui.VideoSearchBean
 
 sealed class Destinations(val route: String) {
     object Home : Destinations("home")
@@ -64,7 +64,7 @@ class NavigationActions(navController: NavController) {
         }
     }
 
-    val navigateToNaifeiDetail: (SearchBean) -> Unit = {
+    val navigateToNaifeiDetail: (VideoSearchBean) -> Unit = {
         navController.navigateAndArgument(
             Destinations.NaifeiDetail.route,
             listOf(Pair("search", it))

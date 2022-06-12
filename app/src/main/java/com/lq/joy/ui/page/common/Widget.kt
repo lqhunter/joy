@@ -1,6 +1,5 @@
 package com.lq.joy.ui.page.common
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,14 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.util.CoilUtils
 import com.lq.joy.R
-import com.lq.joy.TAG
 import com.lq.joy.data.Api
-import com.lq.joy.data.netfix.bean.NaifeiSearchItem
 import com.lq.joy.data.sakura.bean.HomeItemBean
-import com.lq.joy.data.ui.SearchBean
-import com.lq.joy.ui.theme.Blue500
+import com.lq.joy.data.ui.VideoSearchBean
 
 @Composable
 fun FullScreenLoading(modifier: Modifier = Modifier) {
@@ -47,6 +42,60 @@ fun ItemRow(item: HomeItemBean, modifier: Modifier = Modifier, onClick: (String)
         .clickable {
             onClick(item.detailUrl)
         }
+        .height(100.dp)
+        .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
+    {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(item.coverUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = item.name,
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(4f / 3f)
+                .clip(RoundedCornerShape(5.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = modifier
+                .fillMaxHeight()
+                .weight(1f),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(
+                text = item.name,
+                color = MaterialTheme.colors.onSurface,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row {
+                Text(text = "状态：")
+                Text(text = item.newestEpisode ?: "无", color = Color.Red)
+            }
+            var tag = ""
+            item.tags?.let {
+                it.forEach { t ->
+                    tag += "${t.name} "
+                }
+            }
+            Text(text = "类型：$tag")
+        }
+
+
+    }
+}
+
+@Composable
+fun ItemRow(item: VideoSearchBean.SakuraBean, modifier: Modifier = Modifier, onClick: ((String) -> Unit)?) {
+    if (onClick != null) {
+        modifier.clickable {
+            onClick(item.detailUrl)
+        }
+    }
+    Row(modifier = modifier
         .height(100.dp)
         .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
     {
@@ -142,7 +191,7 @@ fun ItemColumn(
 }
 
 @Composable
-fun ItemRow(item: SearchBean.NaifeiBean, modifier: Modifier = Modifier) {
+fun ItemRow(item: VideoSearchBean.NaifeiBean, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()

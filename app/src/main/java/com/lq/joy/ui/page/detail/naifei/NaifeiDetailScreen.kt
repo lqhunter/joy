@@ -74,9 +74,9 @@ fun NaifeiDetailScreen(
         if (!isExpandedScreen) {
             VideoViewWithEpisode(
                 videoController = videoController,
-                playBean = uiState.searchBean.playBean,
+                playBean = uiState.videoSearchBean.playBean,
                 currentIndex = uiState.currentIndex,
-                coverUrl = uiState.searchBean.coverUrl,
+                coverUrl = uiState.videoSearchBean.coverUrl,
                 onEpisodeSelected = { index, playBean ->
                     playBean.playUrl?.let {
                         videoController.setSource(it)

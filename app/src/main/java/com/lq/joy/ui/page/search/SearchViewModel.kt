@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import com.lq.joy.TAG
 import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.sakura.ISakuraRepository
-import com.lq.joy.data.ui.SearchBean
+import com.lq.joy.data.ui.VideoSearchBean
 import kotlinx.coroutines.flow.*
 
 class SearchViewModel(
@@ -26,13 +26,15 @@ class SearchViewModel(
         viewModelState.value
     )
 
-    var searchFlow: Flow<PagingData<SearchBean>>? = null
+    var naifeiSearchFlow: Flow<PagingData<VideoSearchBean>>? = null
+    var sakuraSearchFlow: Flow<PagingData<VideoSearchBean>>? = null
 
 
     fun search(key: String) {
         Log.d(TAG, "search:${key}")
         viewModelState.update { it.copy(reSearch = true, key = key) }
-        searchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
+        naifeiSearchFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope)
+        sakuraSearchFlow = sakuraRepository.search("").cachedIn(viewModelScope)
     }
 
     companion object {

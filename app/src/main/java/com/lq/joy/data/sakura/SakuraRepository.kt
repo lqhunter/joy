@@ -1,8 +1,11 @@
 package com.lq.joy.data.sakura
 
+import androidx.paging.PagingData
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.sakura.bean.DetailBean
 import com.lq.joy.data.sakura.bean.HomeBean
+import com.lq.joy.data.ui.VideoSearchBean
+import kotlinx.coroutines.flow.Flow
 
 class SakuraRepository : ISakuraRepository {
 
@@ -31,5 +34,9 @@ class SakuraRepository : ISakuraRepository {
         } else {
             BaseResult.Success(bean)
         }
+    }
+
+    override fun search(key: String): Flow<PagingData<VideoSearchBean>> {
+        TODO("Not yet implemented")
     }
 }

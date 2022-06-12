@@ -1,13 +1,12 @@
 package com.lq.joy.ui.page.detail.naifei
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.lq.joy.data.netfix.INaifeiRepository
-import com.lq.joy.data.ui.SearchBean
+import com.lq.joy.data.ui.VideoSearchBean
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -33,10 +32,10 @@ class NaifeiDetailViewModel(
         }
     }
 
-    private val searchBean = savedStateHandle.get<SearchBean>("search")!! as SearchBean.NaifeiBean
+    private val videoSearchBean = savedStateHandle.get<VideoSearchBean>("search")!! as VideoSearchBean.NaifeiBean
 
 
-    private val viewModelState = MutableStateFlow(NaifeiDetailVMState(searchBean = searchBean))
+    private val viewModelState = MutableStateFlow(NaifeiDetailVMState(videoSearchBean = videoSearchBean))
     val uiState = viewModelState
 
 

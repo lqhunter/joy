@@ -3,6 +3,7 @@ package com.lq.joy.data.sakura
 import com.lq.joy.data.sakura.bean.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
+import java.lang.NumberFormatException
 
 object Converter {
 
@@ -155,5 +156,45 @@ object Converter {
             } else url
         }
         return null
+    }
+
+    fun parseSearchBean(html:String):SearchBean? {
+        val document = Jsoup.parse(html)
+
+        val list = mutableListOf<HomeItemBean>()
+        val result = SearchBean(1, list)
+        val pages = document.getElementsByClass("pages")[0]
+        val page = (pages.getElementById("lastn").childNode(0) as TextNode).text()
+        try {
+            result.totalPage = page.toInt()
+        } catch (e:NumberFormatException) {
+            e.printStackTrace()
+        }
+        val lpic = document.getElementsByClass("lpic")[0]
+        val lis = lpic.getElementsByTag("li")
+        lis.forEach { li ->
+            val attributes = li.getElementsByTag("img")[0].attributes()
+            val cover = attributes["src"]
+            val name = attributes["alt"]
+            val detailUrl = li.getElementsByAttribute("href")[0].attributes()["href"]
+            val newest = (li.getElementsByTag("font")[0].childNode(0) as TextNode).text()
+            val tags = mutableListOf<Tag>()
+            var types = li.getElementsByAttribute("target")
+            types.forEach { e ->
+                tags.add(Tag(name = (e.childNode(0) as TextNode).text(), path = e.attributes()["href"]))
+            }
+
+            list.add(
+                HomeItemBean(
+                    detailUrl.substring(6, detailUrl.length - 5),
+                    name,
+                    cover,
+                    newestEpisode = newest,
+                    detailUrl = detailUrl,
+                    tags = tags
+                )
+            )
+        }
+        return result
     }
 }

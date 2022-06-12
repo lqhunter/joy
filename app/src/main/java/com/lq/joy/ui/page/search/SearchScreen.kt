@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.lq.joy.ui.page.search
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,7 +33,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.lq.joy.TAG
-import com.lq.joy.data.ui.SearchBean
+import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.utils.isScrolled
 
@@ -42,7 +45,7 @@ val tabs = mutableListOf(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Unit) {
+fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     var searchContent by remember {
@@ -52,9 +55,13 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
         mutableStateOf(0)
     }
 
+    val isScroll by remember {
+        lazyListState.isScrolled
+    }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
-        Surface(elevation = if (!lazyListState.isScrolled) 0.dp else 4.dp) {
+        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(), contentAlignment = Alignment.Center
@@ -70,9 +77,11 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
 
 
         if (uiState.reSearch) {
-            val data = viewModel.searchFlow!!.collectAsLazyPagingItems()
+            val dataNaifei = viewModel.naifeiSearchFlow!!.collectAsLazyPagingItems()
+            val dataSakura = viewModel.sakuraSearchFlow!!.collectAsLazyPagingItems()
             LazyColumn(state = lazyListState) {
-                item {
+                //后续增加tab切换功能再放开
+                /*item {
                     TabRow(
                         backgroundColor = MaterialTheme.colors.surface,
                         selectedTabIndex = selectedIndex,
@@ -88,14 +97,12 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
                             )
                         }
                     ) {
-                        //todo:这里滑动时，会频繁 recompose，需要优化
                         tabs.forEachIndexed { index, s ->
                             Tab(
-                                selected = index == selectedIndex,
+                                selected = selectedIndex == index,
                                 onClick = { selectedIndex = index },
                                 modifier = Modifier.fillMaxHeight()
                             ) {
-                                Log.d(TAG, "tab compose:$index")
                                 Text(
                                     text = s,
                                     style = TextStyle(color = MaterialTheme.colors.onBackground)
@@ -103,38 +110,39 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
                             }
                         }
                     }
-                }
+                }*/
 
-                items(data) { item ->
-                    if (item != null) {
-                        when (item) {
-                            is SearchBean.Title -> {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    Text(text = item.title)
-                                }
-                            }
-                            is SearchBean.NaifeiBean -> {
-                                Column(modifier = Modifier.clickable {
-                                    onVideoSelected(item)
-                                }) {
-                                    Spacer(modifier = Modifier.padding(5.dp))
-                                    ItemRow(
-                                        item = item,
-                                        modifier = Modifier.padding(start = 5.dp)
-                                    )
-                                    Spacer(modifier = Modifier.padding(5.dp))
-                                    Divider(thickness = Dp.Hairline)
-                                }
-
+                if (dataNaifei.itemCount != 0) {
+                    stickyHeader {
+                        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(text = "奈飞")
                             }
                         }
                     }
                 }
 
-                data.apply {
+                items(dataNaifei) { item ->
+                    if (item is VideoSearchBean.NaifeiBean) {
+                        Column(modifier = Modifier.clickable {
+                            onVideoSelected(item)
+                        }) {
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            ItemRow(
+                                item = item,
+                                modifier = Modifier.padding(start = 5.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Divider(thickness = Dp.Hairline)
+                        }
+                    }
+                }
+
+                dataNaifei.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
                             item {
+                                Log.d(TAG, "loadState.refresh is LoadState.Loading")
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize(),
@@ -144,20 +152,71 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (SearchBean) -> Un
                                 }
                             }
                         }
-                        loadState.append is LoadState.Loading -> {
-                            item { CircularProgressIndicator() }
-                        }
                         loadState.refresh is LoadState.Error -> {
-                            val e = data.loadState.refresh as LoadState.Error
-                            item {
 
+                        }
+                        loadState.append is LoadState.Loading -> {
+                            item {
+                                Log.d(TAG, "loadState.append is LoadState.Loading")
+                                CircularProgressIndicator()
                             }
                         }
                         loadState.append is LoadState.Error -> {
-                            val e = data.loadState.append as LoadState.Error
-                            item {
 
+                        }
+                        loadState.append is LoadState.NotLoading -> {
+                            val e = dataNaifei.loadState.append as LoadState.NotLoading
+
+                        }
+                    }
+                }
+
+                if (dataNaifei.itemCount == 0 || dataNaifei.loadState.append !is LoadState.NotLoading) {
+                    return@LazyColumn
+                }
+
+
+                stickyHeader {
+                    Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "樱花动漫")
+                        }
+                    }
+                }
+
+
+                items(dataSakura) { item ->
+                    if (item is VideoSearchBean.SakuraBean) {
+                        Column(modifier = Modifier.clickable {
+
+                        }) {
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            ItemRow(
+                                item = item,
+                                modifier = Modifier.padding(start = 5.dp),
+                                onClick = {}
+                            )
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Divider(thickness = Dp.Hairline)
+                        }
+                    }
+                }
+
+                dataSakura.apply {
+                    when {
+                        loadState.refresh is LoadState.Error -> {
+
+                        }
+                        loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
+                            item {
+                                CircularProgressIndicator()
                             }
+                        }
+                        loadState.append is LoadState.Error -> {
+
+                        }
+                        loadState.append is LoadState.NotLoading -> {
+
                         }
                     }
                 }

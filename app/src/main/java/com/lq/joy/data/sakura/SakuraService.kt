@@ -4,6 +4,7 @@ import android.content.Context
 import com.lq.joy.data.Api
 import com.lq.joy.data.sakura.bean.DetailBean
 import com.lq.joy.data.sakura.bean.HomeBean
+import com.lq.joy.data.sakura.bean.SearchBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -61,7 +62,7 @@ object SakuraService {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun getDetailData(url:String): DetailBean? {
+    suspend fun getDetailData(url: String): DetailBean? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = okHttpClient.newCall(getRequest(url)).execute()
@@ -90,8 +91,14 @@ object SakuraService {
         }
     }
 
+    fun getLocalSearchData(context: Context): SearchBean? {
+        return getLocalString(context, "search.html")?.let {
+            Converter.parseSearchBean(it)
+        }
+    }
+
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun getVideoPath(url: String):String? {
+    suspend fun getVideoPath(url: String): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = okHttpClient.newCall(getRequest(url)).execute()

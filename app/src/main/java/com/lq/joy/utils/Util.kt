@@ -89,5 +89,6 @@ fun getLocalString(context: Context, fileName: String): String? {
     return null
 }
 
-val LazyListState.isScrolled: Boolean
-    get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
+//请使用remember，不要直接使用，否则会频繁recompose
+val LazyListState.isScrolled: State<Boolean>
+    get() = derivedStateOf { firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0 }

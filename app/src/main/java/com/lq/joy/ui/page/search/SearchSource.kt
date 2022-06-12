@@ -7,7 +7,7 @@ import com.lq.joy.JoyApplication
 import com.lq.joy.data.netfix.NaifeiService
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.PlayBean
-import com.lq.joy.data.ui.SearchBean
+import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
@@ -16,10 +16,10 @@ import java.io.IOException
 class SearchSource(
     private val service: NaifeiService,
     private val searchKey: String
-) : PagingSource<Int, SearchBean>() {
-    override fun getRefreshKey(state: PagingState<Int, SearchBean>): Int = 1
+) : PagingSource<Int, VideoSearchBean>() {
+    override fun getRefreshKey(state: PagingState<Int, VideoSearchBean>): Int = 1
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchBean> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoSearchBean> {
         return try {
             val currentPage = params.key ?: 1
 //            val data = service.search(currentPage, params.loadSize, searchKey)
@@ -27,12 +27,9 @@ class SearchSource(
             val data = fakeData()
 
             if (data?.code == 200) {
-                val result = mutableListOf<SearchBean>()
-                if (currentPage == 1) {
-                    result.add(0, SearchBean.Title("奈飞"))
-                }
+                val result = mutableListOf<VideoSearchBean>()
                 result.addAll(data.data.list.map { origin ->
-                    SearchBean.NaifeiBean(
+                    VideoSearchBean.NaifeiBean(
                         origin.vod_name,
                         origin.vod_pic,
                         origin.vod_area,
