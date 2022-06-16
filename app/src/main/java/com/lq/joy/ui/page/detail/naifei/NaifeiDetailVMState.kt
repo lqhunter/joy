@@ -3,6 +3,7 @@ package com.lq.joy.ui.page.detail.naifei
 import com.lq.joy.data.ui.VideoSearchBean
 
 data class NaifeiDetailVMState(
+    val currentSourceIndex:Int = -1,
     val currentIndex: Int = -1,
     val isPlaying: Boolean = false,
     val isFavorite: Boolean = false,

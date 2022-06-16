@@ -1,7 +1,7 @@
 package com.lq.joy.data.ui
 
-import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.sakura.bean.Tag
+import com.lq.joy.data.sakura.bean.VideoSource
 import java.io.Serializable
 
 sealed class VideoSearchBean : Serializable {
@@ -14,7 +14,7 @@ sealed class VideoSearchBean : Serializable {
         val type: String,
         val remarks: String,
         val score: String,
-        val playBean: List<PlayBean>
+        val videoSources: List<VideoSource>
     ) : VideoSearchBean()
 
     data class SakuraBean(

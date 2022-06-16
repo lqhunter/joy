@@ -8,6 +8,11 @@ data class DetailBean(
     val recommend: List<HomeItemBean>
 )
 
+/**
+ * 线路
+ */
+data class VideoSource(val sourceName: String, val episodes: List<PlayBean>)
+
 data class PlayBean(
     val episodeName: String,
     val playUrl: String? = null,

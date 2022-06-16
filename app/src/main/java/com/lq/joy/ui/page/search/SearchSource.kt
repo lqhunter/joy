@@ -7,6 +7,7 @@ import com.lq.joy.JoyApplication
 import com.lq.joy.data.netfix.NaifeiService
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.PlayBean
+import com.lq.joy.data.sakura.bean.VideoSource
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay
@@ -38,14 +39,20 @@ class SearchSource(
                         origin.vod_remarks,
                         origin.vod_douban_score,
                         origin.run {
-                            val r = mutableListOf<PlayBean>()
-                            vod_play_url.split("#").forEach {
-                                val split = it.split("$")
-                                if (split.size == 2) {
-                                    r.add(PlayBean(split[0], split[1]))
+                            val sources = mutableListOf<VideoSource>()
+                            val groups = vod_play_url.split("$$$")
+                            groups.forEachIndexed { index, g ->
+                                val r = mutableListOf<PlayBean>()
+                                val couples = g.split("#")
+                                couples.forEach { c ->
+                                    val split = c.split("$")
+                                    if (split.size == 2 && split[1].startsWith("http")) {
+                                        r.add(PlayBean(split[0], split[1]))
+                                    }
                                 }
+                                sources.add(VideoSource("线路$index", r))
                             }
-                            r
+                            sources
                         }
                     )
                 })

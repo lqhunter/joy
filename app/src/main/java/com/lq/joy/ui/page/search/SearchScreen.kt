@@ -37,13 +37,6 @@ import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.utils.isScrolled
 
-val tabs = mutableListOf(
-    "影视",
-    "小说",
-    "漫画"
-)
-
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
@@ -82,38 +75,6 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
         val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
 
         LazyColumn(state = lazyListState) {
-            //后续增加tab切换功能再放开
-            /*item {
-                TabRow(
-                    backgroundColor = MaterialTheme.colors.surface,
-                    selectedTabIndex = selectedIndex,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    divider = {
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(2.dp)
-                                .background(MaterialTheme.colors.surface)
-                        )
-                    }
-                ) {
-                    tabs.forEachIndexed { index, s ->
-                        Tab(
-                            selected = selectedIndex == index,
-                            onClick = { selectedIndex = index },
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Text(
-                                text = s,
-                                style = TextStyle(color = MaterialTheme.colors.onBackground)
-                            )
-                        }
-                    }
-                }
-            }*/
-
             if (naifeiPaging.itemCount != 0) {
                 stickyHeader {
                     Surface(elevation = if (!isScroll) 0.dp else 4.dp) {

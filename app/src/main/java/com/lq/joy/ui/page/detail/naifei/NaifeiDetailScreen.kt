@@ -38,6 +38,7 @@ import coil.request.ImageRequest
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.data.sakura.bean.PlayBean
+import com.lq.joy.data.sakura.bean.VideoSource
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.detail.DefaultVideoController
 import com.lq.joy.ui.page.detail.VideoPlayer
@@ -74,14 +75,14 @@ fun NaifeiDetailScreen(
         if (!isExpandedScreen) {
             VideoViewWithEpisode(
                 videoController = videoController,
-                playBean = uiState.videoSearchBean.playBean,
+                videoSource = uiState.videoSearchBean.videoSources,
                 currentIndex = uiState.currentIndex,
                 coverUrl = uiState.videoSearchBean.coverUrl,
-                onEpisodeSelected = { index, playBean ->
+                onEpisodeSelected = { sourceIndex, index, playBean ->
                     playBean.playUrl?.let {
                         videoController.setSource(it)
                     }
-                    viewModel.selectIndex(index)
+                    viewModel.selectIndex(sourceIndex, index)
                 },
                 onRecommendClick = { }
             ) {
@@ -132,10 +133,10 @@ fun NaifeiDetailScreen(
 @Composable
 private fun VideoViewWithEpisode(
     videoController: DefaultVideoController,
-    playBean: List<PlayBean>,
+    videoSource: List<VideoSource>,
     currentIndex: Int,
     coverUrl: String,
-    onEpisodeSelected: (Int, PlayBean) -> Unit,
+    onEpisodeSelected: (Int, Int, PlayBean) -> Unit,
     onRecommendClick: (String) -> Unit,
     episodeIntroduce: @Composable () -> Unit
 ) {
@@ -157,7 +158,16 @@ private fun VideoViewWithEpisode(
                     .background(Color.Black)
                     .width(width.dp)
                     .height(height.dp)
-                    .clickable { onEpisodeSelected(0, playBean[0]) }
+                    .clickable {
+                        if (videoSource.isNotEmpty()) {
+                            val episode = videoSource[0].episodes
+                            if (episode.isNotEmpty()) {
+                                val playBean = episode[0]
+                                onEpisodeSelected(0, 0, playBean)
+
+                            }
+                        }
+                    }
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -185,11 +195,17 @@ private fun VideoViewWithEpisode(
             Spacer(modifier = Modifier.padding(5.dp))
             episodeIntroduce()
 
-            EpisodeSelector(
-                playBean = playBean,
-                onEpisodeSelected = onEpisodeSelected,
-                currentSelected = currentIndex
-            )
+            videoSource.forEachIndexed { index, videoSource ->
+                EpisodeSelector(
+                    playBean = videoSource.episodes,
+                    onEpisodeSelected = { i, playBean ->
+                        onEpisodeSelected(index, i, playBean)
+                    },
+                    currentSelected = currentIndex
+                )
+                Spacer(modifier = Modifier.padding(10.dp))
+            }
+
 
             LazyColumn {
                 stickyHeader {
@@ -217,7 +233,7 @@ private fun VideoViewWithEpisode(
 fun EpisodeSelector(
     playBean: List<PlayBean>,
     onEpisodeSelected: (Int, PlayBean) -> Unit,
-    currentSelected: Int,
+    currentSelected: Int = -1,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {

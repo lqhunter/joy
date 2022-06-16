@@ -8,7 +8,6 @@ import com.lq.joy.data.BaseResult
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.DetailBean
 import com.lq.joy.data.sakura.bean.HomeBean
-import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay

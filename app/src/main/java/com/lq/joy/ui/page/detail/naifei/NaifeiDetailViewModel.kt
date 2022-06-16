@@ -39,7 +39,7 @@ class NaifeiDetailViewModel(
     val uiState = viewModelState
 
 
-    fun selectIndex(index:Int) {
-        viewModelState.update { it.copy(currentIndex = index) }
+    fun selectIndex(sourceIndex:Int, index:Int) {
+        viewModelState.update { it.copy(currentIndex = index, currentSourceIndex = sourceIndex) }
     }
 }
