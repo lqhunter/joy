@@ -3,6 +3,6 @@
 
     <style name="Theme.Joy" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/white</item>
-        <item name="android:background">@color/white</item>
+<!--        <item name="android:background">@color/white</item>--><!--会使播放器view变全白-->
     </style>
 </resources>
