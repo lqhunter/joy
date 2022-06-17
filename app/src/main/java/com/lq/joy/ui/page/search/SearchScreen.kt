@@ -17,7 +17,6 @@ import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -38,7 +37,11 @@ import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.utils.isScrolled
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) -> Unit) {
+fun SearchScreen(
+    viewModel: SearchViewModel,
+    onNaifeiSelected: (VideoSearchBean) -> Unit,
+    onSakuraSelected: (String) -> Unit
+) {
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     var searchContent by remember {
@@ -79,16 +82,23 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
                 stickyHeader {
                     Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Text(text = "奈飞", modifier = Modifier.padding(start = 5.dp, bottom = 5.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "奈飞",
+                                modifier = Modifier.padding(start = 5.dp, bottom = 5.dp),
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
             }
 
-            items(naifeiPaging, key = {item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
+            items(
+                naifeiPaging,
+                key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
                 if (item is VideoSearchBean.NaifeiBean) {
                     Column(modifier = Modifier.clickable {
-                        onVideoSelected(item)
+                        onNaifeiSelected(item)
                     }) {
                         Spacer(modifier = Modifier.padding(5.dp))
                         ItemRow(
@@ -142,7 +152,12 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
             stickyHeader {
                 Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "樱花动漫", modifier = Modifier.padding(start = 5.dp, bottom = 5.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "樱花动漫",
+                            modifier = Modifier.padding(start = 5.dp, bottom = 5.dp),
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -151,13 +166,12 @@ fun SearchScreen(viewModel: SearchViewModel, onVideoSelected: (VideoSearchBean) 
             items(sakuraPaging) { item ->
                 if (item is VideoSearchBean.SakuraBean) {
                     Column(modifier = Modifier.clickable {
-
+                        onSakuraSelected(item.detailUrl)
                     }) {
                         Spacer(modifier = Modifier.padding(5.dp))
                         ItemRow(
                             item = item,
-                            modifier = Modifier.padding(start = 5.dp),
-                            onClick = {}
+                            modifier = Modifier.padding(start = 5.dp)
                         )
                         Spacer(modifier = Modifier.padding(5.dp))
                         Divider(thickness = Dp.Hairline)

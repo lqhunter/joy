@@ -40,6 +40,6 @@ class NaifeiDetailViewModel(
 
 
     fun selectIndex(sourceIndex:Int, index:Int) {
-        viewModelState.update { it.copy(currentIndex = index, currentSourceIndex = sourceIndex) }
+        viewModelState.update { it.copy(currentEpisodeIndex = index, currentSourceIndex = sourceIndex) }
     }
 }

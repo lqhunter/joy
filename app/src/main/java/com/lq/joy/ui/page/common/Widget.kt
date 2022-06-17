@@ -89,7 +89,7 @@ fun ItemRow(item: HomeItemBean, modifier: Modifier = Modifier, onClick: (String)
 }
 
 @Composable
-fun ItemRow(item: VideoSearchBean.SakuraBean, modifier: Modifier = Modifier, onClick: ((String) -> Unit)?) {
+fun ItemRow(item: VideoSearchBean.SakuraBean, modifier: Modifier = Modifier, onClick: ((String) -> Unit)? = null) {
     if (onClick != null) {
         modifier.clickable {
             onClick(item.detailUrl)

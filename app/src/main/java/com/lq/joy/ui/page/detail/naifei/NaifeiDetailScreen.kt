@@ -76,7 +76,8 @@ fun NaifeiDetailScreen(
             VideoViewWithEpisode(
                 videoController = videoController,
                 videoSource = uiState.videoSearchBean.videoSources,
-                currentIndex = uiState.currentIndex,
+                currentSourceIndex = uiState.currentSourceIndex,
+                currentEpisodeIndex = uiState.currentEpisodeIndex,
                 coverUrl = uiState.videoSearchBean.coverUrl,
                 onEpisodeSelected = { sourceIndex, index, playBean ->
                     playBean.playUrl?.let {
@@ -134,7 +135,8 @@ fun NaifeiDetailScreen(
 private fun VideoViewWithEpisode(
     videoController: DefaultVideoController,
     videoSource: List<VideoSource>,
-    currentIndex: Int,
+    currentSourceIndex: Int,
+    currentEpisodeIndex: Int,
     coverUrl: String,
     onEpisodeSelected: (Int, Int, PlayBean) -> Unit,
     onRecommendClick: (String) -> Unit,
@@ -144,7 +146,7 @@ private fun VideoViewWithEpisode(
     val height = (9 * width) / 16
     Column(modifier = Modifier.fillMaxSize()) {
 
-        if (currentIndex != -1) {
+        if (currentEpisodeIndex != -1) {
             VideoPlayer(
                 modifier = Modifier
                     .background(Color.Black)
@@ -201,7 +203,7 @@ private fun VideoViewWithEpisode(
                     onEpisodeSelected = { i, playBean ->
                         onEpisodeSelected(index, i, playBean)
                     },
-                    currentSelected = currentIndex
+                    currentSelected = if (currentSourceIndex == index) currentEpisodeIndex else -1
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
             }

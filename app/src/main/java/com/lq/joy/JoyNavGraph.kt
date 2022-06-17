@@ -49,9 +49,9 @@ fun JoyNavGraph(
                         appContainer.naifeiRepository
                     )
                 )
-            SearchScreen(viewModel) {
+            SearchScreen(viewModel, onNaifeiSelected = {
                 navigationActions.navigateToNaifeiDetail(it)
-            }
+            }, onSakuraSelected = { navigationActions.navigateToSakuraDetail(it) })
         }
 
         jump(Destinations.SakuraDetail) { backStackEntry ->
