@@ -8,11 +8,14 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
@@ -48,7 +51,9 @@ class MainActivity : ComponentActivity() {
                     NavigationActions(navController)
                 }
 
-                JoyNavGraph(appContainer, isExpandedScreen, navController, navigationActions)
+                Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+                    JoyNavGraph(appContainer, isExpandedScreen, navController, navigationActions)
+                }
             }
         }
     }

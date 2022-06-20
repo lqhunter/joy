@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.compose.itemsIndexed
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lq.joy.LockScreenOrientation
@@ -193,37 +194,36 @@ private fun VideoViewWithEpisode(
         }
 
 
-        Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            Spacer(modifier = Modifier.padding(5.dp))
-            episodeIntroduce()
+        LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            item {
+                Spacer(modifier = Modifier.padding(5.dp))
+                episodeIntroduce()
 
-            videoSource.forEachIndexed { index, videoSource ->
+            }
+
+            itemsIndexed(videoSource) { index: Int, item: VideoSource ->
                 EpisodeSelector(
-                    playBean = videoSource.episodes,
+                    playBean = item.episodes,
                     onEpisodeSelected = { i, playBean ->
                         onEpisodeSelected(index, i, playBean)
                     },
                     currentSelected = if (currentSourceIndex == index) currentEpisodeIndex else -1
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
+
             }
-
-
-            LazyColumn {
-                stickyHeader {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.background),
-                    ) {
-                        Text(
-                            text = "推荐", color = MaterialTheme.colors.onBackground,
-                            modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp
-                        )
-                    }
-
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.background),
+                ) {
+                    Text(
+                        text = "推荐", color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp
+                    )
                 }
 
             }
@@ -238,7 +238,7 @@ fun EpisodeSelector(
     currentSelected: Int = -1,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = "选集", color = MaterialTheme.colors.onSurface,
             modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),

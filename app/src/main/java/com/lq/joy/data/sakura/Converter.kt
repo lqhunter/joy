@@ -177,7 +177,11 @@ object Converter {
             val cover = attributes["src"]
             val name = attributes["alt"]
             val detailUrl = li.getElementsByAttribute("href")[0].attributes()["href"]
-            val newest = (li.getElementsByTag("font")[0].childNode(0) as TextNode).text()
+            val fonts = li.getElementsByTag("span")[0].getElementsByTag("font")[0]
+            var newest = ""
+            if (fonts.childNodeSize() > 0) {
+                newest = (fonts.childNode(0) as TextNode).text()
+            }
             val tags = mutableListOf<Tag>()
             var types = li.getElementsByAttribute("target")
             types.forEach { e ->
