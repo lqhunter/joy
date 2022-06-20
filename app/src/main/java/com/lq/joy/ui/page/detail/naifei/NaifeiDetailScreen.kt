@@ -2,6 +2,7 @@ package com.lq.joy.ui.page.detail.naifei
 
 import android.content.pm.ActivityInfo
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,10 +17,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlayCircle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +50,7 @@ fun NaifeiDetailScreen(
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     onRecommendClick: (String) -> Unit,
+    onPageFinish: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -98,7 +97,7 @@ fun NaifeiDetailScreen(
             )
         }
 
-        DisposableEffect(lifecycleOwner) {
+        /*DisposableEffect(lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 Log.d(TAG, "LifecycleEvent:$event")
 
@@ -125,7 +124,12 @@ fun NaifeiDetailScreen(
             onDispose {
                 lifecycleOwner.lifecycle.removeObserver(observer)
             }
-        }
+        }*/
+    }
+
+    BackHandler {
+        videoController.release()
+        onPageFinish()
     }
 
 }

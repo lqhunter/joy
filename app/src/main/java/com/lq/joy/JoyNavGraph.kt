@@ -1,16 +1,26 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.lq.joy
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.lq.joy.data.AppContainer
+import com.lq.joy.ui.page.common.JumpAnimationType
+import com.lq.joy.ui.page.common.PageAnimation
 import com.lq.joy.ui.page.detail.naifei.NaifeiDetailScreen
 import com.lq.joy.ui.page.detail.naifei.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.sakura.SakuraDetailScreen
@@ -27,7 +37,7 @@ fun JoyNavGraph(
     navController: NavHostController,
     navigationActions: NavigationActions
 ) {
-    NavHost(navController = navController, startDestination = Destinations.Main.route) {
+    AnimatedNavHost(navController = navController, startDestination = Destinations.Main.route) {
         jump(Destinations.Home) {
             HomeScreen(
                 appContainer,
@@ -89,17 +99,39 @@ fun JoyNavGraph(
             NaifeiDetailScreen(
                 viewModel = viewModel,
                 isExpandedScreen = isExpandedScreen,
-                onRecommendClick = {})
+                onRecommendClick = {},
+                onPageFinish = { navController.popBackStack() })
 
         }
     }
 }
+private
 
 fun NavGraphBuilder.jump(
     destinations: Destinations,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
+    jumpAnimation: JumpAnimationType = JumpAnimationType.DEFAULT,
     content: @Composable (NavBackStackEntry) -> Unit
 ) {
-    composable(destinations.route, arguments, deepLinks, content)
+    val animation = PageAnimation(jumpAnimation)
+
+    composable(
+        route = destinations.route,
+        arguments = arguments,
+        deepLinks = deepLinks,
+        enterTransition = {
+            animation.enterTransition
+        },
+        exitTransition = {
+            animation.exitTransition
+        },
+        popEnterTransition = {
+            animation.popEnterTransition
+        },
+        popExitTransition = {
+            animation.popExitTransition
+        },
+        content = { content(it) }
+    )
 }

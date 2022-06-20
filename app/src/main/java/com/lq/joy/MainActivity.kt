@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedComposeNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.ui.theme.JoyTheme
 import com.lq.joy.utils.WindowSize
@@ -26,6 +28,7 @@ const val TAG = "MyJoy"
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val appContainer = (application as JoyApplication).container
@@ -40,10 +43,14 @@ class MainActivity : ComponentActivity() {
                 val darkIcons = MaterialTheme.colors.isLight
                 SideEffect {
                     Log.d(TAG, "setSystemBarsColor")
-                    systemUiController.setSystemBarsColor(Color.White.copy(alpha = 0.5f), darkIcons = darkIcons)
+                    systemUiController.setSystemBarsColor(
+                        Color.White.copy(alpha = 0.5f),
+                        darkIcons = darkIcons
+                    )
                 }
 
-                val navController = rememberNavController()
+                val navController = rememberNavController(AnimatedComposeNavigator())
+
                 val navigationActions = remember(navController) {
                     NavigationActions(navController)
                 }

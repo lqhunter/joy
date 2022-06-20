@@ -1,11 +1,13 @@
 package com.lq.joy
 
 import android.net.Uri
+import androidx.compose.animation.fadeIn
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
+import androidx.navigation.navOptions
 import com.lq.joy.data.ui.VideoSearchBean
 
 sealed class Destinations(val route: String) {
@@ -67,7 +69,11 @@ class NavigationActions(navController: NavController) {
     val navigateToNaifeiDetail: (VideoSearchBean) -> Unit = {
         navController.navigateAndArgument(
             Destinations.NaifeiDetail.route,
-            listOf(Pair("search", it))
+            listOf(Pair("search", it)),
+            navOptions {
+                anim {
+                }
+            }
         )
     }
 
@@ -90,7 +96,6 @@ fun NavController.navigateAndArgument(
     navigatorExtras: Navigator.Extras? = null,
 ) {
     navigate(route = route, navOptions = navOptions, navigatorExtras = navigatorExtras)
-
     if (args == null && args?.isEmpty() == true) {
         return
     }
