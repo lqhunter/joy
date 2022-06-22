@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.ui.VideoSearchBean
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class NaifeiDetailViewModel(
     private val naifeiRepository: INaifeiRepository,
@@ -32,14 +34,31 @@ class NaifeiDetailViewModel(
         }
     }
 
-    private val videoSearchBean = savedStateHandle.get<VideoSearchBean>("search")!! as VideoSearchBean.NaifeiBean
+    private val videoSearchBean =
+        savedStateHandle.get<VideoSearchBean>("search")!! as VideoSearchBean.NaifeiBean
 
+    private val vodId = savedStateHandle.get<Int>("vod_id")
 
-    private val viewModelState = MutableStateFlow(NaifeiDetailVMState(videoSearchBean = videoSearchBean))
+    private val viewModelState =
+        MutableStateFlow(NaifeiDetailVMState(videoSearchBean = videoSearchBean))
     val uiState = viewModelState
 
+    init {
+//        loadDetail(vodId)
+    }
 
-    fun selectIndex(sourceIndex:Int, index:Int) {
-        viewModelState.update { it.copy(currentEpisodeIndex = index, currentSourceIndex = sourceIndex) }
+    fun selectIndex(sourceIndex: Int, index: Int) {
+        viewModelState.update {
+            it.copy(
+                currentEpisodeIndex = index,
+                currentSourceIndex = sourceIndex
+            )
+        }
+    }
+
+    private fun loadDetail(vodId: Int) {
+
+
+
     }
 }

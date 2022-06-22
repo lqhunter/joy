@@ -3,6 +3,7 @@ package com.lq.joy.data.netfix
 import androidx.paging.*
 import com.google.gson.Gson
 import com.lq.joy.JoyApplication
+import com.lq.joy.data.netfix.bean.NaifeiDetailBean
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.sakura.bean.VideoSource
@@ -19,6 +20,17 @@ class FakeNaifeiRepository : INaifeiRepository {
             FakeSource(wd)
         }.flow
     }
+
+    override suspend fun detail(vodId: Int): NaifeiDetailBean {
+        delay(3000)
+        return fakeDetailData()
+    }
+
+    private fun fakeDetailData(): NaifeiDetailBean {
+        val json = getLocalString(JoyApplication.context, "naifeidetail.json")
+        val gson = Gson()
+        return gson.fromJson(json, NaifeiDetailBean::class.java)
+    }
 }
 
 private class FakeSource(private val searchKey: String) : PagingSource<Int, VideoSearchBean>() {
@@ -28,7 +40,7 @@ private class FakeSource(private val searchKey: String) : PagingSource<Int, Vide
         return try {
             val currentPage = params.key ?: 1
             delay(1000)
-            val data = fakeData()
+            val data = fakeSearchData()
 
             if (data?.code == 200) {
                 val result = mutableListOf<VideoSearchBean>()
@@ -75,7 +87,7 @@ private class FakeSource(private val searchKey: String) : PagingSource<Int, Vide
         }
     }
 
-    private fun fakeData(): NaifeiSearchBean? {
+    private fun fakeSearchData(): NaifeiSearchBean? {
         val json = getLocalString(JoyApplication.context, "search.json")
         val gson = Gson()
         return gson.fromJson(json, NaifeiSearchBean::class.java)

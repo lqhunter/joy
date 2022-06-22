@@ -85,7 +85,7 @@ object SakuraService {
 
             delay(1000)
 
-            getLocalString(context, "detail.html")?.let {
+            getLocalString(context, "sakuradetail.html")?.let {
                 Converter.parseDetail(it)
             }
         }

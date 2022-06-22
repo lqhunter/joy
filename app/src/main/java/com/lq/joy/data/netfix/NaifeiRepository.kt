@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.lq.joy.data.Api
+import com.lq.joy.data.netfix.bean.NaifeiDetailBean
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.search.SearchSource
 import kotlinx.coroutines.flow.Flow
@@ -39,4 +40,10 @@ class NaifeiRepository : INaifeiRepository {
             SearchSource(service, wd)
         }.flow
     }
+
+    override suspend fun detail(vodId: Int): NaifeiDetailBean {
+        TODO("Not yet implemented")
+    }
+
+
 }
