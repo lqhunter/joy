@@ -41,7 +41,7 @@ import com.lq.joy.utils.isScrolled
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    onNaifeiSelected: (VideoSearchBean) -> Unit,
+    onNaifeiSelected: (Int) -> Unit,
     onSakuraSelected: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -114,7 +114,7 @@ fun SearchScreen(
                     key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
                     if (item is VideoSearchBean.NaifeiBean) {
                         Column(modifier = Modifier.clickable {
-                            onNaifeiSelected(item)
+                            onNaifeiSelected(item.vodId)
                         }) {
                             Spacer(modifier = Modifier.padding(5.dp))
                             ItemRow(

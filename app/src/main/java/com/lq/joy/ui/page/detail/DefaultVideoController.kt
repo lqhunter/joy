@@ -85,16 +85,13 @@ class DefaultVideoController(
     override fun play() {
         if (exoPlayer.playbackState == STATE_READY) {
             exoPlayer.play()
-
-
         }
     }
 
     override fun pause() {
         if (exoPlayer.isPlaying) {
-            exoPlayer.play()
+            exoPlayer.pause()
         }
-
     }
 
     override fun playPauseToggle() {

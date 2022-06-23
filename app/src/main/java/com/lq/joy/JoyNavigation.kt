@@ -64,10 +64,10 @@ class NavigationActions(navController: NavController) {
         }
     }
 
-    val navigateToNaifeiDetail: (VideoSearchBean) -> Unit = {
+    val navigateToNaifeiDetail: (Int) -> Unit = {
         navController.navigateAndArgument(
             Destinations.NaifeiDetail.route,
-            listOf(Pair("search", it))
+            listOf(Pair("vod_id", it))
         )
     }
 

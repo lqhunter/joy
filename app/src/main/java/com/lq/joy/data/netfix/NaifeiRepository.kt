@@ -42,7 +42,7 @@ class NaifeiRepository : INaifeiRepository {
     }
 
     override suspend fun detail(vodId: Int): NaifeiDetailBean {
-        TODO("Not yet implemented")
+        return service.detail(vodId)
     }
 
 

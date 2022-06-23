@@ -34,6 +34,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
@@ -50,6 +51,7 @@ fun SakuraDetailScreen(
     viewModel: SakuraDetailViewModel,
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    systemUiController:SystemUiController,
     onRecommendClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -57,7 +59,6 @@ fun SakuraDetailScreen(
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
 
-    val systemUiController = rememberSystemUiController()
 
     if (videoPlayerState.isReady) {
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
@@ -103,6 +104,10 @@ fun SakuraDetailScreen(
                     .fillMaxSize(),
                 videoController = videoController,
             )
+        }
+        
+        SideEffect {
+            systemUiController.isSystemBarsVisible = !isExpandedScreen
         }
 
         DisposableEffect(lifecycleOwner) {

@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-                    JoyNavGraph(appContainer, isExpandedScreen, navController, navigationActions)
+                    JoyNavGraph(appContainer, isExpandedScreen, navController, systemUiController, navigationActions)
                 }
             }
         }

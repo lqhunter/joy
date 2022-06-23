@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.lq.joy.data.AppContainer
 import com.lq.joy.ui.page.detail.naifei.NaifeiDetailScreen
 import com.lq.joy.ui.page.detail.naifei.NaifeiDetailViewModel
@@ -25,6 +26,7 @@ fun JoyNavGraph(
     appContainer: AppContainer,
     isExpandedScreen: Boolean,
     navController: NavHostController,
+    systemUiController: SystemUiController,
     navigationActions: NavigationActions
 ) {
     NavHost(navController = navController, startDestination = Destinations.Main.route) {
@@ -66,7 +68,9 @@ fun JoyNavGraph(
             SakuraDetailScreen(
                 viewModel,
                 isExpandedScreen,
-                onRecommendClick = { navigationActions.navigateToSakuraDetail(it) })
+                onRecommendClick = { navigationActions.navigateToSakuraDetail(it) },
+                systemUiController = systemUiController
+            )
         }
 
         jump(Destinations.More) {
@@ -89,7 +93,8 @@ fun JoyNavGraph(
             NaifeiDetailScreen(
                 viewModel = viewModel,
                 isExpandedScreen = isExpandedScreen,
-                onRecommendClick = {})
+                onRecommendClick = {},
+                finish = { navController.popBackStack() })
 
         }
     }

@@ -16,5 +16,5 @@ interface NaifeiService {
     ): NaifeiSearchBean
 
     @GET(Api.NAIFEI_ORG_DETAIL)
-    suspend fun detail(@Query("vod_id") page: Int): NaifeiDetailBean
+    suspend fun detail(@Query("vod_id") id: Int): NaifeiDetailBean
 }

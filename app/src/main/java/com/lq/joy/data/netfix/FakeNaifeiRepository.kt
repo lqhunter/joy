@@ -22,7 +22,7 @@ class FakeNaifeiRepository : INaifeiRepository {
     }
 
     override suspend fun detail(vodId: Int): NaifeiDetailBean {
-        delay(3000)
+        delay(1000)
         return fakeDetailData()
     }
 

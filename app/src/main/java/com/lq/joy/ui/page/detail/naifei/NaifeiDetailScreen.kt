@@ -2,24 +2,22 @@ package com.lq.joy.ui.page.detail.naifei
 
 import android.content.pm.ActivityInfo
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.PlayCircle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,18 +31,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.compose.itemsIndexed
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
-import com.lq.joy.data.sakura.bean.PlayBean
-import com.lq.joy.data.sakura.bean.VideoSource
+import com.lq.joy.data.netfix.bean.NaifeiDetailBean
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.detail.DefaultVideoController
 import com.lq.joy.ui.page.detail.VideoPlayer
 import com.lq.joy.ui.page.detail.rememberVideoController
 import com.lq.joy.ui.theme.Grey500
+import com.lq.joy.ui.theme.VipYellow
 
 
 @Composable
@@ -53,6 +50,7 @@ fun NaifeiDetailScreen(
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     onRecommendClick: (String) -> Unit,
+    finish: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -63,33 +61,104 @@ fun NaifeiDetailScreen(
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
     }
 
+
     CenterLoadingContent(
-        isLoading = false,
-        isEmpty = false,
+        isLoading = uiState.isLoading,
+        isEmpty = uiState is NaifeiDetailUiState.NoData,
         modifier = Modifier.fillMaxSize(),
         contentEmpty = {
 
         }) {
         //https://stackoverflow.com/questions/69558033/kotlin-error-smart-cast-to-x-is-impossible-because-state-is-a-property-that
 
+        val _uiState = uiState
+
+        if (_uiState !is NaifeiDetailUiState.HasData) return@CenterLoadingContent
 
         if (!isExpandedScreen) {
             VideoViewWithEpisode(
                 videoController = videoController,
-                videoSource = uiState.videoSearchBean.videoSources,
-                currentSourceIndex = uiState.currentSourceIndex,
-                currentEpisodeIndex = uiState.currentEpisodeIndex,
-                coverUrl = uiState.videoSearchBean.coverUrl,
-                onEpisodeSelected = { sourceIndex, index, playBean ->
-                    playBean.playUrl?.let {
-                        videoController.setSource(it)
-                    }
-                    viewModel.selectIndex(sourceIndex, index)
+                videoSource = _uiState.videoSource,
+                currentEpisodeIndex = _uiState.currentEpisodeIndex,
+                coverUrl = _uiState.coverUrl,
+                onEpisodeSelected = { index, playBean ->
+                    videoController.setSource(playBean.url)
+                    viewModel.selectIndex(index)
                 },
-                onRecommendClick = { }
-            ) {
+                onRecommendClick = { },
+                episodeIntroduce = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
 
-            }
+                        ) {
+                        Text(
+                            text = _uiState.name, color = MaterialTheme.colors.onSurface,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp
+                        )
+
+                        IconToggleButton(
+                            checked = _uiState.isFavorite,
+                            onCheckedChange = { }
+                        ) {
+                            Icon(
+                                imageVector = if (_uiState.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                                contentDescription = null,
+                                tint = if (_uiState.isFavorite) Color.Red else MaterialTheme.colors.onSurface
+                            )
+
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "共${_uiState.videoSource.urls.size}集",
+                            color = Grey500,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+
+                        Text(
+                            text = "${_uiState.score}分", color = VipYellow,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "详情", color = Grey500,
+                                    fontSize = 14.sp,
+                                )
+                                Icon(
+                                    imageVector = Icons.Rounded.ExpandMore,
+                                    contentDescription = null,
+                                    tint = Grey500
+                                )
+                            }
+                        }
+                    }
+                }
+            )
         } else {
             VideoPlayer(
                 modifier = Modifier
@@ -98,35 +167,41 @@ fun NaifeiDetailScreen(
                 videoController = videoController,
             )
         }
+    }
 
-        DisposableEffect(lifecycleOwner) {
-            val observer = LifecycleEventObserver { _, event ->
-                Log.d(TAG, "LifecycleEvent:$event")
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            Log.d(TAG, "LifecycleEvent:$event")
 
-                when (event) {
-                    Lifecycle.Event.ON_CREATE -> {
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
 
-                    }
-                    Lifecycle.Event.ON_RESUME -> {
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    videoController.play()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    videoController.pause()
+                }
+                Lifecycle.Event.ON_DESTROY -> {
 
-                    }
-                    Lifecycle.Event.ON_PAUSE -> {
-
-                    }
-                    Lifecycle.Event.ON_DESTROY -> {
-                        videoController.release()
-                    }
                 }
             }
-
-            // Add the observer to the lifecycle
-            lifecycleOwner.lifecycle.addObserver(observer)
-
-            // When the effect leaves the Composition, remove the observer
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
         }
+
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            Log.d(TAG, "LifecycleEvent:onDispose")
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    BackHandler {
+        videoController.release()
+        finish()
     }
 
 }
@@ -135,18 +210,22 @@ fun NaifeiDetailScreen(
 @Composable
 private fun VideoViewWithEpisode(
     videoController: DefaultVideoController,
-    videoSource: List<VideoSource>,
-    currentSourceIndex: Int,
+    videoSource: NaifeiDetailBean.Data.VodPlay,
     currentEpisodeIndex: Int,
     coverUrl: String,
-    onEpisodeSelected: (Int, Int, PlayBean) -> Unit,
+    onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
     onRecommendClick: (String) -> Unit,
     episodeIntroduce: @Composable () -> Unit
 ) {
     val width = LocalConfiguration.current.screenWidthDp
     val height = (9 * width) / 16
-    Column(modifier = Modifier.fillMaxSize()) {
 
+    var isEpisodeExpend by remember {
+        mutableStateOf(false)
+    }
+
+
+    Column(modifier = Modifier.fillMaxSize()) {
         if (currentEpisodeIndex != -1) {
             VideoPlayer(
                 modifier = Modifier
@@ -162,14 +241,8 @@ private fun VideoViewWithEpisode(
                     .width(width.dp)
                     .height(height.dp)
                     .clickable {
-                        if (videoSource.isNotEmpty()) {
-                            val episode = videoSource[0].episodes
-                            if (episode.isNotEmpty()) {
-                                val playBean = episode[0]
-                                onEpisodeSelected(0, 0, playBean)
-
-                            }
-                        }
+                        val playBean = videoSource.urls[0]
+                        onEpisodeSelected(0, playBean)
                     }
             ) {
                 AsyncImage(
@@ -192,40 +265,85 @@ private fun VideoViewWithEpisode(
                 )
             }
         }
+        if (!isEpisodeExpend) {
+            LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
 
-
-        LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            item {
-                Spacer(modifier = Modifier.padding(5.dp))
-                episodeIntroduce()
-
-            }
-
-            itemsIndexed(videoSource) { index: Int, item: VideoSource ->
-                EpisodeSelector(
-                    playBean = item.episodes,
-                    onEpisodeSelected = { i, playBean ->
-                        onEpisodeSelected(index, i, playBean)
-                    },
-                    currentSelected = if (currentSourceIndex == index) currentEpisodeIndex else -1
-                )
-                Spacer(modifier = Modifier.padding(10.dp))
-
-            }
-            stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.background),
-                ) {
-                    Text(
-                        text = "推荐", color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp
-                    )
+                item {
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    episodeIntroduce()
                 }
 
+                item {
+                    EpisodeSelector(
+                        playBean = videoSource.urls,
+                        onEpisodeSelected = { i, playBean ->
+                            onEpisodeSelected(i, playBean)
+                        },
+                        currentSelected = currentEpisodeIndex,
+                        onEpisodeExpend = {
+                            isEpisodeExpend = true
+                        }
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                }
+                stickyHeader {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colors.background),
+                    ) {
+                        Text(
+                            text = "推荐", color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp
+                        )
+                    }
+
+                }
+            }
+        } else {
+            val listState = rememberLazyGridState()
+            Box(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = { isEpisodeExpend = false }, modifier = Modifier.align(
+                        Alignment.CenterEnd
+                    )
+                ) {
+                    Icon(imageVector = Icons.Rounded.Close, contentDescription = "")
+                }
+            }
+
+            LazyVerticalGrid(columns = GridCells.Fixed(2), state = listState) {
+                itemsIndexed(videoSource.urls) { index, episode ->
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(
+                                width = 1.dp,
+                                if (currentEpisodeIndex == index) MaterialTheme.colors.secondaryVariant else Grey500,
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                            .clickable {
+                                onEpisodeSelected(index, episode)
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(text = episode.name, color = MaterialTheme.colors.onSurface)
+                        Spacer(modifier = Modifier.width(5.dp))
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+            }
+            LaunchedEffect(key1 = currentEpisodeIndex) {
+                if (currentEpisodeIndex != -1) {
+                    listState.scrollToItem(currentEpisodeIndex)
+                }
             }
         }
     }
@@ -233,20 +351,35 @@ private fun VideoViewWithEpisode(
 
 @Composable
 fun EpisodeSelector(
-    playBean: List<PlayBean>,
-    onEpisodeSelected: (Int, PlayBean) -> Unit,
+    playBean: List<NaifeiDetailBean.Data.VodPlay.Url>,
+    onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
     currentSelected: Int = -1,
+    onEpisodeExpend: () -> Unit,
+    state: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = "选集", color = MaterialTheme.colors.onSurface,
-            modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
-        )
 
-        LazyRow {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onEpisodeExpend()
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "选集", color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
+            )
+            Icon(imageVector = Icons.Rounded.NavigateNext, contentDescription = "")
+        }
+
+
+        LazyRow(state = state) {
             item {
                 Spacer(modifier = Modifier.width(16.dp))
             }
@@ -266,10 +399,16 @@ fun EpisodeSelector(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.width(5.dp))
-                    Text(text = episode.episodeName, color = MaterialTheme.colors.onSurface)
+                    Text(text = episode.name, color = MaterialTheme.colors.onSurface)
                     Spacer(modifier = Modifier.width(5.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
+            }
+        }
+
+        LaunchedEffect(key1 = currentSelected) {
+            if (currentSelected != -1) {
+                state.scrollToItem(currentSelected)
             }
         }
     }
