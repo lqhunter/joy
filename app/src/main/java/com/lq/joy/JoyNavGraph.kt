@@ -24,7 +24,7 @@ import com.lq.joy.ui.page.search.SearchViewModel
 @Composable
 fun JoyNavGraph(
     appContainer: AppContainer,
-    isExpandedScreen: Boolean,
+    isLandscape: Boolean,
     navController: NavHostController,
     systemUiController: SystemUiController,
     navigationActions: NavigationActions
@@ -67,7 +67,7 @@ fun JoyNavGraph(
                 )
             SakuraDetailScreen(
                 viewModel,
-                isExpandedScreen,
+                isLandscape,
                 onRecommendClick = { navigationActions.navigateToSakuraDetail(it) },
                 systemUiController = systemUiController
             )
@@ -92,8 +92,9 @@ fun JoyNavGraph(
 
             NaifeiDetailScreen(
                 viewModel = viewModel,
-                isExpandedScreen = isExpandedScreen,
+                isExpandedScreen = isLandscape,
                 onRecommendClick = {},
+                systemUiController = systemUiController,
                 finish = { navController.popBackStack() })
 
         }

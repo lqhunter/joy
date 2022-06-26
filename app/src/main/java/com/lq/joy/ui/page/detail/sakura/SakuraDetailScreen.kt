@@ -35,7 +35,6 @@ import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.ui.page.common.CenterLoadingContent
@@ -49,7 +48,7 @@ import com.lq.joy.ui.theme.VipYellow
 @Composable
 fun SakuraDetailScreen(
     viewModel: SakuraDetailViewModel,
-    isExpandedScreen: Boolean,
+    isLandscape: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     systemUiController:SystemUiController,
     onRecommendClick: (String) -> Unit,
@@ -86,7 +85,8 @@ fun SakuraDetailScreen(
             }
         }
 
-        if (!isExpandedScreen) {
+
+        if (!isLandscape) {
             VideoViewWithDetail(
                 videoController,
                 localUiState,
@@ -107,7 +107,7 @@ fun SakuraDetailScreen(
         }
         
         SideEffect {
-            systemUiController.isSystemBarsVisible = !isExpandedScreen
+            systemUiController.isSystemBarsVisible = !isLandscape
         }
 
         DisposableEffect(lifecycleOwner) {
@@ -137,6 +137,10 @@ fun SakuraDetailScreen(
             onDispose {
                 lifecycleOwner.lifecycle.removeObserver(observer)
             }
+        }
+
+        LaunchedEffect(key1 = isLandscape) {
+            systemUiController.isSystemBarsVisible = !isLandscape
         }
     }
 

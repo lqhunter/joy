@@ -33,6 +33,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
@@ -49,6 +51,7 @@ fun NaifeiDetailScreen(
     viewModel: NaifeiDetailViewModel,
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    systemUiController: SystemUiController = rememberSystemUiController(),
     onRecommendClick: (String) -> Unit,
     finish: () -> Unit
 ) {
@@ -57,10 +60,10 @@ fun NaifeiDetailScreen(
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
 
+
     if (videoPlayerState.isReady) {
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
     }
-
 
     CenterLoadingContent(
         isLoading = uiState.isLoading,
@@ -74,6 +77,11 @@ fun NaifeiDetailScreen(
         val _uiState = uiState
 
         if (_uiState !is NaifeiDetailUiState.HasData) return@CenterLoadingContent
+
+
+        LaunchedEffect(key1 = isExpandedScreen) {
+            systemUiController.isSystemBarsVisible = !isExpandedScreen
+        }
 
         if (!isExpandedScreen) {
             VideoViewWithEpisode(

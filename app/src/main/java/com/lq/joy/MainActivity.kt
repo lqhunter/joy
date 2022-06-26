@@ -3,6 +3,7 @@ package com.lq.joy
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -17,12 +18,13 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.ui.theme.JoyTheme
-import com.lq.joy.utils.WindowSize
-import com.lq.joy.utils.rememberWindowSizeClass
 
 const val TAG = "MyJoy"
 
@@ -32,27 +34,39 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val appContainer = (application as JoyApplication).container
+        Log.d(TAG, "MainActivity onCreate")
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        //设置全屏时的状态栏显示ui
+        insetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         setContent {
             JoyTheme {
 
-                val windowSizeClass = rememberWindowSizeClass()
-                val isExpandedScreen = windowSizeClass == WindowSize.Expanded
+                val isLandscape =
+                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
                 val systemUiController = rememberSystemUiController()
                 val darkIcons = MaterialTheme.colors.isLight
                 SideEffect {
-                    Log.d(TAG, "setSystemBarsColor")
-                    systemUiController.setSystemBarsColor(Color.White.copy(alpha = 0.5f), darkIcons = darkIcons)
+                    systemUiController.setSystemBarsColor(
+                        Color.White.copy(alpha = 0.5f),
+                        darkIcons = darkIcons
+                    )
                 }
-
                 val navController = rememberNavController()
                 val navigationActions = remember(navController) {
                     NavigationActions(navController)
                 }
 
                 Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-                    JoyNavGraph(appContainer, isExpandedScreen, navController, systemUiController, navigationActions)
+                    JoyNavGraph(
+                        appContainer,
+                        isLandscape,
+                        navController,
+                        systemUiController,
+                        navigationActions
+                    )
                 }
             }
         }

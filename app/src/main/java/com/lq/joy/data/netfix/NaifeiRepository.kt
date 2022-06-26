@@ -44,6 +44,4 @@ class NaifeiRepository : INaifeiRepository {
     override suspend fun detail(vodId: Int): NaifeiDetailBean {
         return service.detail(vodId)
     }
-
-
 }
