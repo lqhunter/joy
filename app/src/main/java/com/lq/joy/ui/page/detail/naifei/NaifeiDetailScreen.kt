@@ -57,13 +57,20 @@ fun NaifeiDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val _uiState = uiState
+
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
-
 
     if (videoPlayerState.isReady) {
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
     }
+
+    var rowLazyState = rememberLazyListState(
+        initialFirstVisibleItemIndex = if (_uiState is NaifeiDetailUiState.HasData) {
+            if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
+        } else 0
+    )
 
     CenterLoadingContent(
         isLoading = uiState.isLoading,
@@ -73,11 +80,7 @@ fun NaifeiDetailScreen(
 
         }) {
         //https://stackoverflow.com/questions/69558033/kotlin-error-smart-cast-to-x-is-impossible-because-state-is-a-property-that
-
-        val _uiState = uiState
-
-        if (_uiState !is NaifeiDetailUiState.HasData) return@CenterLoadingContent
-
+        check(_uiState is NaifeiDetailUiState.HasData)
 
         LaunchedEffect(key1 = isExpandedScreen) {
             systemUiController.isSystemBarsVisible = !isExpandedScreen
@@ -165,7 +168,8 @@ fun NaifeiDetailScreen(
                             }
                         }
                     }
-                }
+                },
+                rowLazyState = rowLazyState,
             )
         } else {
             VideoPlayer(
@@ -223,7 +227,8 @@ private fun VideoViewWithEpisode(
     coverUrl: String,
     onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
     onRecommendClick: (String) -> Unit,
-    episodeIntroduce: @Composable () -> Unit
+    episodeIntroduce: @Composable () -> Unit,
+    rowLazyState: LazyListState,
 ) {
     val width = LocalConfiguration.current.screenWidthDp
     val height = (9 * width) / 16
@@ -290,7 +295,8 @@ private fun VideoViewWithEpisode(
                         currentSelected = currentEpisodeIndex,
                         onEpisodeExpend = {
                             isEpisodeExpend = true
-                        }
+                        },
+                        state = rowLazyState
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
 
@@ -312,7 +318,7 @@ private fun VideoViewWithEpisode(
                 }
             }
         } else {
-            val listState = rememberLazyGridState()
+            val listState = rememberLazyGridState(if (currentEpisodeIndex == -1) 0 else currentEpisodeIndex)
             Box(modifier = Modifier.fillMaxWidth()) {
                 IconButton(
                     onClick = { isEpisodeExpend = false }, modifier = Modifier.align(
@@ -348,11 +354,19 @@ private fun VideoViewWithEpisode(
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
-            LaunchedEffect(key1 = currentEpisodeIndex) {
+            /*LaunchedEffect(key1 = currentEpisodeIndex) {
                 if (currentEpisodeIndex != -1) {
-                    listState.scrollToItem(currentEpisodeIndex)
+                    var needScroll = true
+                    for (lazyListItemInfo in listState.layoutInfo.visibleItemsInfo) {
+                        if (lazyListItemInfo.index == currentEpisodeIndex) {
+                            needScroll = false
+                            break
+                        }
+                    }
+                    if (needScroll)
+                        listState.animateScrollToItem(currentEpisodeIndex)
                 }
-            }
+            }*/
         }
     }
 }
@@ -416,7 +430,15 @@ fun EpisodeSelector(
 
         LaunchedEffect(key1 = currentSelected) {
             if (currentSelected != -1) {
-                state.scrollToItem(currentSelected)
+                var needScroll = true
+                for (lazyListItemInfo in state.layoutInfo.visibleItemsInfo) {
+                    if (lazyListItemInfo.index == currentSelected) {
+                        needScroll = false
+                        break
+                    }
+                }
+                if (needScroll)
+                    state.animateScrollToItem(currentSelected)
             }
         }
     }
