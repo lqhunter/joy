@@ -20,12 +20,14 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -37,13 +39,14 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
+import com.lq.joy.data.Api
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
+import com.lq.joy.data.sakura.bean.HomeItemBean
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.detail.DefaultVideoController
 import com.lq.joy.ui.page.detail.VideoPlayer
 import com.lq.joy.ui.page.detail.rememberVideoController
 import com.lq.joy.ui.theme.Grey500
-import com.lq.joy.ui.theme.VipYellow
 
 
 @Composable
@@ -52,7 +55,7 @@ fun NaifeiDetailScreen(
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     systemUiController: SystemUiController = rememberSystemUiController(),
-    onRecommendClick: (String) -> Unit,
+    onRecommendClick: (Int) -> Unit,
     finish: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -87,16 +90,17 @@ fun NaifeiDetailScreen(
         }
 
         if (!isExpandedScreen) {
-            VideoViewWithEpisode(
+            VideoViewWithDetail(
                 videoController = videoController,
                 videoSource = _uiState.videoSource,
                 currentEpisodeIndex = _uiState.currentEpisodeIndex,
+                recommend = _uiState.recommend,
                 coverUrl = _uiState.coverUrl,
                 onEpisodeSelected = { index, playBean ->
                     videoController.setSource(playBean.url)
                     viewModel.selectIndex(index)
                 },
-                onRecommendClick = { },
+                onRecommendClick = onRecommendClick,
                 episodeIntroduce = {
                     Row(
                         modifier = Modifier
@@ -125,7 +129,7 @@ fun NaifeiDetailScreen(
                         }
                     }
 
-                    Row(
+                    /*Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
@@ -167,9 +171,13 @@ fun NaifeiDetailScreen(
                                 )
                             }
                         }
-                    }
+                    }*/
                 },
                 rowLazyState = rowLazyState,
+                finish = {
+                    videoController.release()
+                    finish()
+                }
             )
         } else {
             VideoPlayer(
@@ -211,24 +219,21 @@ fun NaifeiDetailScreen(
         }
     }
 
-    BackHandler {
-        videoController.release()
-        finish()
-    }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun VideoViewWithEpisode(
+private fun VideoViewWithDetail(
     videoController: DefaultVideoController,
     videoSource: NaifeiDetailBean.Data.VodPlay,
+    recommend: List<NaifeiDetailBean.Data.RelVod>,
     currentEpisodeIndex: Int,
     coverUrl: String,
     onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
-    onRecommendClick: (String) -> Unit,
-    episodeIntroduce: @Composable () -> Unit,
+    onRecommendClick: (Int) -> Unit,
+    episodeIntroduce: @Composable LazyItemScope.() -> Unit,
     rowLazyState: LazyListState,
+    finish: () -> Unit
 ) {
     val width = LocalConfiguration.current.screenWidthDp
     val height = (9 * width) / 16
@@ -316,9 +321,18 @@ private fun VideoViewWithEpisode(
                     }
 
                 }
+
+                itemsIndexed(recommend) { index, item ->
+                    ItemRow(
+                        item = item,
+                        onClick = onRecommendClick,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
             }
         } else {
-            val listState = rememberLazyGridState(if (currentEpisodeIndex == -1) 0 else currentEpisodeIndex)
+            val listState =
+                rememberLazyGridState(if (currentEpisodeIndex == -1) 0 else currentEpisodeIndex)
             Box(modifier = Modifier.fillMaxWidth()) {
                 IconButton(
                     onClick = { isEpisodeExpend = false }, modifier = Modifier.align(
@@ -354,19 +368,14 @@ private fun VideoViewWithEpisode(
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
-            /*LaunchedEffect(key1 = currentEpisodeIndex) {
-                if (currentEpisodeIndex != -1) {
-                    var needScroll = true
-                    for (lazyListItemInfo in listState.layoutInfo.visibleItemsInfo) {
-                        if (lazyListItemInfo.index == currentEpisodeIndex) {
-                            needScroll = false
-                            break
-                        }
-                    }
-                    if (needScroll)
-                        listState.animateScrollToItem(currentEpisodeIndex)
-                }
-            }*/
+        }
+    }
+
+    BackHandler {
+        if (isEpisodeExpend) {
+            isEpisodeExpend = false
+        } else {
+            finish()
         }
     }
 }
@@ -441,5 +450,65 @@ fun EpisodeSelector(
                     state.animateScrollToItem(currentSelected)
             }
         }
+    }
+}
+
+@Composable
+private fun ItemRow(
+    item: NaifeiDetailBean.Data.RelVod,
+    modifier: Modifier = Modifier,
+    onClick: (Int) -> Unit
+) {
+    Row(modifier = modifier
+        .clickable {
+            onClick(item.vod_id)
+        }
+        .height(100.dp)
+        .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
+    {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(Api.NAIFEI_HOST + "/" + item.vod_pic)
+                .crossfade(true)
+                .build(),
+            contentDescription = item.vod_name,
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(4f / 3f)
+                .clip(RoundedCornerShape(5.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = modifier
+                .fillMaxHeight()
+                .weight(1f),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(
+                text = item.vod_name,
+                color = MaterialTheme.colors.onSurface,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row {
+                Text(
+                    text = "状态：",
+                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
+                    fontSize = 14.sp
+                )
+                /*Text(text = item.newestEpisode ?: "无", color = Color.Red)*/
+            }
+            Text(
+                text = "类型：${item.vod_tag}",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
+                fontSize = 14.sp
+            )
+        }
+
+
     }
 }

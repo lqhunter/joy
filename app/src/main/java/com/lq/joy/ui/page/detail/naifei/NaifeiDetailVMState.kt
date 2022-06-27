@@ -26,7 +26,8 @@ data class NaifeiDetailVMState(
                 currentEpisodeIndex = currentEpisodeIndex,
                 coverUrl = NAIFEI_HOST + "/" + detailBean.data.vod_pic,
                 name = detailBean.data.vod_name,
-                score = detailBean.data.vod_score
+                score = detailBean.data.vod_score,
+                recommend = detailBean.data.rel_vods
             )
         }
 
@@ -49,5 +50,6 @@ sealed interface NaifeiDetailUiState {
         val coverUrl: String,
         val name:String,
         var score:String,
+        val recommend:List<NaifeiDetailBean.Data.RelVod>
     ) : NaifeiDetailUiState
 }

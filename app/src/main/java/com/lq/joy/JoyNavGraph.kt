@@ -93,7 +93,7 @@ fun JoyNavGraph(
             NaifeiDetailScreen(
                 viewModel = viewModel,
                 isExpandedScreen = isLandscape,
-                onRecommendClick = {},
+                onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },
                 systemUiController = systemUiController,
                 finish = { navController.popBackStack() })
 
