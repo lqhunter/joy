@@ -23,7 +23,6 @@ import java.io.Serializable
 
 @Composable
 fun rememberVideoController(
-    url: String? = null
 ): DefaultVideoController {
 
     val context = LocalContext.current
@@ -53,10 +52,6 @@ fun rememberVideoController(
             )
         }
     )
-
-    url?.let { controller.setSource(it) }
-
-    println("video $controller")
     return controller
 }
 
@@ -79,6 +74,7 @@ fun VideoPlayer(
 
 
 data class VideoPlayerState(
+    val episodeIndex:Int = -1,
     val isPlaying: Boolean = false,
     val isReady:Boolean = false,
     val controlsVisible: Boolean = true,

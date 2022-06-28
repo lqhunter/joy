@@ -55,32 +55,33 @@ class DefaultVideoController(
                             it.copy(isPlaying = isPlaying)
                         }
                     }
+
+                    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                        val index = mediaItem?.playbackProperties?.tag
+                        if (index is Int) {
+                            _state.update {
+                                it.copy(episodeIndex = index)
+                            }
+                        }
+                    }
                 })
             }
 
     override fun setSource(url: String) {
-        Log.d(TAG, "setSource:$url")
-
-        this.url = url
-        if (playerView != null) {
-            prepare()
-        }
-    }
-
-    private fun prepare() {
-        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
-            context,
-            Util.getUserAgent(context, context.packageName)
-        )
-
-        if (url!!.endsWith("m3u8")) {
-            val source = HlsMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(MediaItem.fromUri(url!!))
-            exoPlayer.setMediaSource(source)
-            exoPlayer.prepare()
-        }
 
     }
+
+    override fun setItems(mediaItems: List<MediaItem>, windowIndex: Int) {
+        reset()
+        exoPlayer.setMediaItems(mediaItems, windowIndex, 0)
+        exoPlayer.prepare()
+    }
+
+    override fun getItemsCount(): Int {
+        return exoPlayer.mediaItemCount
+    }
+
+
 
     override fun play() {
         if (exoPlayer.playbackState == STATE_READY) {
@@ -95,11 +96,7 @@ class DefaultVideoController(
     }
 
     override fun playPauseToggle() {
-//        if (videoView.isPlaying) {
-//            videoView.pause()
-//        } else {
-//            videoView.start()
-//        }
+
     }
 
     override fun quickSeekForward() {
@@ -110,8 +107,8 @@ class DefaultVideoController(
         TODO("Not yet implemented")
     }
 
-    override fun seekTo(position: Int) {
-//        videoView.seekTo(position)
+    override fun seekTo(windowIndex: Int, positionMs: Long) {
+        exoPlayer.seekTo(windowIndex, positionMs)
     }
 
     override fun reset() {
@@ -130,12 +127,6 @@ class DefaultVideoController(
     fun playerViewAvailable(playerView: PlayerView) {
         this.playerView = playerView
         playerView.player = exoPlayer
-
-        if (exoPlayer.playbackState != STATE_READY) {
-            if (url != null) {
-                prepare()
-            }
-        }
     }
 
 

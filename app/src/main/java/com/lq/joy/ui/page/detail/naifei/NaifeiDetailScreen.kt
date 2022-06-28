@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.exoplayer2.MediaItem
 import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
@@ -69,6 +70,13 @@ fun NaifeiDetailScreen(
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
     }
 
+    if (videoPlayerState.episodeIndex != -1) {
+        LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
+            viewModel.selectIndex(videoPlayerState.episodeIndex)
+        }
+    }
+
+
     var rowLazyState = rememberLazyListState(
         initialFirstVisibleItemIndex = if (_uiState is NaifeiDetailUiState.HasData) {
             if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
@@ -97,7 +105,13 @@ fun NaifeiDetailScreen(
                 recommend = _uiState.recommend,
                 coverUrl = _uiState.coverUrl,
                 onEpisodeSelected = { index, playBean ->
-                    videoController.setSource(playBean.url)
+                    if (videoController.getItemsCount() == 0) {
+                        videoController.setItems(_uiState.videoSource.urls.mapIndexed { i, it ->
+                            MediaItem.Builder().setUri(it.url).setTag(i).build()
+                        }, index)
+                    } else {
+                        videoController.seekTo(index, 0)
+                    }
                     viewModel.selectIndex(index)
                 },
                 onRecommendClick = onRecommendClick,
@@ -128,50 +142,6 @@ fun NaifeiDetailScreen(
 
                         }
                     }
-
-                    /*Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-
-                            },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "共${_uiState.videoSource.urls.size}集",
-                            color = Grey500,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-
-                        Text(
-                            text = "${_uiState.score}分", color = VipYellow,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(end = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "详情", color = Grey500,
-                                    fontSize = 14.sp,
-                                )
-                                Icon(
-                                    imageVector = Icons.Rounded.ExpandMore,
-                                    contentDescription = null,
-                                    tint = Grey500
-                                )
-                            }
-                        }
-                    }*/
                 },
                 rowLazyState = rowLazyState,
                 finish = {
@@ -439,9 +409,12 @@ fun EpisodeSelector(
 
         LaunchedEffect(key1 = currentSelected) {
             if (currentSelected != -1) {
+                Log.d(TAG, "currentSelected:${currentSelected}")
                 var needScroll = true
                 for (lazyListItemInfo in state.layoutInfo.visibleItemsInfo) {
+                    Log.d(TAG, "lazyListItemInfo.index:${lazyListItemInfo.index}")
                     if (lazyListItemInfo.index == currentSelected) {
+                        Log.d(TAG, "need scroll false")
                         needScroll = false
                         break
                     }

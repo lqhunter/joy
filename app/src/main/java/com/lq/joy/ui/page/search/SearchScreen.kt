@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
@@ -36,7 +35,6 @@ import androidx.paging.compose.items
 import com.lq.joy.TAG
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
-import com.lq.joy.utils.isScrolled
 
 @Composable
 fun SearchScreen(
