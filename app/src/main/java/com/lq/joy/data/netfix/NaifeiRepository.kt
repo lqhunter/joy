@@ -6,17 +6,21 @@ import androidx.paging.PagingData
 import com.lq.joy.data.Api
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
 import com.lq.joy.data.ui.VideoSearchBean
-import com.lq.joy.ui.page.search.SearchSource
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class NaifeiRepository : INaifeiRepository {
 
     private val okHttpClient by lazy {
-        OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }).build()
+        OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .callTimeout(15, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
+            .build()
     }
 
     private val retrofit by lazy {
@@ -37,7 +41,7 @@ class NaifeiRepository : INaifeiRepository {
         wd: String
     ): Flow<PagingData<VideoSearchBean>> {
         return Pager(PagingConfig(limit)) {
-            SearchSource(service, wd)
+            NaifeiSearchSource(service, wd)
         }.flow
     }
 

@@ -162,13 +162,18 @@ object Converter {
         val document = Jsoup.parse(html)
 
         val list = mutableListOf<HomeItemBean>()
-        val result = SearchBean(1, list)
-        val pages = document.getElementsByClass("pages")[0]
-        val page = (pages.getElementById("lastn").childNode(0) as TextNode).text()
-        try {
-            result.totalPage = page.toInt()
-        } catch (e:NumberFormatException) {
-            e.printStackTrace()
+        val result = SearchBean(0, list)
+        val pages = document.getElementsByClass("pages")
+        if (pages.isNotEmpty()) {
+            val lastn = pages[0].getElementById("lastn")
+            if (lastn != null) {
+                val page = (lastn.childNode(0) as TextNode).text()
+                try {
+                    result.totalPage = page.toInt()
+                } catch (e:NumberFormatException) {
+                    e.printStackTrace()
+                }
+            }
         }
         val lpic = document.getElementsByClass("lpic")[0]
         val lis = lpic.getElementsByTag("li")

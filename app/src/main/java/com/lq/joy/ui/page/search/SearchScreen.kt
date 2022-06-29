@@ -35,6 +35,7 @@ import androidx.paging.compose.items
 import com.lq.joy.TAG
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
+import com.lq.joy.utils.isScrolled
 
 @Composable
 fun SearchScreen(
@@ -52,31 +53,31 @@ fun SearchScreen(
         FocusRequester()
     }
 
-/*    val isScroll by remember {
+    val isScroll by remember {
         lazyListState.isScrolled
-    }*/
+    }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
-//        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(), contentAlignment = Alignment.Center
-        ) {
-            SearchView(
-                value = searchContent,
-                onValueChange = { searchContent = it },
-                focusRequester = focusRequester,
-                onSearch = {
-                    viewModel.search(it)
-                },
-                modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
-            )
+        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(), contentAlignment = Alignment.Center
+            ) {
+                SearchView(
+                    value = searchContent,
+                    onValueChange = { searchContent = it },
+                    focusRequester = focusRequester,
+                    onSearch = {
+                        viewModel.search(it)
+                    },
+                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
+                )
+            }
         }
-//        }
 
         val naifeiPaging = uiState.naifeiFlow.collectAsLazyPagingItems()
-        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
+//        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
 
         if (naifeiPaging.loadState.refresh is LoadState.Loading) {
             Box(
@@ -88,9 +89,8 @@ fun SearchScreen(
             }
         } else {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                if (naifeiPaging.itemCount != 0) {
+/*                if (naifeiPaging.itemCount != 0) {
                     stickyHeader {
-//                    Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -103,9 +103,8 @@ fun SearchScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
-//                    }
                     }
-                }
+                }*/
 
                 items(
                     naifeiPaging,
@@ -161,8 +160,7 @@ fun SearchScreen(
                 }
 
 
-                stickyHeader {
-//                Surface(elevation = if (!isScroll) 0.dp else 4.dp*) {
+                /*stickyHeader {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -175,7 +173,6 @@ fun SearchScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-//                }
                 }
 
 
@@ -219,7 +216,7 @@ fun SearchScreen(
 
                         }
                     }
-                }
+                }*/
             }
         }
 

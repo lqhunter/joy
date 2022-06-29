@@ -38,14 +38,14 @@ fun CenterLoadingContent(
     contentHasData: @Composable BoxScope.() -> Unit
 ) {
     Box(modifier = modifier) {
-        if (isEmpty) {
-            contentEmpty()
-        } else {
-            contentHasData()
-        }
-
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            if (isEmpty) {
+                contentEmpty()
+            } else {
+                contentHasData()
+            }
         }
     }
 

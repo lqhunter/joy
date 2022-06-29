@@ -65,10 +65,18 @@ class NaifeiDetailViewModel(
         }
 
         viewModelScope.launch {
-            val bean = naifeiRepository.detail(vodId)
-            viewModelState.update {
-                it.copy(isLoading = false, detailBean = bean)
+            try {
+                val bean = naifeiRepository.detail(vodId)
+                viewModelState.update {
+                    it.copy(isLoading = false, detailBean = bean)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                viewModelState.update {
+                    it.copy(isLoading = false)
+                }
             }
+
         }
     }
 }

@@ -275,50 +275,6 @@ private fun EpisodeDetails(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "共${uiState.data.episodes.size}集",
-                color = Grey500,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-
-            Text(
-                text = "${uiState.data.score}分", color = VipYellow,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "详情", color = Grey500,
-                        fontSize = 14.sp,
-                    )
-                    Icon(
-                        imageVector = Icons.Rounded.ExpandMore,
-                        contentDescription = null,
-                        tint = Grey500
-                    )
-                }
-            }
-        }
-
         Text(
             text = "选集", color = MaterialTheme.colors.onSurface,
             modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp),

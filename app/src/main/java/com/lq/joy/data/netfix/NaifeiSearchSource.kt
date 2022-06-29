@@ -1,10 +1,9 @@
-package com.lq.joy.ui.page.search
+package com.lq.joy.data.netfix
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
 import com.lq.joy.JoyApplication
-import com.lq.joy.data.netfix.NaifeiService
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
 import com.lq.joy.data.sakura.bean.PlayBean
 import com.lq.joy.data.sakura.bean.VideoSource
@@ -14,7 +13,7 @@ import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 
-class SearchSource(
+class NaifeiSearchSource(
     private val service: NaifeiService,
     private val searchKey: String
 ) : PagingSource<Int, VideoSearchBean>() {
@@ -23,11 +22,11 @@ class SearchSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoSearchBean> {
         return try {
             val currentPage = params.key ?: 1
-//            val data = service.search(currentPage, params.loadSize, searchKey)
-            delay(3000)
-            val data = fakeData()
+            val data = service.search(currentPage, params.loadSize, searchKey)
+//            delay(3000)
+//            val data = fakeData()
 
-            if (data?.code == 200) {
+            if (data.code == 200) {
                 val result = mutableListOf<VideoSearchBean>()
                 result.addAll(data.data.list.map { origin ->
                     VideoSearchBean.NaifeiBean(
@@ -65,9 +64,8 @@ class SearchSource(
             } else {
                 LoadResult.Error(RuntimeException("服务器返回结果错误,code:${data?.code} msg:${data?.msg}"))
             }
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
+        } catch (e : Exception) {
+            e.printStackTrace()
             LoadResult.Error(e)
         }
     }

@@ -1,5 +1,7 @@
 package com.lq.joy.data.sakura
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.sakura.bean.DetailBean
@@ -37,6 +39,8 @@ class SakuraRepository : ISakuraRepository {
     }
 
     override fun search(key: String): Flow<PagingData<VideoSearchBean>> {
-        TODO("Not yet implemented")
+        return Pager(PagingConfig(20)) {
+            SakuraSearchSource(key)
+        }.flow
     }
 }

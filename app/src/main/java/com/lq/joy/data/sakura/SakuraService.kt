@@ -91,6 +91,25 @@ object SakuraService {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun getSearchData(url: String): SearchBean? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = okHttpClient.newCall(getRequest(url)).execute()
+                if (response.isSuccessful) {
+                    response.body?.string()?.let {
+                        Converter.parseSearchBean(it)
+                    }
+                } else {
+                    null
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
     fun getLocalSearchData(context: Context): SearchBean? {
         return getLocalString(context, "search.html")?.let {
             Converter.parseSearchBean(it)
