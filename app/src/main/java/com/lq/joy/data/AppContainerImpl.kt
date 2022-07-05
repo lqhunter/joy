@@ -21,8 +21,8 @@ class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     }
     override val naifeiRepository: INaifeiRepository by lazy {
-        NaifeiRepository()
-//        FakeNaifeiRepository()
+//        NaifeiRepository()
+        FakeNaifeiRepository()
     }
 
 

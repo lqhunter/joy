@@ -27,5 +27,7 @@ interface IVideoController {
 
     val state: StateFlow<VideoPlayerState>
 
+    fun setLockShow(show:Boolean)
+
     fun release()
 }

@@ -40,6 +40,7 @@ import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
+import com.lq.joy.findActivity
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.common.SourceSelectorItem
 import com.lq.joy.ui.page.common.SourceUiType
@@ -56,7 +57,8 @@ fun NaifeiDetailScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     systemUiController: SystemUiController = rememberSystemUiController(),
     onRecommendClick: (Int) -> Unit,
-    finish: () -> Unit
+    finish: () -> Unit,
+    originalOrientation:Int
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -64,10 +66,29 @@ fun NaifeiDetailScreen(
 
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
+    val context = LocalContext.current
+/*    if (videoPlayerState.isReady) {
+        if (videoPlayerState.lockLandscape) {
+            LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        } else
+            LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
+    }*/
 
-    if (videoPlayerState.isReady) {
-        LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
+    context.findActivity()?.let { activity ->
+        LaunchedEffect(key1 = videoPlayerState.isReady, key2 = videoPlayerState.lockLandscape) {
+
+            if (videoPlayerState.isReady) {
+                if (videoPlayerState.lockLandscape) {
+                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                } else {
+                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                }
+            }
+        }
     }
+
+
+
 
     if (videoPlayerState.episodeIndex != -1) {
         LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
@@ -101,9 +122,9 @@ fun NaifeiDetailScreen(
             }
         }
 
-
         LaunchedEffect(key1 = isExpandedScreen) {
             systemUiController.isSystemBarsVisible = !isExpandedScreen
+            videoController.setLockShow(isExpandedScreen)
         }
 
         if (!isExpandedScreen) {
@@ -119,7 +140,7 @@ fun NaifeiDetailScreen(
 
                 },
                 onEpisodeSelected = { index, playBean ->
-                    if ( _uiState.currentEpisodeIndex == -1) {
+                    if (_uiState.currentEpisodeIndex == -1) {
                         videoController.setItems(_uiState.videoSource[_uiState.currentSourceIndex].urls.mapIndexed { i, it ->
                             MediaItem.Builder().setUri(it.url).setTag(i).build()
                         }, index)
@@ -200,6 +221,7 @@ fun NaifeiDetailScreen(
         onDispose {
             Log.d(TAG, "LifecycleEvent:onDispose")
             lifecycleOwner.lifecycle.removeObserver(observer)
+            context.findActivity()?.requestedOrientation = originalOrientation
         }
     }
 

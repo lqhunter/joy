@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
@@ -89,13 +90,15 @@ fun JoyNavGraph(
                     )
                 )
 
-
+            val originalOrientation = LocalContext.current.findActivity()!!.requestedOrientation
             NaifeiDetailScreen(
                 viewModel = viewModel,
                 isExpandedScreen = isLandscape,
                 onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },
                 systemUiController = systemUiController,
-                finish = { navController.popBackStack() })
+                finish = { navController.popBackStack() },
+                originalOrientation = originalOrientation
+            )
 
         }
     }
