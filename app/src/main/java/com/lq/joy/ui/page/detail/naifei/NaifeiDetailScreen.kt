@@ -67,12 +67,6 @@ fun NaifeiDetailScreen(
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
     val context = LocalContext.current
-/*    if (videoPlayerState.isReady) {
-        if (videoPlayerState.lockLandscape) {
-            LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        } else
-            LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
-    }*/
 
     context.findActivity()?.let { activity ->
         LaunchedEffect(key1 = videoPlayerState.isReady, key2 = videoPlayerState.lockLandscape) {
@@ -86,9 +80,6 @@ fun NaifeiDetailScreen(
             }
         }
     }
-
-
-
 
     if (videoPlayerState.episodeIndex != -1) {
         LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
@@ -393,6 +384,7 @@ private fun VideoViewWithDetail(
 
 @Composable
 fun EpisodeSelector(
+    modifier: Modifier = Modifier,
     videoSource: List<NaifeiDetailBean.Data.VodPlay>,
     playBean: List<NaifeiDetailBean.Data.VodPlay.Url>,
     onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
@@ -401,17 +393,20 @@ fun EpisodeSelector(
     currentSourceIndex: Int = 0,
     onEpisodeExpend: () -> Unit,
     state: LazyListState = rememberLazyListState(),
-    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onEpisodeExpend()
-                },
+            modifier = if (playBean.size >= 10) {
+                Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEpisodeExpend()
+                    }
+            } else {
+                Modifier
+                    .fillMaxWidth()
+            },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -420,7 +415,9 @@ fun EpisodeSelector(
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp
             )
-            Icon(imageVector = Icons.Rounded.NavigateNext, contentDescription = "")
+            if (playBean.size >= 10) {
+                Icon(imageVector = Icons.Rounded.NavigateNext, contentDescription = "")
+            }
         }
 
 
@@ -451,37 +448,40 @@ fun EpisodeSelector(
             }
         }
 
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(28.dp)
-                .padding(top = 5.dp),
-        ) {
+        val size = videoSource.size
 
-            item {
-                Spacer(modifier = Modifier.width(16.dp))
-            }
+        if (size > 1) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(35.dp)
+                    .padding(top = 5.dp),
+            ) {
 
-            val size = videoSource.size
-            itemsIndexed(videoSource) { index, item ->
-                SourceSelectorItem(
-                    name = "线路${index + 1}",
-                    isSelected = currentSourceIndex == index,
-                    type = when (index) {
-                        0 -> SourceUiType.FIRST
-                        size - 1 -> SourceUiType.END
-                        else -> SourceUiType.MID
-                    },
-                    modifier = Modifier
-                        .width(50.dp)
-                        .fillMaxHeight()
-                        .clickable {
-                            onSourceSelected(index)
-                        }
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.width(5.dp))
+                item {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+
+                itemsIndexed(videoSource) { index, item ->
+                    SourceSelectorItem(
+                        name = "线路${index + 1}",
+                        isSelected = currentSourceIndex == index,
+                        type = when (index) {
+                            0 -> SourceUiType.FIRST
+                            size - 1 -> SourceUiType.END
+                            else -> SourceUiType.MID
+                        },
+                        modifier = Modifier
+                            .width(50.dp)
+                            .fillMaxHeight()
+                            .clickable {
+                                onSourceSelected(index)
+                            }
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.width(5.dp))
+                }
             }
         }
 

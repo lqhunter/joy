@@ -3,7 +3,9 @@ package com.lq.joy.ui.page.detail
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.compose.runtime.collectAsState
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.Player.STATE_READY
@@ -49,10 +51,8 @@ class DefaultVideoController(
                         setImageResource(R.drawable.outline_lock_open_white_48)
                     }
                 }
-
             }
         }
-
     }
 
 
@@ -84,6 +84,14 @@ class DefaultVideoController(
                                 it.copy(episodeIndex = index)
                             }
                         }
+                    }
+
+                    override fun onPlayerError(error: ExoPlaybackException) {
+                        Toast.makeText(context, "播放失败", Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onIsLoadingChanged(isLoading: Boolean) {
+
                     }
                 })
             }
