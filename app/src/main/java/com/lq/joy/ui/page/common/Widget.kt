@@ -1,5 +1,6 @@
 package com.lq.joy.ui.page.common
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,7 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -21,9 +26,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lq.joy.R
+import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.sakura.bean.HomeItemBean
 import com.lq.joy.data.ui.VideoSearchBean
+import com.lq.joy.ui.theme.Grey500
 
 @Composable
 fun FullScreenLoading(modifier: Modifier = Modifier) {
@@ -89,15 +96,21 @@ fun ItemRow(item: HomeItemBean, modifier: Modifier = Modifier, onClick: (String)
 }
 
 @Composable
-fun ItemRow(item: VideoSearchBean.SakuraBean, modifier: Modifier = Modifier, onClick: ((String) -> Unit)? = null) {
+fun ItemRow(
+    item: VideoSearchBean.SakuraBean,
+    modifier: Modifier = Modifier,
+    onClick: ((String) -> Unit)? = null
+) {
     if (onClick != null) {
         modifier.clickable {
             onClick(item.detailUrl)
         }
     }
-    Row(modifier = modifier
-        .height(100.dp)
-        .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
+    Row(
+        modifier = modifier
+            .height(100.dp)
+            .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically
+    )
     {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -227,8 +240,14 @@ fun ItemRow(item: VideoSearchBean.NaifeiBean, modifier: Modifier = Modifier) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(text = "地区：${item.area}", color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f))
-            Text(text = "类型：${item.type}", color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f))
+            Text(
+                text = "地区：${item.area}",
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+            )
+            Text(
+                text = "类型：${item.type}",
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+            )
             Row {
                 val remark = item.remarks
                 if (remark.contains("集") || remark.contains("更新")) {
@@ -237,7 +256,10 @@ fun ItemRow(item: VideoSearchBean.NaifeiBean, modifier: Modifier = Modifier) {
             }
         }
 
-        VerticalDivider(thickness = Dp.Hairline, modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
+        VerticalDivider(
+            thickness = Dp.Hairline,
+            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+        )
 
         Column(
             modifier = modifier
@@ -270,7 +292,8 @@ fun VerticalDivider(
         thickness
     }
     Box(
-        modifier.then(indentMod)
+        modifier
+            .then(indentMod)
             .fillMaxHeight()
             .width(targetThickness)
             .background(color = color)
@@ -278,7 +301,105 @@ fun VerticalDivider(
 }
 
 
+fun drawTicketPath(
+    size: Size,
+    lineWidth: Float,
+    LineFirst: Boolean = false,
+    LineEnd: Boolean = false
+): Path {
+    val halfLineWidth = lineWidth / 2
+    return Path().apply {
+        reset()
+        // Top left arc
+        if (!LineFirst) {
+            arcTo(
+                rect = Rect(
+                    left = -(size.height / 3) + halfLineWidth,
+                    top = 0f + halfLineWidth,
+                    right = size.height / 3 - halfLineWidth,
+                    bottom = size.height - halfLineWidth
+                ),
+                startAngleDegrees = 90.0f,
+                sweepAngleDegrees = -180f,
+                forceMoveTo = false
+            )
+        } else {
+            moveTo(halfLineWidth, size.height)
+            lineTo(x = halfLineWidth, y = halfLineWidth)
+        }
+
+        if (!LineEnd) {
+            lineTo(x = size.width - (size.height / 3), y = halfLineWidth)
+            // Top right arc
+            arcTo(
+                rect = Rect(
+                    left = size.width - (size.height / 3) * 2 + halfLineWidth,
+                    top = 0f + halfLineWidth,
+                    right = size.width - halfLineWidth,
+                    bottom = size.height - halfLineWidth
+                ),
+                startAngleDegrees = -90.0f,
+                sweepAngleDegrees = 180f,
+                forceMoveTo = false
+            )
+        } else {
+            lineTo(x = size.width - halfLineWidth, y = halfLineWidth)
+            lineTo(x = size.width - halfLineWidth, y = size.height - halfLineWidth)
+        }
+
+        close()
+    }
+}
+
+@Composable
+fun SourceSelectorItem(
+    name: String,
+    isSelected: Boolean,
+    type: SourceUiType,
+    modifier: Modifier = Modifier
+) {
+    val unSelectedColor = MaterialTheme.colors.secondaryVariant
+    Box(
+        modifier
+            .drawBehind {
+                drawPath(
+                    drawTicketPath(size, 1.dp.toPx(), LineFirst = type == SourceUiType.FIRST, LineEnd = type == SourceUiType.END),
+                    if (isSelected) unSelectedColor else Grey500,
+                    style = Stroke(width = 1.dp.toPx())
+                )
+            }, contentAlignment = Alignment.Center) {
+            
+        Text(text = name, fontSize = 12.sp)
+    }
+}
+
+enum class SourceUiType {
+    FIRST, MID, END
+}
+
+
 @Preview
+@Composable
+fun PreviewRect() {
+    with(LocalDensity.current) {
+        Box(
+            Modifier
+                .width(100.dp)
+                .height(70.dp)
+                .drawBehind {
+                    drawPath(
+                        drawTicketPath(size, 2.dp.toPx(), LineFirst = true, LineEnd = false),
+                        Color.Green,
+                        style = Stroke(width = 2.dp.toPx())
+                    )
+                }) {
+
+        }
+    }
+
+}
+
+//@Preview
 @Composable
 fun PreviewItem() {
     ItemRow(

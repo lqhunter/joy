@@ -51,10 +51,19 @@ class NaifeiDetailViewModel(
         loadDetail(vodId)
     }
 
-    fun selectIndex(index: Int) {
+    fun selectEpisode(index: Int) {
         viewModelState.update {
             it.copy(
                 currentEpisodeIndex = index,
+            )
+        }
+    }
+
+    fun selectSource(index: Int) {
+        viewModelState.update {
+            it.copy(
+                currentSourceIndex = index,
+                currentEpisodeIndex = -1,
             )
         }
     }
