@@ -1,4 +1,6 @@
-package com.lq.joy.data.sakura.bean
+package com.lq.joy.data.ui
+
+import com.lq.joy.data.sakura.bean.HomeItemBean
 
 data class DetailBean(
     val animationName: String,
@@ -15,6 +17,7 @@ data class VideoSource(val sourceName: String, val episodes: List<PlayBean>)
 
 data class PlayBean(
     val episodeName: String,
-    val playUrl: String? = null,
-    val playHtmlUrl: String? = null,
+    val playUrl: String
 )
+
+data class RecommendBean(val cover: String, val name: String, val tag: String)

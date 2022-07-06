@@ -6,8 +6,8 @@ import com.google.gson.Gson
 import com.lq.joy.JoyApplication
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
-import com.lq.joy.data.sakura.bean.DetailBean
 import com.lq.joy.data.sakura.bean.HomeBean
+import com.lq.joy.data.ui.DetailBean
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay

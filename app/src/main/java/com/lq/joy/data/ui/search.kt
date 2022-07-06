@@ -1,7 +1,6 @@
 package com.lq.joy.data.ui
 
 import com.lq.joy.data.sakura.bean.Tag
-import com.lq.joy.data.sakura.bean.VideoSource
 import java.io.Serializable
 
 sealed class VideoSearchBean : Serializable {

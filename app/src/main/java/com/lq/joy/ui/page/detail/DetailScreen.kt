@@ -1,9 +1,12 @@
-package com.lq.joy.ui.page.detail.naifei
+package com.lq.joy.ui.page.detail
 
 import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,47 +33,42 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.compose.itemsIndexed
+import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.exoplayer2.MediaItem
-import com.lq.joy.LockScreenOrientation
 import com.lq.joy.TAG
-import com.lq.joy.data.Api
-import com.lq.joy.data.netfix.bean.NaifeiDetailBean
+import com.lq.joy.data.SourceType
+import com.lq.joy.data.ui.PlayBean
+import com.lq.joy.data.ui.RecommendBean
+import com.lq.joy.data.ui.VideoSource
 import com.lq.joy.findActivity
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.common.SourceSelectorItem
 import com.lq.joy.ui.page.common.SourceUiType
-import com.lq.joy.ui.page.detail.DefaultVideoController
-import com.lq.joy.ui.page.detail.VideoPlayer
-import com.lq.joy.ui.page.detail.rememberVideoController
+import com.lq.joy.ui.page.detail.naifei.DetailUiState
 import com.lq.joy.ui.theme.Grey500
-
+import kotlinx.coroutines.launch
 
 @Composable
-fun NaifeiDetailScreen(
-    viewModel: NaifeiDetailViewModel,
+fun DetailScreen(
+    detailType: SourceType,
+    viewModel: ViewModel,
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     systemUiController: SystemUiController = rememberSystemUiController(),
     onRecommendClick: (Int) -> Unit,
     finish: () -> Unit,
-    originalOrientation:Int
+    originalOrientation: Int
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    val _uiState = uiState
-
     val videoController = rememberVideoController()
     val videoPlayerState by videoController.state.collectAsState()
     val context = LocalContext.current
 
     context.findActivity()?.let { activity ->
         LaunchedEffect(key1 = videoPlayerState.isReady, key2 = videoPlayerState.lockLandscape) {
-
             if (videoPlayerState.isReady) {
                 if (videoPlayerState.lockLandscape) {
                     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -81,31 +79,102 @@ fun NaifeiDetailScreen(
         }
     }
 
+    when (detailType) {
+        SourceType.NAIFEI -> {
+            check(viewModel is NaifeiDetailViewModel)
+            DetailScreenNaifei(
+                viewModel = viewModel,
+                isExpandedScreen = isExpandedScreen,
+                videoPlayerState = videoPlayerState,
+                videoController = videoController,
+                systemUiController = systemUiController,
+                onRecommendClick = onRecommendClick,
+                finish = finish
+            )
+
+        }
+        SourceType.SAKURA -> {
+            check(viewModel is SakuraDetailViewModel)
+            DetailScreenSakura(
+                viewModel = viewModel,
+                isExpandedScreen = isExpandedScreen,
+                videoPlayerState = videoPlayerState,
+                videoController = videoController,
+                systemUiController = systemUiController,
+                onRecommendClick = onRecommendClick,
+                finish = finish
+            )
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            Log.d(TAG, "LifecycleEvent:$event")
+
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    videoController.play()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    videoController.pause()
+                }
+                Lifecycle.Event.ON_DESTROY -> {
+
+                }
+            }
+        }
+
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            context.findActivity()?.requestedOrientation = originalOrientation
+        }
+    }
+
+}
+
+@Composable
+fun DetailScreenNaifei(
+    viewModel: NaifeiDetailViewModel,
+    isExpandedScreen: Boolean,
+    videoPlayerState: VideoPlayerState,
+    videoController: DefaultVideoController,
+    systemUiController: SystemUiController,
+    onRecommendClick: (Int) -> Unit,
+    finish: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val _uiState = uiState
+
     if (videoPlayerState.episodeIndex != -1) {
         LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
             viewModel.selectEpisode(videoPlayerState.episodeIndex)
         }
     }
 
-
     val rowLazyState = rememberLazyListState(
-        initialFirstVisibleItemIndex = if (_uiState is NaifeiDetailUiState.HasData) {
+        initialFirstVisibleItemIndex = if (_uiState is DetailUiState.HasData) {
             if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
         } else 0
     )
 
     CenterLoadingContent(
         isLoading = uiState.isLoading,
-        isEmpty = uiState is NaifeiDetailUiState.NoData,
+        isEmpty = uiState is DetailUiState.NoData,
         modifier = Modifier.fillMaxSize(),
         contentEmpty = {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                Image(painterResource(id = R.drawable.error), contentDescription = "")
                 Text(text = "出错了...")
             }
         }) {
         //https://stackoverflow.com/questions/69558033/kotlin-error-smart-cast-to-x-is-impossible-because-state-is-a-property-that
-        check(_uiState is NaifeiDetailUiState.HasData)
+        check(_uiState is DetailUiState.HasData)
 
         LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
             if (_uiState.currentEpisodeIndex == -1) {
@@ -132,8 +201,8 @@ fun NaifeiDetailScreen(
                 },
                 onEpisodeSelected = { index, playBean ->
                     if (_uiState.currentEpisodeIndex == -1) {
-                        videoController.setItems(_uiState.videoSource[_uiState.currentSourceIndex].urls.mapIndexed { i, it ->
-                            MediaItem.Builder().setUri(it.url).setTag(i).build()
+                        videoController.setItems(_uiState.videoSource[_uiState.currentSourceIndex].episodes.mapIndexed { i, it ->
+                            MediaItem.Builder().setUri(it.playUrl).setTag(i).build()
                         }, index)
                     } else {
                         videoController.seekTo(index, 0)
@@ -184,50 +253,135 @@ fun NaifeiDetailScreen(
             )
         }
     }
+}
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            Log.d(TAG, "LifecycleEvent:$event")
+@Composable
+fun DetailScreenSakura(
+    viewModel: SakuraDetailViewModel,
+    isExpandedScreen: Boolean,
+    videoPlayerState: VideoPlayerState,
+    videoController: DefaultVideoController,
+    systemUiController: SystemUiController,
+    onRecommendClick: (Int) -> Unit,
+    finish: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val _uiState = uiState
 
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-
-                }
-                Lifecycle.Event.ON_RESUME -> {
-                    videoController.play()
-                }
-                Lifecycle.Event.ON_PAUSE -> {
-                    videoController.pause()
-                }
-                Lifecycle.Event.ON_DESTROY -> {
-
-                }
-            }
-        }
-
-        // Add the observer to the lifecycle
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        // When the effect leaves the Composition, remove the observer
-        onDispose {
-            Log.d(TAG, "LifecycleEvent:onDispose")
-            lifecycleOwner.lifecycle.removeObserver(observer)
-            context.findActivity()?.requestedOrientation = originalOrientation
+    if (videoPlayerState.episodeIndex != -1) {
+        LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
+            viewModel.selectEpisode(videoPlayerState.episodeIndex)
         }
     }
 
+    val rowLazyState = rememberLazyListState(
+        initialFirstVisibleItemIndex = if (_uiState is DetailUiState.HasData) {
+            if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
+        } else 0
+    )
+
+    val scope = rememberCoroutineScope()
+
+    CenterLoadingContent(
+        isLoading = uiState.isLoading,
+        isEmpty = uiState is DetailUiState.NoData,
+        modifier = Modifier.fillMaxSize(),
+        contentEmpty = {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "出错了...")
+            }
+        }) {
+        //https://stackoverflow.com/questions/69558033/kotlin-error-smart-cast-to-x-is-impossible-because-state-is-a-property-that
+        check(_uiState is DetailUiState.HasData)
+
+        LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
+            if (_uiState.currentEpisodeIndex == -1) {
+                videoController.reset()
+            }
+        }
+
+        LaunchedEffect(key1 = isExpandedScreen) {
+            systemUiController.isSystemBarsVisible = !isExpandedScreen
+            videoController.setLockShow(isExpandedScreen)
+        }
+
+        if (!isExpandedScreen) {
+            VideoViewWithDetail(
+                videoController = videoController,
+                videoSource = _uiState.videoSource,
+                currentEpisodeIndex = _uiState.currentEpisodeIndex,
+                currentSourceIndex = _uiState.currentSourceIndex,
+                recommend = _uiState.recommend,
+                coverUrl = _uiState.coverUrl,
+                onSourceSelected = {
+                    viewModel.selectEpisode(it)
+
+                },
+                onEpisodeSelected = { index, playBean ->
+                    scope.launch {
+                        val url = viewModel.getPlayUrl(playBean.playUrl)
+                        url?.run {
+                            videoController.setItems(mutableListOf(MediaItem.Builder().setUri(this).setTag(0).build()), 0)
+                        }
+                    }
+                    viewModel.selectEpisode(index)
+                },
+                onRecommendClick = onRecommendClick,
+                episodeIntroduce = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+
+                        ) {
+                        Text(
+                            text = _uiState.name, color = MaterialTheme.colors.onSurface,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp
+                        )
+
+                        IconToggleButton(
+                            checked = _uiState.isFavorite,
+                            onCheckedChange = { }
+                        ) {
+                            Icon(
+                                imageVector = if (_uiState.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                                contentDescription = null,
+                                tint = if (_uiState.isFavorite) Color.Red else MaterialTheme.colors.onSurface
+                            )
+
+                        }
+                    }
+                },
+                rowLazyState = rowLazyState,
+                finish = {
+                    videoController.release()
+                    finish()
+                },
+            )
+        } else {
+            VideoPlayer(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .fillMaxSize(),
+                videoController = videoController,
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun VideoViewWithDetail(
     videoController: DefaultVideoController,
-    videoSource: List<NaifeiDetailBean.Data.VodPlay>,
-    recommend: List<NaifeiDetailBean.Data.RelVod>,
+    videoSource: List<VideoSource>,
+    recommend: List<RecommendBean>,
     currentEpisodeIndex: Int,
     currentSourceIndex: Int,
     coverUrl: String,
-    onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
+    onEpisodeSelected: (Int, PlayBean) -> Unit,
     onSourceSelected: (Int) -> Unit,
     onRecommendClick: (Int) -> Unit,
     episodeIntroduce: @Composable LazyItemScope.() -> Unit,
@@ -258,7 +412,7 @@ private fun VideoViewWithDetail(
                     .width(width.dp)
                     .height(height.dp)
                     .clickable {
-                        val playBean = videoSource[currentSourceIndex].urls[0]
+                        val playBean = videoSource[currentSourceIndex].episodes[0]
                         onEpisodeSelected(0, playBean)
                     }
             ) {
@@ -292,7 +446,7 @@ private fun VideoViewWithDetail(
 
                 item {
                     EpisodeSelector(
-                        playBean = videoSource[currentSourceIndex].urls,
+                        playBean = videoSource[currentSourceIndex].episodes,
                         onEpisodeSelected = { i, playBean ->
                             onEpisodeSelected(i, playBean)
                         },
@@ -346,7 +500,7 @@ private fun VideoViewWithDetail(
             }
 
             LazyVerticalGrid(columns = GridCells.Fixed(2), state = listState) {
-                itemsIndexed(videoSource[currentSourceIndex].urls) { index, episode ->
+                itemsIndexed(videoSource[currentSourceIndex].episodes) { index, episode ->
                     Row(
                         modifier = Modifier
                             .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
@@ -364,7 +518,7 @@ private fun VideoViewWithDetail(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = episode.name, color = MaterialTheme.colors.onSurface)
+                        Text(text = episode.episodeName, color = MaterialTheme.colors.onSurface)
                         Spacer(modifier = Modifier.width(5.dp))
                     }
                     Spacer(modifier = Modifier.width(10.dp))
@@ -383,11 +537,11 @@ private fun VideoViewWithDetail(
 }
 
 @Composable
-fun EpisodeSelector(
+private fun EpisodeSelector(
     modifier: Modifier = Modifier,
-    videoSource: List<NaifeiDetailBean.Data.VodPlay>,
-    playBean: List<NaifeiDetailBean.Data.VodPlay.Url>,
-    onEpisodeSelected: (Int, NaifeiDetailBean.Data.VodPlay.Url) -> Unit,
+    videoSource: List<VideoSource>,
+    playBean: List<PlayBean>,
+    onEpisodeSelected: (Int, PlayBean) -> Unit,
     onSourceSelected: (Int) -> Unit,
     currentEpisodeIndex: Int = -1,
     currentSourceIndex: Int = 0,
@@ -441,7 +595,7 @@ fun EpisodeSelector(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.width(5.dp))
-                    Text(text = episode.name, color = MaterialTheme.colors.onSurface)
+                    Text(text = episode.episodeName, color = MaterialTheme.colors.onSurface)
                     Spacer(modifier = Modifier.width(5.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
@@ -506,23 +660,23 @@ fun EpisodeSelector(
 
 @Composable
 private fun ItemRow(
-    item: NaifeiDetailBean.Data.RelVod,
+    item: RecommendBean,
     modifier: Modifier = Modifier,
     onClick: (Int) -> Unit
 ) {
     Row(modifier = modifier
         .clickable {
-            onClick(item.vod_id)
+//            onClick(item.vod_id)
         }
         .height(100.dp)
         .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
     {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(Api.NAIFEI_HOST + "/" + item.vod_pic)
+                .data(item.cover)
                 .crossfade(true)
                 .build(),
-            contentDescription = item.vod_name,
+            contentDescription = item.name,
             modifier = Modifier
                 .fillMaxHeight()
                 .aspectRatio(4f / 3f)
@@ -537,7 +691,7 @@ private fun ItemRow(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Text(
-                text = item.vod_name,
+                text = item.name,
                 color = MaterialTheme.colors.onSurface,
                 fontSize = 16.sp,
                 maxLines = 1,
@@ -552,7 +706,7 @@ private fun ItemRow(
                 /*Text(text = item.newestEpisode ?: "无", color = Color.Red)*/
             }
             Text(
-                text = "标签：${item.vod_tag}",
+                text = "标签：${item.tag}",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),

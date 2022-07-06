@@ -103,6 +103,8 @@ class DefaultVideoController(
         exoPlayer.prepare()
     }
 
+
+
     override fun getItemsCount(): Int {
         return exoPlayer.mediaItemCount
     }

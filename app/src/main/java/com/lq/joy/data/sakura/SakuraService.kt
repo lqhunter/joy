@@ -2,7 +2,7 @@ package com.lq.joy.data.sakura
 
 import android.content.Context
 import com.lq.joy.data.Api
-import com.lq.joy.data.sakura.bean.DetailBean
+import com.lq.joy.data.ui.DetailBean
 import com.lq.joy.data.sakura.bean.HomeBean
 import com.lq.joy.data.sakura.bean.SearchBean
 import kotlinx.coroutines.Dispatchers

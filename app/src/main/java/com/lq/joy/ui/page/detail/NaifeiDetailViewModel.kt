@@ -1,4 +1,4 @@
-package com.lq.joy.ui.page.detail.naifei
+package com.lq.joy.ui.page.detail
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
@@ -6,8 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lq.joy.data.SourceType
 import com.lq.joy.data.netfix.INaifeiRepository
-import com.lq.joy.data.ui.VideoSearchBean
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -36,7 +36,7 @@ class NaifeiDetailViewModel(
     private val vodId = savedStateHandle.get<Int>("vod_id")!!
 
     private val viewModelState =
-        MutableStateFlow(NaifeiDetailVMState(isLoading = false))
+        MutableStateFlow(DetailVMState(isLoading = false, sourceType = SourceType.NAIFEI))
 
     val uiState = viewModelState
         .map {
@@ -77,7 +77,7 @@ class NaifeiDetailViewModel(
             try {
                 val bean = naifeiRepository.detail(vodId)
                 viewModelState.update {
-                    it.copy(isLoading = false, detailBean = bean)
+                    it.copy(isLoading = false, naifeiDetailBean = bean)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

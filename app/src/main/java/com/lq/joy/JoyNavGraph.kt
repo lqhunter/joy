@@ -13,10 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.lq.joy.data.AppContainer
-import com.lq.joy.ui.page.detail.naifei.NaifeiDetailScreen
-import com.lq.joy.ui.page.detail.naifei.NaifeiDetailViewModel
-import com.lq.joy.ui.page.detail.sakura.SakuraDetailScreen
-import com.lq.joy.ui.page.detail.sakura.SakuraDetailViewModel
+import com.lq.joy.data.SourceType
+import com.lq.joy.ui.page.detail.DetailScreen
+import com.lq.joy.ui.page.detail.NaifeiDetailViewModel
+import com.lq.joy.ui.page.detail.SakuraDetailViewModel
 import com.lq.joy.ui.page.home.HomeScreen
 import com.lq.joy.ui.page.mian.MainScreen
 import com.lq.joy.ui.page.search.SearchScreen
@@ -71,11 +71,16 @@ fun JoyNavGraph(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-            SakuraDetailScreen(
-                viewModel,
-                isLandscape,
-                onRecommendClick = { navigationActions.navigateToSakuraDetail(it) },
-                systemUiController = systemUiController
+
+            val originalOrientation = LocalContext.current.findActivity()!!.requestedOrientation
+            DetailScreen(
+                detailType = SourceType.SAKURA,
+                viewModel = viewModel,
+                isExpandedScreen = isLandscape,
+                onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },
+                systemUiController = systemUiController,
+                finish = { navController.popBackStack() },
+                originalOrientation = originalOrientation
             )
         }
 
@@ -96,7 +101,8 @@ fun JoyNavGraph(
                 )
 
             val originalOrientation = LocalContext.current.findActivity()!!.requestedOrientation
-            NaifeiDetailScreen(
+            DetailScreen(
+                detailType = SourceType.NAIFEI,
                 viewModel = viewModel,
                 isExpandedScreen = isLandscape,
                 onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },

@@ -1,6 +1,8 @@
 package com.lq.joy.data.sakura
 
 import com.lq.joy.data.sakura.bean.*
+import com.lq.joy.data.ui.DetailBean
+import com.lq.joy.data.ui.PlayBean
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.lang.NumberFormatException

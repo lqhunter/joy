@@ -5,9 +5,9 @@ import com.google.gson.Gson
 import com.lq.joy.JoyApplication
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
 import com.lq.joy.data.netfix.bean.NaifeiSearchBean
-import com.lq.joy.data.sakura.bean.PlayBean
-import com.lq.joy.data.sakura.bean.VideoSource
+import com.lq.joy.data.ui.PlayBean
 import com.lq.joy.data.ui.VideoSearchBean
+import com.lq.joy.data.ui.VideoSource
 import com.lq.joy.utils.getLocalString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

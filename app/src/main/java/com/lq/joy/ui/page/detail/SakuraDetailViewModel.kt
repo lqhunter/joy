@@ -1,4 +1,4 @@
-package com.lq.joy.ui.page.detail.sakura
+package com.lq.joy.ui.page.detail
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,9 +8,12 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.BaseResult
+import com.lq.joy.data.SourceType
 import com.lq.joy.data.sakura.ISakuraRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SakuraDetailViewModel(
     private val sakuraRepository: ISakuraRepository,
@@ -37,14 +40,15 @@ class SakuraDetailViewModel(
         }
     }
 
-    private val viewModelState = MutableStateFlow(SakuraDetailVMState(isLoading = true))
+    private val viewModelState =
+        MutableStateFlow(DetailVMState(isLoading = false, sourceType = SourceType.SAKURA))
     val uiState = viewModelState
         .map {
-            it.toUiState()
+            it.toUIState()
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            viewModelState.value.toUiState()
+            viewModelState.value.toUIState()
         )
 
     init {
@@ -59,7 +63,7 @@ class SakuraDetailViewModel(
             viewModelState.update {
                 when (detail) {
                     is BaseResult.Success -> {
-                        it.copy(isLoading = false, detailBean = detail.data)
+                        it.copy(isLoading = false, sakuraDetailBean = detail.data)
                     }
                     is BaseResult.Error -> {
                         it.copy(isLoading = false)
@@ -69,35 +73,27 @@ class SakuraDetailViewModel(
         }
     }
 
-    fun getUrlAndPlay(index: Int) {
-        Log.d(TAG, "video getUrlAndPlay:${index}")
 
-        viewModelState.update { it.copy(isLoading = true, currentIndex = index) }
-
-        viewModelScope.launch {
-            viewModelState.value.detailBean?.episodes?.get(index)?.let { playBean ->
-                playBean.playUrl?.let {
-                    //
-                    Log.d(TAG, "video 缓存中存在")
-
-                } ?: let {
-                    playBean.playHtmlUrl?.also {
-                        val result = sakuraRepository.getPlayUrl(Api.HOME + it)
-                        viewModelState.update {
-                            when (result) {
-                                is BaseResult.Success -> {
-                                    Log.d(TAG, "BaseResult.Success")
-                                    it.updateUrl(index, result.data).copy(isLoading = false)
-                                }
-                                is BaseResult.Error -> {
-                                    Log.d(TAG, "BaseResult.Error")
-                                    it.copy(isLoading = false)
-                                }
-                            }
-                        }
-                    }
+    suspend fun getPlayUrl(htmlUrl: String): String? {
+        return withContext(Dispatchers.IO) {
+            when (val result = sakuraRepository.getPlayUrl(Api.HOME + htmlUrl)) {
+                is BaseResult.Success -> {
+                    Log.d(TAG, "BaseResult.Success")
+                    result.data
+                }
+                is BaseResult.Error -> {
+                    Log.d(TAG, "BaseResult.Error")
+                    null
                 }
             }
+        }
+    }
+
+    fun selectEpisode(index: Int) {
+        viewModelState.update {
+            it.copy(
+                currentEpisodeIndex = index,
+            )
         }
     }
 
