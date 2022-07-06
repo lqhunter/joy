@@ -8,13 +8,14 @@ object Api {
     const val SEARCH = "http://www.yinghuacd.com/search/"
 
     const val NAIFEI_HOST = "https://www.naifei.org"
+
     //https://www.naifei.org/api.php/v1.vod?page=1&limit=10&wd=海贼王
     const val NAIFEI_ORG_SEARCH = "/api.php/v1.vod"
     const val NAIFEI_ORG_DETAIL = "/api.php/v1.vod/detail"
 
 }
 
-enum class SourceType {
-    SAKURA,
-    NAIFEI,
+enum class SourceType(val netName: String) {
+    SAKURA("樱花动漫"),
+    NAIFEI("奈飞"),
 }

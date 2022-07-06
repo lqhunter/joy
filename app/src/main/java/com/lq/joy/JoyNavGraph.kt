@@ -49,7 +49,8 @@ fun JoyNavGraph(
                 viewModel(
                     factory = SearchViewModel.providerFactory(
                         appContainer.sakuraRepository,
-                        appContainer.naifeiRepository
+                        appContainer.naifeiRepository,
+                        appContainer.appRepository
                     )
                 )
             SearchScreen(viewModel,

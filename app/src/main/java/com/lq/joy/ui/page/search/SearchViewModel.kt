@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.lq.joy.TAG
+import com.lq.joy.data.AppRepository
 import com.lq.joy.data.netfix.INaifeiRepository
 import com.lq.joy.data.sakura.ISakuraRepository
 import com.lq.joy.data.ui.VideoSearchBean
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val sakuraRepository: ISakuraRepository,
-    private val naifeiRepository: INaifeiRepository
+    private val naifeiRepository: INaifeiRepository,
+    private val appRepository: AppRepository
 ) : ViewModel() {
 
 
@@ -27,8 +29,29 @@ class SearchViewModel(
         viewModelState.value
     )
 
+
+    init {
+        viewModelScope.launch {
+            appRepository.getSearchFilter().collect { s ->
+                s?.let {
+                    viewModelState.update {
+                        it.copy(
+                            filter = s
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
     fun search(key: String) {
-        viewModelState.update { it.copy(naifeiFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope), sakuraFlow = sakuraRepository.search(key).cachedIn(viewModelScope)) }
+        viewModelState.update {
+            it.copy(
+                naifeiFlow = naifeiRepository.search(10, key).cachedIn(viewModelScope),
+                sakuraFlow = sakuraRepository.search(key).cachedIn(viewModelScope)
+            )
+        }
     }
 
     fun searchNaifei(key: String? = null): Flow<PagingData<VideoSearchBean>> {
@@ -42,17 +65,18 @@ class SearchViewModel(
         return if (key == null) {
             emptyFlow()
         } else
-        return sakuraRepository.search(key).cachedIn(viewModelScope)
+            return sakuraRepository.search(key).cachedIn(viewModelScope)
     }
 
     companion object {
         fun providerFactory(
             sakuraRepository: ISakuraRepository,
-            naifeiRepository: INaifeiRepository
+            naifeiRepository: INaifeiRepository,
+            appRepository: AppRepository
         ) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SearchViewModel(sakuraRepository, naifeiRepository) as T
+                return SearchViewModel(sakuraRepository, naifeiRepository, appRepository) as T
             }
         }
     }

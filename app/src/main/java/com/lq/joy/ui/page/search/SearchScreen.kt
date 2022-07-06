@@ -4,6 +4,7 @@ package com.lq.joy.ui.page.search
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,15 +33,20 @@ import androidx.compose.ui.window.Dialog
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.lq.joy.TAG
 import com.lq.joy.data.AppRepository
 import com.lq.joy.data.SourceType
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
-import com.lq.joy.utils.isScrolled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+
+
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
@@ -50,190 +56,201 @@ fun SearchScreen(
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
-    val lazyListState = rememberLazyListState()
+
+//    val lazyListState = rememberLazyListState()
     var searchContent by remember {
         mutableStateOf(uiState.key)
     }
-
     val focusRequester = remember {
         FocusRequester()
     }
-
-    val isScroll by remember {
-        lazyListState.isScrolled
-    }
+//    val isScroll by remember {
+//        lazyListState.isScrolled
+//    }
+    val pagerState = rememberPagerState()
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
 
-        Surface(elevation = if (!isScroll) 0.dp else 4.dp) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(), contentAlignment = Alignment.Center
-            ) {
-                SearchView(
-                    value = searchContent,
-                    onValueChange = { searchContent = it },
-                    focusRequester = focusRequester,
-                    onSearch = {
-                        viewModel.search(it)
-                    },
-                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
-                    onFilterConfirm = {
-                        scope.launch {
-                            appRepository.saveSearchFilter(it)
-                        }
-                    },
-                    appRepository = appRepository,
-                    scope = scope
-                )
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(), contentAlignment = Alignment.Center
+        ) {
+            SearchView(
+                value = searchContent,
+                onValueChange = { searchContent = it },
+                focusRequester = focusRequester,
+                onSearch = {
+                    viewModel.search(it)
+                },
+                modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
+                onFilterConfirm = {
+                    scope.launch {
+                        appRepository.saveSearchFilter(it)
+                    }
+                },
+                filter = uiState.filter
+            )
         }
 
+
         val naifeiPaging = uiState.naifeiFlow.collectAsLazyPagingItems()
-//        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
+        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
 
-        if (naifeiPaging.loadState.refresh is LoadState.Loading) {
-            Box(
+
+        if (uiState.filter.size > 1) {
+            TabRow(
+                backgroundColor = MaterialTheme.colors.surface,
+                selectedTabIndex = pagerState.currentPage,
                 modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-/*                if (naifeiPaging.itemCount != 0) {
-                    stickyHeader {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colors.background)
-                        ) {
-                            Text(
-                                text = "奈飞",
-                                modifier = Modifier.padding(start = 5.dp, bottom = 5.dp),
-                                fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }*/
-
-                items(
-                    naifeiPaging,
-                    key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
-                    if (item is VideoSearchBean.NaifeiBean) {
-                        Column(modifier = Modifier.clickable {
-                            onNaifeiSelected(item.vodId)
-                        }) {
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            ItemRow(
-                                item = item,
-                                modifier = Modifier.padding(start = 5.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Divider(thickness = Dp.Hairline)
-                        }
-                    }
-                }
-
-                naifeiPaging.apply {
-                    when {
-                        loadState.refresh is LoadState.Loading -> {
-
-                        }
-                        loadState.refresh is LoadState.Error -> {
-
-                        }
-                        loadState.append is LoadState.Loading -> {
-                            item {
-                                Log.d(TAG, "loadState.append is LoadState.Loading")
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 5.dp, bottom = 5.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                        }
-                        loadState.append is LoadState.Error -> {
-
-                        }
-                        loadState.append is LoadState.NotLoading -> {
-                            val e = naifeiPaging.loadState.append as LoadState.NotLoading
-
-                        }
-                    }
-                }
-
-                if (naifeiPaging.itemCount == 0 || naifeiPaging.loadState.append !is LoadState.NotLoading) {
-                    return@LazyColumn
-                }
-
-
-                /*stickyHeader {
-                    Box(
+                    .fillMaxWidth()
+                    .height(56.dp),
+                divider = {
+                    Divider(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colors.background)
+                            .height(2.dp)
+                            .background(MaterialTheme.colors.surface)
+                    )
+                }
+            ) {
+                uiState.filter.forEachIndexed { index, s ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch {
+                                pagerState.scrollToPage(index)
+                            }
+                        },
+                        modifier = Modifier.fillMaxHeight()
                     ) {
                         Text(
-                            text = "樱花动漫",
-                            modifier = Modifier.padding(start = 5.dp, bottom = 5.dp),
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
+                            text = s,
+                            style = TextStyle(color = MaterialTheme.colors.onBackground)
                         )
                     }
                 }
+            }
+        }
 
+        HorizontalPager(count = uiState.filter.size, state = pagerState) { page ->
+            if (uiState.filter.toList()[page] == SourceType.SAKURA.netName) {
+                if (sakuraPaging.loadState.refresh is LoadState.Loading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
+                    items(sakuraPaging) { item ->
+                        if (item is VideoSearchBean.SakuraBean) {
+                            Column(modifier = Modifier.clickable {
+                                onSakuraSelected(item.detailUrl)
+                            }) {
+                                Spacer(modifier = Modifier.padding(5.dp))
+                                ItemRow(
+                                    item = item,
+                                    modifier = Modifier.padding(start = 5.dp)
+                                )
+                                Spacer(modifier = Modifier.padding(5.dp))
+                                Divider(thickness = Dp.Hairline)
+                            }
+                        }
+                    }
+                    sakuraPaging.apply {
+                        when {
+                            loadState.refresh is LoadState.Loading -> {
 
-                items(sakuraPaging) { item ->
-                    if (item is VideoSearchBean.SakuraBean) {
-                        Column(modifier = Modifier.clickable {
-                            onSakuraSelected(item.detailUrl)
-                        }) {
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            ItemRow(
-                                item = item,
-                                modifier = Modifier.padding(start = 5.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Divider(thickness = Dp.Hairline)
+                            }
+                            loadState.refresh is LoadState.Error -> {
+
+                            }
+                            loadState.append is LoadState.Loading -> {
+                                item {
+                                    Log.d(TAG, "loadState.append is LoadState.Loading")
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 5.dp, bottom = 5.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            }
+                            loadState.append is LoadState.Error -> {
+
+                            }
+                            loadState.append is LoadState.NotLoading -> {
+
+                            }
                         }
                     }
                 }
 
-                sakuraPaging.apply {
-                    when {
-                        loadState.refresh is LoadState.Error -> {
-
-                        }
-                        loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 5.dp, bottom = 5.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
+            } else if (uiState.filter.toList()[page] == SourceType.NAIFEI.netName) {
+                if (naifeiPaging.loadState.refresh is LoadState.Loading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
+                    items(
+                        naifeiPaging,
+                        key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
+                        if (item is VideoSearchBean.NaifeiBean) {
+                            Column(modifier = Modifier.clickable {
+                                onNaifeiSelected(item.vodId)
+                            }) {
+                                Spacer(modifier = Modifier.padding(5.dp))
+                                ItemRow(
+                                    item = item,
+                                    modifier = Modifier.padding(start = 5.dp)
+                                )
+                                Spacer(modifier = Modifier.padding(5.dp))
+                                Divider(thickness = Dp.Hairline)
                             }
                         }
-                        loadState.append is LoadState.Error -> {
+                    }
+                    naifeiPaging.apply {
+                        when {
+                            loadState.refresh is LoadState.Loading -> {
 
-                        }
-                        loadState.append is LoadState.NotLoading -> {
+                            }
+                            loadState.refresh is LoadState.Error -> {
 
+                            }
+                            loadState.append is LoadState.Loading -> {
+                                item {
+                                    Log.d(TAG, "loadState.append is LoadState.Loading")
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 5.dp, bottom = 5.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            }
+                            loadState.append is LoadState.Error -> {
+
+                            }
+                            loadState.append is LoadState.NotLoading -> {
+                                val e = naifeiPaging.loadState.append as LoadState.NotLoading
+
+                            }
                         }
                     }
-                }*/
+                }
             }
         }
-
-
     }
 
 }
@@ -246,17 +263,12 @@ fun SearchView(
     onValueChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onFilterConfirm: (Set<String>) -> Unit,
-    scope: CoroutineScope = rememberCoroutineScope(),
-    appRepository: AppRepository
+    filter:Set<String>
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val width = screenWidth * 0.9
     var openDialog by remember { mutableStateOf(false) }
-    val selected = remember {
-        mutableStateMapOf(SourceType.SAKURA to false, SourceType.NAIFEI to false)
-    }
-
     Card(
         elevation = 5.dp, shape = RoundedCornerShape(25.dp), modifier = modifier
             .height(50.dp)
@@ -296,19 +308,6 @@ fun SearchView(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconButton(onClick = {
-                            scope.launch {
-                                appRepository.getSearchFilter().collect {
-                                    it?.forEach { s ->
-                                        if (s == SourceType.SAKURA.name) {
-                                            selected[SourceType.SAKURA] = true
-                                        }
-
-                                        if (s == SourceType.NAIFEI.name) {
-                                            selected[SourceType.NAIFEI] = true
-                                        }
-                                    }
-                                }
-                            }
                             openDialog = openDialog.not()
                         }) {
                             Icon(
@@ -337,6 +336,9 @@ fun SearchView(
     }
 
     if (openDialog) {
+        val selected = remember {
+            mutableStateMapOf(SourceType.SAKURA to filter.contains(SourceType.SAKURA.netName), SourceType.NAIFEI to filter.contains(SourceType.NAIFEI.netName))
+        }
         Dialog(onDismissRequest = { openDialog = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
@@ -354,7 +356,9 @@ fun SearchView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "樱花动漫")
-                        Checkbox(checked = selected[SourceType.SAKURA]?:false, onCheckedChange = { selected[SourceType.SAKURA] = it })
+                        Checkbox(
+                            checked = selected[SourceType.SAKURA] ?: false,
+                            onCheckedChange = { selected[SourceType.SAKURA] = it })
                     }
 
                     Row(
@@ -366,7 +370,9 @@ fun SearchView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "奈飞")
-                        Checkbox(checked = selected[SourceType.NAIFEI]?:false, onCheckedChange = { selected[SourceType.NAIFEI] = it })
+                        Checkbox(
+                            checked = selected[SourceType.NAIFEI] ?: false,
+                            onCheckedChange = { selected[SourceType.NAIFEI] = it })
                     }
 
                     Text(
@@ -377,8 +383,8 @@ fun SearchView(
                             .clickable {
                                 openDialog = false
                                 val result = mutableSetOf<String>()
-                                if (selected[SourceType.SAKURA] == true) result.add(SourceType.SAKURA.name)
-                                if (selected[SourceType.NAIFEI] == true) result.add(SourceType.NAIFEI.name)
+                                if (selected[SourceType.SAKURA] == true) result.add(SourceType.SAKURA.netName)
+                                if (selected[SourceType.NAIFEI] == true) result.add(SourceType.NAIFEI.netName)
                                 onFilterConfirm(result)
                             },
                         color = MaterialTheme.colors.secondaryVariant,
