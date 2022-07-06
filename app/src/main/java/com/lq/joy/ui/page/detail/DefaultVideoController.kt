@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.Player.STATE_READY
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Log
@@ -89,10 +90,6 @@ class DefaultVideoController(
                     override fun onPlayerError(error: ExoPlaybackException) {
                         Toast.makeText(context, "播放失败", Toast.LENGTH_LONG).show()
                     }
-
-                    override fun onIsLoadingChanged(isLoading: Boolean) {
-
-                    }
                 })
             }
 
@@ -147,7 +144,6 @@ class DefaultVideoController(
     }
 
     override fun release() {
-        Log.d(TAG, "exoPlayer release")
         this.playerView?.player = null
         exoPlayer.release()
     }
@@ -170,6 +166,7 @@ class DefaultVideoController(
 
         }
 
+        playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
         playerView.player = exoPlayer
     }
 

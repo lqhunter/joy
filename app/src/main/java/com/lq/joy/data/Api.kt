@@ -13,3 +13,8 @@ object Api {
     const val NAIFEI_ORG_DETAIL = "/api.php/v1.vod/detail"
 
 }
+
+enum class SourceType {
+    SAKURA,
+    NAIFEI,
+}

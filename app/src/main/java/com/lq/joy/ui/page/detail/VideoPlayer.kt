@@ -68,7 +68,6 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     videoController: DefaultVideoController,
 ) {
-    Icons.Rounded.Lock
     Box(modifier = modifier) {
         AndroidView(
             factory = {
@@ -86,16 +85,6 @@ data class VideoPlayerState(
     val episodeIndex: Int = -1,
     val isPlaying: Boolean = false,
     val isReady: Boolean = false,
-    val controlsVisible: Boolean = true,
-    val controlsEnabled: Boolean = true,
-    val gesturesEnabled: Boolean = true,
     val lockLandscape:Boolean = false,
-    val duration: Long = 1L,
-    val currentPosition: Long = 1L,
-    val secondaryProgress: Long = 1L,
-    val videoSize: Pair<Float, Float> = 1920f to 1080f,
-/*    val draggingProgress: DraggingProgress? = null,
-    val playbackState: PlaybackState = PlaybackState.IDLE,
-    val quickSeekAction: QuickSeekAction = QuickSeekAction.none()*/
 ) : Serializable
 

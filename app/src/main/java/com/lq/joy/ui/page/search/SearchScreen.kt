@@ -4,7 +4,6 @@ package com.lq.joy.ui.page.search
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,24 +24,31 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.lq.joy.TAG
+import com.lq.joy.data.AppRepository
+import com.lq.joy.data.SourceType
 import com.lq.joy.data.ui.VideoSearchBean
 import com.lq.joy.ui.page.common.ItemRow
 import com.lq.joy.utils.isScrolled
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
     onNaifeiSelected: (Int) -> Unit,
-    onSakuraSelected: (String) -> Unit
+    onSakuraSelected: (String) -> Unit,
+    appRepository: AppRepository
 ) {
+    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     var searchContent by remember {
@@ -71,7 +77,14 @@ fun SearchScreen(
                     onSearch = {
                         viewModel.search(it)
                     },
-                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
+                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
+                    onFilterConfirm = {
+                        scope.launch {
+                            appRepository.saveSearchFilter(it)
+                        }
+                    },
+                    appRepository = appRepository,
+                    scope = scope
                 )
             }
         }
@@ -231,11 +244,19 @@ fun SearchView(
     value: String,
     focusRequester: FocusRequester = FocusRequester(),
     onValueChange: (String) -> Unit,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onFilterConfirm: (Set<String>) -> Unit,
+    scope: CoroutineScope = rememberCoroutineScope(),
+    appRepository: AppRepository
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val width = screenWidth * 0.9
+    var openDialog by remember { mutableStateOf(false) }
+    val selected = remember {
+        mutableStateMapOf(SourceType.SAKURA to false, SourceType.NAIFEI to false)
+    }
+
     Card(
         elevation = 5.dp, shape = RoundedCornerShape(25.dp), modifier = modifier
             .height(50.dp)
@@ -274,7 +295,22 @@ fun SearchView(
                             .align(Alignment.CenterEnd),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                appRepository.getSearchFilter().collect {
+                                    it?.forEach { s ->
+                                        if (s == SourceType.SAKURA.name) {
+                                            selected[SourceType.SAKURA] = true
+                                        }
+
+                                        if (s == SourceType.NAIFEI.name) {
+                                            selected[SourceType.NAIFEI] = true
+                                        }
+                                    }
+                                }
+                            }
+                            openDialog = openDialog.not()
+                        }) {
                             Icon(
                                 imageVector = Icons.Rounded.FilterAlt,
                                 contentDescription = null,
@@ -297,6 +333,59 @@ fun SearchView(
 
         LaunchedEffect(focusRequester) {
             focusRequester.requestFocus()
+        }
+    }
+
+    if (openDialog) {
+        Dialog(onDismissRequest = { openDialog = false }) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colors.surface,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .width(150.dp)
+
+                            .padding(start = 16.dp, end = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "樱花动漫")
+                        Checkbox(checked = selected[SourceType.SAKURA]?:false, onCheckedChange = { selected[SourceType.SAKURA] = it })
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .width(150.dp)
+
+                            .padding(start = 16.dp, end = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "奈飞")
+                        Checkbox(checked = selected[SourceType.NAIFEI]?:false, onCheckedChange = { selected[SourceType.NAIFEI] = it })
+                    }
+
+                    Text(
+                        text = "确定",
+                        modifier = Modifier
+                            .width(150.dp)
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable {
+                                openDialog = false
+                                val result = mutableSetOf<String>()
+                                if (selected[SourceType.SAKURA] == true) result.add(SourceType.SAKURA.name)
+                                if (selected[SourceType.NAIFEI] == true) result.add(SourceType.NAIFEI.name)
+                                onFilterConfirm(result)
+                            },
+                        color = MaterialTheme.colors.secondaryVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
     }
 

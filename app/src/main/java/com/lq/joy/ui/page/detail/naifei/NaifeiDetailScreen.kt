@@ -88,7 +88,7 @@ fun NaifeiDetailScreen(
     }
 
 
-    var rowLazyState = rememberLazyListState(
+    val rowLazyState = rememberLazyListState(
         initialFirstVisibleItemIndex = if (_uiState is NaifeiDetailUiState.HasData) {
             if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
         } else 0
