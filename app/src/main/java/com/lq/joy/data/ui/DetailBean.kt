@@ -1,5 +1,6 @@
 package com.lq.joy.data.ui
 
+import com.lq.joy.data.SourceType
 import com.lq.joy.data.sakura.bean.HomeItemBean
 
 data class DetailBean(
@@ -20,4 +21,18 @@ data class PlayBean(
     val playUrl: String
 )
 
-data class RecommendBean(val cover: String, val name: String, val tag: String)
+sealed class RecommendBean(open val cover: String, open val name: String, open val tag: String) {
+    data class NaifeiRecommend(
+        override val cover: String,
+        override val name: String,
+        override val tag: String,
+        val id: Int
+    ) : RecommendBean(cover, name, tag)
+
+    data class SakuraRecommend(
+        override val cover: String,
+        override val name: String,
+        override val tag: String,
+        val htmlUrl: String
+    ) : RecommendBean(cover, name, tag)
+}

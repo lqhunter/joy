@@ -1,5 +1,6 @@
 package com.lq.joy.ui.page.detail
 
+import com.lq.joy.data.Api
 import com.lq.joy.data.Api.NAIFEI_HOST
 import com.lq.joy.data.SourceType
 import com.lq.joy.data.netfix.bean.NaifeiDetailBean
@@ -41,7 +42,18 @@ data class DetailVMState(
                     coverUrl = NAIFEI_HOST + "/" + naifeiDetailBean.data.vod_pic,
                     name = naifeiDetailBean.data.vod_name,
                     score = naifeiDetailBean.data.vod_score,
-                    recommend = mutableListOf()
+                    recommend = mutableListOf<RecommendBean>().apply {
+                        naifeiDetailBean.data.rel_vods.forEach {
+                            add(
+                                RecommendBean.NaifeiRecommend(
+                                    cover = Api.NAIFEI_HOST + "/" + it.vod_pic,
+                                    name = it.vod_name,
+                                    tag = it.vod_tag,
+                                    id = it.vod_id
+                                )
+                            )
+                        }
+                    }
                 )
             }
         } else if (sourceType == SourceType.SAKURA) {
@@ -60,7 +72,24 @@ data class DetailVMState(
                     coverUrl = sakuraDetailBean.coverUrl,
                     name = sakuraDetailBean.animationName,
                     score = sakuraDetailBean.score,
-                    recommend = mutableListOf()
+                    recommend = mutableListOf<RecommendBean>().apply {
+                        sakuraDetailBean.recommend.forEach {
+                            add(
+                                RecommendBean.SakuraRecommend(
+                                    cover = it.coverUrl,
+                                    name = it.name,
+                                    tag = it.tags.let { tag ->
+                                        val sb = StringBuilder()
+                                        tag?.forEach { t ->
+                                            sb.append(t.name).append(" ")
+                                        }
+                                        sb.toString()
+                                    },
+                                    htmlUrl = it.detailUrl
+                                )
+                            )
+                        }
+                    }
                 )
             }
         } else {

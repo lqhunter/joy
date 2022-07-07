@@ -10,8 +10,8 @@ data class SearchViewModelState(
     val reSearch: Boolean = false,
     val key: String = "",
     val filter:Set<String> = setOf(SourceType.SAKURA.netName),
-    val naifeiFlow: Flow<PagingData<VideoSearchBean>> = emptyFlow(),
-    val sakuraFlow: Flow<PagingData<VideoSearchBean>> = emptyFlow()
+    val naifeiFlow: Flow<PagingData<VideoSearchBean>>? = null,
+    val sakuraFlow: Flow<PagingData<VideoSearchBean>>? = null
 )
 
 

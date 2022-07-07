@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.lq.joy.data.AppContainer
 import com.lq.joy.data.SourceType
+import com.lq.joy.data.ui.RecommendBean
 import com.lq.joy.ui.page.detail.DetailScreen
 import com.lq.joy.ui.page.detail.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.SakuraDetailViewModel
@@ -53,7 +54,8 @@ fun JoyNavGraph(
                         appContainer.appRepository
                     )
                 )
-            SearchScreen(viewModel,
+            SearchScreen(
+                viewModel,
                 onNaifeiSelected = {
                     navigationActions.navigateToNaifeiDetail(it)
                 },
@@ -77,7 +79,13 @@ fun JoyNavGraph(
                 detailType = SourceType.SAKURA,
                 viewModel = viewModel,
                 isExpandedScreen = isLandscape,
-                onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },
+                onRecommendClick = {
+                    if (it is RecommendBean.NaifeiRecommend) {
+                        navigationActions.navigateToNaifeiDetail(it.id)
+                    } else if (it is RecommendBean.SakuraRecommend) {
+                        navigationActions.navigateToSakuraDetail(it.htmlUrl)
+                    }
+                },
                 systemUiController = systemUiController,
                 finish = { navController.popBackStack() },
                 originalOrientation = originalOrientation
@@ -105,7 +113,13 @@ fun JoyNavGraph(
                 detailType = SourceType.NAIFEI,
                 viewModel = viewModel,
                 isExpandedScreen = isLandscape,
-                onRecommendClick = { navigationActions.navigateToNaifeiDetail(it) },
+                onRecommendClick = {
+                    if (it is RecommendBean.NaifeiRecommend) {
+                        navigationActions.navigateToNaifeiDetail(it.id)
+                    } else if (it is RecommendBean.SakuraRecommend) {
+                        navigationActions.navigateToSakuraDetail(it.htmlUrl)
+                    }
+                },
                 systemUiController = systemUiController,
                 finish = { navController.popBackStack() },
                 originalOrientation = originalOrientation

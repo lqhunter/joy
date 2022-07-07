@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +49,6 @@ import com.lq.joy.findActivity
 import com.lq.joy.ui.page.common.CenterLoadingContent
 import com.lq.joy.ui.page.common.SourceSelectorItem
 import com.lq.joy.ui.page.common.SourceUiType
-import com.lq.joy.ui.page.detail.naifei.DetailUiState
 import com.lq.joy.ui.theme.Grey500
 import kotlinx.coroutines.launch
 
@@ -59,7 +59,7 @@ fun DetailScreen(
     isExpandedScreen: Boolean,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     systemUiController: SystemUiController = rememberSystemUiController(),
-    onRecommendClick: (Int) -> Unit,
+    onRecommendClick: (RecommendBean) -> Unit,
     finish: () -> Unit,
     originalOrientation: Int
 ) {
@@ -146,7 +146,7 @@ fun DetailScreenNaifei(
     videoPlayerState: VideoPlayerState,
     videoController: DefaultVideoController,
     systemUiController: SystemUiController,
-    onRecommendClick: (Int) -> Unit,
+    onRecommendClick: (RecommendBean) -> Unit,
     finish: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -227,7 +227,8 @@ fun DetailScreenNaifei(
 
                         IconToggleButton(
                             checked = _uiState.isFavorite,
-                            onCheckedChange = { }
+                            onCheckedChange = {
+                            }
                         ) {
                             Icon(
                                 imageVector = if (_uiState.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
@@ -262,7 +263,7 @@ fun DetailScreenSakura(
     videoPlayerState: VideoPlayerState,
     videoController: DefaultVideoController,
     systemUiController: SystemUiController,
-    onRecommendClick: (Int) -> Unit,
+    onRecommendClick: (RecommendBean) -> Unit,
     finish: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -383,7 +384,7 @@ private fun VideoViewWithDetail(
     coverUrl: String,
     onEpisodeSelected: (Int, PlayBean) -> Unit,
     onSourceSelected: (Int) -> Unit,
-    onRecommendClick: (Int) -> Unit,
+    onRecommendClick: (RecommendBean) -> Unit,
     episodeIntroduce: @Composable LazyItemScope.() -> Unit,
     rowLazyState: LazyListState,
     finish: () -> Unit
@@ -478,13 +479,20 @@ private fun VideoViewWithDetail(
 
                 }
 
-                itemsIndexed(recommend) { index, item ->
-                    ItemRow(
-                        item = item,
-                        onClick = onRecommendClick,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
+                if(recommend.isNotEmpty()) {
+                    itemsIndexed(recommend) { index, item ->
+                        ItemRow(
+                            item = item,
+                            onClick = onRecommendClick,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                } else {
+                    item {
+                        Text(text = "没有推荐数据！\n懒得找图片，就用文字吧", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                    }
                 }
+
             }
         } else {
             val listState =
@@ -617,6 +625,7 @@ private fun EpisodeSelector(
                 }
 
                 itemsIndexed(videoSource) { index, item ->
+                    Log.d(TAG, "ppp index:${index}")
                     SourceSelectorItem(
                         name = "线路${index + 1}",
                         isSelected = currentSourceIndex == index,
@@ -662,11 +671,11 @@ private fun EpisodeSelector(
 private fun ItemRow(
     item: RecommendBean,
     modifier: Modifier = Modifier,
-    onClick: (Int) -> Unit
+    onClick: (RecommendBean) -> Unit
 ) {
     Row(modifier = modifier
         .clickable {
-//            onClick(item.vod_id)
+            onClick(item)
         }
         .height(100.dp)
         .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically)
