@@ -45,7 +45,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SearchScreen(
@@ -93,8 +92,8 @@ fun SearchScreen(
         }
 
 
-        val naifeiPaging = uiState.naifeiFlow.collectAsLazyPagingItems()
-        val sakuraPaging = uiState.sakuraFlow.collectAsLazyPagingItems()
+        val naifeiPaging = uiState.naifeiFlow?.collectAsLazyPagingItems()
+        val sakuraPaging = uiState.sakuraFlow?.collectAsLazyPagingItems()
 
 
         if (uiState.filter.size > 1) {
@@ -132,119 +131,143 @@ fun SearchScreen(
             }
         }
 
+
         HorizontalPager(count = uiState.filter.size, state = pagerState) { page ->
             if (uiState.filter.toList()[page] == SourceType.SAKURA.netName) {
-                if (sakuraPaging.loadState.refresh is LoadState.Loading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
-                    items(sakuraPaging) { item ->
-                        if (item is VideoSearchBean.SakuraBean) {
-                            Column(modifier = Modifier.clickable {
-                                onSakuraSelected(item.detailUrl)
-                            }) {
-                                Spacer(modifier = Modifier.padding(5.dp))
-                                ItemRow(
-                                    item = item,
-                                    modifier = Modifier.padding(start = 5.dp)
-                                )
-                                Spacer(modifier = Modifier.padding(5.dp))
-                                Divider(thickness = Dp.Hairline)
-                            }
+                if (sakuraPaging != null) {
+                    if (sakuraPaging.loadState.refresh is LoadState.Loading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
-                    sakuraPaging.apply {
-                        when {
-                            loadState.refresh is LoadState.Loading -> {
 
+                    LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
+                        items(sakuraPaging) { item ->
+                            if (item is VideoSearchBean.SakuraBean) {
+                                Column(modifier = Modifier.clickable {
+                                    onSakuraSelected(item.detailUrl)
+                                }) {
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    ItemRow(
+                                        item = item,
+                                        modifier = Modifier.padding(start = 5.dp)
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    Divider(thickness = Dp.Hairline)
+                                }
                             }
-                            loadState.refresh is LoadState.Error -> {
+                        }
 
-                            }
-                            loadState.append is LoadState.Loading -> {
-                                item {
-                                    Log.d(TAG, "loadState.append is LoadState.Loading")
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 5.dp, bottom = 5.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        CircularProgressIndicator()
+                        sakuraPaging.apply {
+                            when {
+                                loadState.refresh is LoadState.NotLoading
+                                        && loadState.append.endOfPaginationReached
+                                        && sakuraPaging.itemCount == 0 -> {
+                                    item {
+                                        Text(
+                                            text = "没有数据！",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                                loadState.refresh is LoadState.Error && sakuraPaging.itemCount == 0 -> {
+                                    item {
+                                        Text(
+                                            text = "没有数据！",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                                loadState.append is LoadState.Loading -> {
+                                    item {
+                                        Log.d(TAG, "loadState.append is LoadState.Loading")
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 5.dp, bottom = 5.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
                                     }
                                 }
                             }
-                            loadState.append is LoadState.Error -> {
-
-                            }
-                            loadState.append is LoadState.NotLoading -> {
-
-                            }
                         }
-                    }
-                }
 
+                    }
+
+                }
             } else if (uiState.filter.toList()[page] == SourceType.NAIFEI.netName) {
-                if (naifeiPaging.loadState.refresh is LoadState.Loading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
-                    items(
-                        naifeiPaging,
-                        key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
-                        if (item is VideoSearchBean.NaifeiBean) {
-                            Column(modifier = Modifier.clickable {
-                                onNaifeiSelected(item.vodId)
-                            }) {
-                                Spacer(modifier = Modifier.padding(5.dp))
-                                ItemRow(
-                                    item = item,
-                                    modifier = Modifier.padding(start = 5.dp)
-                                )
-                                Spacer(modifier = Modifier.padding(5.dp))
-                                Divider(thickness = Dp.Hairline)
-                            }
+
+                if (naifeiPaging != null) {
+                    if (naifeiPaging.loadState.refresh is LoadState.Loading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
-                    naifeiPaging.apply {
-                        when {
-                            loadState.refresh is LoadState.Loading -> {
-
-                            }
-                            loadState.refresh is LoadState.Error -> {
-
-                            }
-                            loadState.append is LoadState.Loading -> {
-                                item {
-                                    Log.d(TAG, "loadState.append is LoadState.Loading")
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 5.dp, bottom = 5.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        CircularProgressIndicator()
-                                    }
+                    LazyColumn(/*state = lazyListState, */modifier = Modifier.fillMaxSize()) {
+                        items(
+                            naifeiPaging,
+                            key = { item: VideoSearchBean -> (item as VideoSearchBean.NaifeiBean).vodId }) { item ->
+                            if (item is VideoSearchBean.NaifeiBean) {
+                                Column(modifier = Modifier.clickable {
+                                    onNaifeiSelected(item.vodId)
+                                }) {
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    ItemRow(
+                                        item = item,
+                                        modifier = Modifier.padding(start = 5.dp)
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
+                                    Divider(thickness = Dp.Hairline)
                                 }
                             }
-                            loadState.append is LoadState.Error -> {
-
-                            }
-                            loadState.append is LoadState.NotLoading -> {
-                                val e = naifeiPaging.loadState.append as LoadState.NotLoading
-
+                        }
+                        naifeiPaging.apply {
+                            when {
+                                loadState.refresh is LoadState.NotLoading
+                                        && loadState.append.endOfPaginationReached
+                                        && naifeiPaging.itemCount == 0 -> {
+                                    item {
+                                        Text(
+                                            text = "没有数据！",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                                loadState.refresh is LoadState.Error && naifeiPaging.itemCount == 0 -> {
+                                    item {
+                                        Text(
+                                            text = "没有数据！",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                                loadState.append is LoadState.Loading -> {
+                                    item {
+                                        Log.d(TAG, "loadState.append is LoadState.Loading")
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 5.dp, bottom = 5.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -263,7 +286,7 @@ fun SearchView(
     onValueChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onFilterConfirm: (Set<String>) -> Unit,
-    filter:Set<String>
+    filter: Set<String>
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -324,8 +347,10 @@ fun SearchView(
             },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    onSearch(value)
-                    focusManager.clearFocus()
+                    if (value.trim().isNotBlank()) {
+                        onSearch(value)
+                        focusManager.clearFocus()
+                    }
                 }
             )
         )
@@ -337,7 +362,10 @@ fun SearchView(
 
     if (openDialog) {
         val selected = remember {
-            mutableStateMapOf(SourceType.SAKURA to filter.contains(SourceType.SAKURA.netName), SourceType.NAIFEI to filter.contains(SourceType.NAIFEI.netName))
+            mutableStateMapOf(
+                SourceType.SAKURA to filter.contains(SourceType.SAKURA.netName),
+                SourceType.NAIFEI to filter.contains(SourceType.NAIFEI.netName)
+            )
         }
         Dialog(onDismissRequest = { openDialog = false }) {
             Surface(
