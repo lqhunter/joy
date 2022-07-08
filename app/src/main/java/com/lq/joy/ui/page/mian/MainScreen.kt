@@ -18,18 +18,16 @@ import com.lq.joy.data.AppContainer
 
 @Composable
 fun MainScreen(appContainer: AppContainer, onSearchClick: () -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Logo(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 10.dp)
-            )
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        Logo(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 100.dp, bottom = 10.dp)
+        )
 
-        item {
-            FakeSearchView(onClick = onSearchClick)
-        }
+        FakeSearchView(onClick = onSearchClick)
+
+
     }
 
 }

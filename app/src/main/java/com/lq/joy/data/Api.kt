@@ -15,6 +15,9 @@ object Api {
 
 }
 
+/**
+ * 只增不减，顺序不要换，否则数据库中存储的数据会乱
+ */
 enum class SourceType(val netName: String) {
     SAKURA("樱花动漫"),
     NAIFEI("奈飞"),

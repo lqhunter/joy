@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -16,6 +17,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
         }
     }
 
@@ -75,16 +85,22 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.13.1'
     //okhttp
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
+    //exoplayer播放器
     implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.14.1'
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation "androidx.window:window:1.0.0"
-
+    //paging
     implementation("androidx.paging:paging-runtime:$paging_version")
     implementation("androidx.paging:paging-compose:1.0.0-alpha14")
+    //datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+    //room数据库
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-paging:2.5.0-alpha02")
 }
