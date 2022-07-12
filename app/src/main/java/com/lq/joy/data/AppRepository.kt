@@ -43,9 +43,30 @@ class AppRepository(private val context: Context, private val db: AppDatabase) {
         }.flow
     }
 
-    fun isFavourite(type: SourceType, uniqueTag: String):Flow<Boolean> {
-        return db.historyDao().getFavourite(type, uniqueTag).map {
-            null != it
-        }
+    fun isFavourite(type: SourceType, uniqueTag: String): Flow<Favourite?> {
+        return db.historyDao().getFavourite(type.ordinal, uniqueTag)
+    }
+
+    suspend fun addFavourite(
+        type: SourceType,
+        uniqueTag: String,
+        jumpKey: String,
+        coverUrl: String,
+        name: String
+    ) {
+        db.historyDao().addFavourite(
+            Favourite(
+                type = type.ordinal,
+                uniqueTag = uniqueTag,
+                jumpKey = jumpKey,
+                coverUrl = coverUrl,
+                name = name,
+                updateTime = System.currentTimeMillis()
+            )
+        )
+    }
+
+    suspend fun deletedFavourite(favourite: Favourite) {
+        db.historyDao().deleteFavourite(favourite)
     }
 }

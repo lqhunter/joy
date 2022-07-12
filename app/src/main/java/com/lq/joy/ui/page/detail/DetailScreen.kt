@@ -228,6 +228,11 @@ fun DetailScreenNaifei(
                         IconToggleButton(
                             checked = _uiState.isFavorite,
                             onCheckedChange = {
+                                if (_uiState.isFavorite) {
+
+                                } else {
+
+                                }
                             }
                         ) {
                             Icon(
@@ -345,7 +350,13 @@ fun DetailScreenSakura(
 
                         IconToggleButton(
                             checked = _uiState.isFavorite,
-                            onCheckedChange = { }
+                            onCheckedChange = {
+                                if (_uiState.isFavorite) {
+                                    viewModel.deleteFavourite()
+                                } else {
+                                    viewModel.addFavourite()
+                                }
+                            }
                         ) {
                             Icon(
                                 imageVector = if (_uiState.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,

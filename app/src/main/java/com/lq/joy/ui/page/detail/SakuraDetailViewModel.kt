@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
+import com.lq.joy.data.AppRepository
 import com.lq.joy.data.BaseResult
 import com.lq.joy.data.SourceType
 import com.lq.joy.data.sakura.ISakuraRepository
@@ -17,6 +18,7 @@ import kotlinx.coroutines.withContext
 
 class SakuraDetailViewModel(
     private val sakuraRepository: ISakuraRepository,
+    private val appRepository: AppRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -26,6 +28,7 @@ class SakuraDetailViewModel(
 
         fun providerFactory(
             sakuraRepository: ISakuraRepository,
+            appRepository: AppRepository,
             owner: SavedStateRegistryOwner,
             defaultArgs: Bundle? = null,
         ) = object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
@@ -35,7 +38,7 @@ class SakuraDetailViewModel(
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return SakuraDetailViewModel(sakuraRepository, handle) as T
+                return SakuraDetailViewModel(sakuraRepository, appRepository, handle) as T
             }
         }
     }
@@ -53,6 +56,15 @@ class SakuraDetailViewModel(
 
     init {
         getDetailHtml(Api.HOME + episodeUrl)
+
+        viewModelScope.launch {
+            appRepository.isFavourite(SourceType.SAKURA, episodeUrl).collect { f ->
+                viewModelState.update {
+                    it.copy(favourite = f)
+                }
+            }
+        }
+
     }
 
     private fun getDetailHtml(url: String) {
@@ -94,6 +106,30 @@ class SakuraDetailViewModel(
             it.copy(
                 currentEpisodeIndex = index,
             )
+        }
+    }
+
+    fun addFavourite() {
+        viewModelState.value.favourite ?: let {
+            //数据库中没有，才进行添加
+            viewModelScope.launch {
+                appRepository.addFavourite(
+                    type = SourceType.SAKURA,
+                    uniqueTag = episodeUrl,
+                    jumpKey = episodeUrl,
+                    coverUrl = viewModelState.value.sakuraDetailBean!!.coverUrl,
+                    name = viewModelState.value.sakuraDetailBean!!.animationName
+                )
+
+            }
+        }
+    }
+
+    fun deleteFavourite() {
+        viewModelState.value.favourite?.let {
+            viewModelScope.launch {
+                appRepository.deletedFavourite(it)
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import com.lq.joy.data.ui.DetailBean
 import com.lq.joy.data.ui.PlayBean
 import com.lq.joy.data.ui.RecommendBean
 import com.lq.joy.data.ui.VideoSource
+import com.lq.joy.db.Favourite
 
 data class DetailVMState(
     val sourceType: SourceType,
@@ -15,7 +16,7 @@ data class DetailVMState(
     val currentSourceIndex: Int = 0,
     val currentEpisodeIndex: Int = -1,
     val isPlaying: Boolean = false,
-    val isFavorite: Boolean = false,
+    val favourite: Favourite? = null,
     val naifeiDetailBean: NaifeiDetailBean? = null,
     val sakuraDetailBean: DetailBean? = null
 ) {
@@ -27,7 +28,7 @@ data class DetailVMState(
                 DetailUiState.HasData(
                     isLoading = isLoading,
                     isPlaying = isPlaying,
-                    isFavorite = isFavorite,
+                    isFavorite = favourite != null,
                     videoSource = mutableListOf<VideoSource>().apply {
                         naifeiDetailBean.data.vod_play_list.forEachIndexed { index, vodPlay ->
                             add(VideoSource("线路${index}", mutableListOf<PlayBean>().apply {
@@ -63,7 +64,7 @@ data class DetailVMState(
                 DetailUiState.HasData(
                     isLoading = isLoading,
                     isPlaying = isPlaying,
-                    isFavorite = isFavorite,
+                    isFavorite = favourite != null,
                     videoSource = mutableListOf(
                         VideoSource("线路1", sakuraDetailBean.episodes)
                     ),

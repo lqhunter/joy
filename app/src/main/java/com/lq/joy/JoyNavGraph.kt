@@ -69,6 +69,7 @@ fun JoyNavGraph(
                 viewModel(
                     factory = SakuraDetailViewModel.providerFactory(
                         sakuraRepository = appContainer.sakuraRepository,
+                        appRepository = appContainer.appRepository,
                         owner = backStackEntry,
                         defaultArgs = backStackEntry.arguments
                     )

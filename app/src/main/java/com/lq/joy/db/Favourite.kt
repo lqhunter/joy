@@ -8,7 +8,7 @@ const val TABLE_FAVOURITE = "Favourite"
 
 @Entity(tableName = TABLE_FAVOURITE)
 data class Favourite(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     //资源类型，SourceType.SAKURA.ordinal
     val type: Int,
     //唯一标识
