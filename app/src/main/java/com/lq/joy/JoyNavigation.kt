@@ -10,8 +10,9 @@ import androidx.navigation.navOptions
 import com.lq.joy.data.ui.VideoSearchBean
 
 sealed class Destinations(val route: String) {
-    object Home : Destinations("home")
     object Main : Destinations("main")
+    object Favourite : Destinations("favourite")
+
     object Search : Destinations("search")
     object More : Destinations("more")
 
@@ -20,25 +21,11 @@ sealed class Destinations(val route: String) {
     }
 
     object NaifeiDetail : Destinations("naifeiDetail")
+
 }
 
 
 class NavigationActions(navController: NavController) {
-    val navigateToHome: () -> Unit = {
-        navController.navigate(Destinations.Home.route) {
-            // Pop up to the start destination of the graph to
-            // avoid building up a large stack of destinations
-            // on the back stack as users select items
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            // Avoid multiple copies of the same destination when
-            // reselecting the same item
-            launchSingleTop = true
-            // Restore state when reselecting a previously selected item
-            restoreState = true
-        }
-    }
 
     val navigateToMain: () -> Unit = {
         navController.navigate(Destinations.Main.route) {
@@ -59,6 +46,11 @@ class NavigationActions(navController: NavController) {
             restoreState = true
         }
     }
+
+    val navigateToFavourite: () -> Unit = {
+        navController.navigate(Destinations.Favourite.route) {}
+    }
+
 
     val navigateToSakuraDetail: (String) -> Unit = {
         navController.navigate(Destinations.SakuraDetail.createRoute(Uri.encode(it))) {

@@ -1,5 +1,6 @@
 package com.lq.joy
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
@@ -18,7 +19,8 @@ import com.lq.joy.data.ui.RecommendBean
 import com.lq.joy.ui.page.detail.DetailScreen
 import com.lq.joy.ui.page.detail.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.SakuraDetailViewModel
-import com.lq.joy.ui.page.home.HomeScreen
+import com.lq.joy.ui.page.favourite.FavouriteScreen
+import com.lq.joy.ui.page.favourite.FavouriteViewModel
 import com.lq.joy.ui.page.mian.MainScreen
 import com.lq.joy.ui.page.search.SearchScreen
 import com.lq.joy.ui.page.search.SearchViewModel
@@ -32,17 +34,14 @@ fun JoyNavGraph(
     navigationActions: NavigationActions
 ) {
     NavHost(navController = navController, startDestination = Destinations.Main.route) {
-        jump(Destinations.Home) {
-            HomeScreen(
+        jump(Destinations.Main) {
+            MainScreen(
                 appContainer,
                 onSearchClick = { navigationActions.navigateToSearch() },
-                onAnimationClick = { },
-                onMoreClick = { navigationActions.navigationToMore(it) }
-            )
-        }
-
-        jump(Destinations.Main) {
-            MainScreen(appContainer, onSearchClick = { navigationActions.navigateToSearch() })
+                onFavouriteClick = {
+                    Log.d(TAG, "navigateToFavourite")
+                    navigationActions.navigateToFavourite()
+                })
         }
 
         jump(Destinations.Search) {
@@ -62,6 +61,18 @@ fun JoyNavGraph(
                 onSakuraSelected = { navigationActions.navigateToSakuraDetail(it) },
                 appRepository = appContainer.appRepository
             )
+        }
+
+        jump(Destinations.Favourite) {
+            Log.d(TAG, "jumpToFavourite")
+
+            val viewModel: FavouriteViewModel = viewModel(
+                factory = FavouriteViewModel.providerFactory(
+                    appContainer.appRepository
+                )
+            )
+
+            FavouriteScreen(viewModel)
         }
 
         jump(Destinations.SakuraDetail) { backStackEntry ->
