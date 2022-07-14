@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -60,37 +61,46 @@ fun FavouriteScreen(viewModel: FavouriteViewModel, finish: () -> Unit, jumpDetai
         }
 
     }) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(top = 5.dp)
-        ) {
-            itemsIndexed(paging, key = { index, fav -> fav.uniqueTag }) { index, item ->
-                item?.let {
-                    Column {
-                        FavouriteItem(
-                            favourite = it, modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        jumpDetail(it.type, it.jumpKey)
-                                    },
-                                    onLongClick = {
-                                        longClickIndex = index
-                                        Log.d(TAG, "longClick${longClickIndex}")
-                                        deleteDialogShow = true
-                                    },
-                                )
-                                .padding(5.dp)
-                                .fillMaxWidth()
-                        )
-                        Divider(
-                            thickness = Dp.Hairline,
-                            color = MaterialTheme.colorScheme.onBackground.copy(0.5f)
-                        )
+
+        if (paging.itemCount > 0) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(top = 5.dp)
+            ) {
+                itemsIndexed(paging, key = { index, fav -> fav.uniqueTag }) { index, item ->
+                    item?.let {
+                        Column {
+                            FavouriteItem(
+                                favourite = it, modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            jumpDetail(it.type, it.jumpKey)
+                                        },
+                                        onLongClick = {
+                                            longClickIndex = index
+                                            Log.d(TAG, "longClick${longClickIndex}")
+                                            deleteDialogShow = true
+                                        },
+                                    )
+                                    .padding(5.dp)
+                                    .fillMaxWidth()
+                            )
+                            Divider(
+                                thickness = Dp.Hairline,
+                                color = MaterialTheme.colorScheme.onBackground.copy(0.5f)
+                            )
+                        }
                     }
                 }
             }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "无数据", fontSize = 20.sp)
+            }
         }
+
+
 
         if (deleteDialogShow && longClickIndex != -1) {
             AlertDialog(onDismissRequest = {

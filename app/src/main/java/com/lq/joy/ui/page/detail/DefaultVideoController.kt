@@ -4,20 +4,14 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.compose.runtime.collectAsState
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.Player.STATE_READY
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Log
-import com.google.android.exoplayer2.util.Util
-import com.lq.joy.JoyApplication
 import com.lq.joy.R
 import com.lq.joy.TAG
 import kotlinx.coroutines.CoroutineScope
@@ -80,6 +74,7 @@ class DefaultVideoController(
 
                     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                         val index = mediaItem?.playbackProperties?.tag
+                        //樱花动漫没有tag,不会走这里
                         if (index is Int) {
                             _state.update {
                                 it.copy(episodeIndex = index)

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -229,9 +230,9 @@ fun DetailScreenNaifei(
                             checked = _uiState.isFavorite,
                             onCheckedChange = {
                                 if (_uiState.isFavorite) {
-
+                                    viewModel.deleteFavourite()
                                 } else {
-
+                                    viewModel.addFavourite()
                                 }
                             }
                         ) {
@@ -320,14 +321,12 @@ fun DetailScreenSakura(
                 recommend = _uiState.recommend,
                 coverUrl = _uiState.coverUrl,
                 onSourceSelected = {
-                    viewModel.selectEpisode(it)
-
                 },
                 onEpisodeSelected = { index, playBean ->
                     scope.launch {
                         val url = viewModel.getPlayUrl(playBean.playUrl)
                         url?.run {
-                            videoController.setItems(mutableListOf(MediaItem.Builder().setUri(this).setTag(0).build()), 0)
+                            videoController.setItems(mutableListOf(MediaItem.Builder().setUri(this).build()), 0)
                         }
                     }
                     viewModel.selectEpisode(index)

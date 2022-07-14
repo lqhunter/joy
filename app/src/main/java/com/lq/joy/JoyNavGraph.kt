@@ -126,6 +126,7 @@ fun JoyNavGraph(
                 viewModel(
                     factory = NaifeiDetailViewModel.providerFactory(
                         naifeiRepository = appContainer.naifeiRepository,
+                        appRepository = appContainer.appRepository,
                         owner = backStackEntry,
                         defaultArgs = backStackEntry.arguments
                     )

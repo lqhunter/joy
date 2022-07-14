@@ -6,6 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lq.joy.data.Api
+import com.lq.joy.data.AppRepository
 import com.lq.joy.data.SourceType
 import com.lq.joy.data.netfix.INaifeiRepository
 import kotlinx.coroutines.flow.*
@@ -13,12 +15,14 @@ import kotlinx.coroutines.launch
 
 class NaifeiDetailViewModel(
     private val naifeiRepository: INaifeiRepository,
+    private val appRepository: AppRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
         fun providerFactory(
             naifeiRepository: INaifeiRepository,
+            appRepository: AppRepository,
             owner: SavedStateRegistryOwner,
             defaultArgs: Bundle? = null,
         ) = object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
@@ -28,7 +32,7 @@ class NaifeiDetailViewModel(
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return NaifeiDetailViewModel(naifeiRepository, handle) as T
+                return NaifeiDetailViewModel(naifeiRepository, appRepository, handle) as T
             }
         }
     }
@@ -49,6 +53,13 @@ class NaifeiDetailViewModel(
 
     init {
         loadDetail(vodId)
+        viewModelScope.launch {
+            appRepository.isFavourite(SourceType.NAIFEI, "$vodId").collect { f ->
+                viewModelState.update {
+                    it.copy(favourite = f)
+                }
+            }
+        }
     }
 
     fun selectEpisode(index: Int) {
@@ -86,6 +97,30 @@ class NaifeiDetailViewModel(
                 }
             }
 
+        }
+    }
+
+    fun addFavourite() {
+        viewModelState.value.favourite ?: let {
+            //数据库中没有，才进行添加
+            viewModelScope.launch {
+                appRepository.addFavourite(
+                    type = SourceType.NAIFEI,
+                    uniqueTag = "$vodId",
+                    jumpKey = "$vodId",
+                    coverUrl = Api.NAIFEI_HOST + "/" + viewModelState.value.naifeiDetailBean!!.data.vod_pic,
+                    name = viewModelState.value.naifeiDetailBean!!.data.vod_name
+                )
+
+            }
+        }
+    }
+
+    fun deleteFavourite() {
+        viewModelState.value.favourite?.let {
+            viewModelScope.launch {
+                appRepository.deletedFavourite(it)
+            }
         }
     }
 }
