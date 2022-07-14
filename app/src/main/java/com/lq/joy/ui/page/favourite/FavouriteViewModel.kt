@@ -7,6 +7,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.lq.joy.data.AppRepository
 import com.lq.joy.db.Favourite
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class FavouriteViewModel(
     private val appRepository: AppRepository,
@@ -35,6 +36,12 @@ class FavouriteViewModel(
         SharingStarted.Eagerly,
         viewModelState.value
     )
+
+    fun deleteFavourite(favourite: Favourite) {
+        viewModelScope.launch {
+            appRepository.deletedFavourite(favourite)
+        }
+    }
 
 }
 

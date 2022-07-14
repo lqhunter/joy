@@ -71,8 +71,19 @@ fun JoyNavGraph(
                     appContainer.appRepository
                 )
             )
+            FavouriteScreen(viewModel, finish = {
+                navController.popBackStack()
+            }, jumpDetail = { sourceType, jumpKey ->
+                when(sourceType) {
+                    SourceType.SAKURA.ordinal -> {
+                        navigationActions.navigateToSakuraDetail(jumpKey)
+                    }
+                    SourceType.NAIFEI.ordinal -> {
+                        navigationActions.navigateToNaifeiDetail(jumpKey.toInt())
+                    }
+                }
 
-            FavouriteScreen(viewModel)
+            })
         }
 
         jump(Destinations.SakuraDetail) { backStackEntry ->
