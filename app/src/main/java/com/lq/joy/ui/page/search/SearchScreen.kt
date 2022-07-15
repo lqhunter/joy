@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -51,7 +52,8 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onNaifeiSelected: (Int) -> Unit,
     onSakuraSelected: (String) -> Unit,
-    appRepository: AppRepository
+    appRepository: AppRepository,
+    searchScreenKeyBoard: Boolean
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
@@ -87,7 +89,8 @@ fun SearchScreen(
                         appRepository.saveSearchFilter(it)
                     }
                 },
-                filter = uiState.filter
+                filter = uiState.filter,
+                searchScreenKeyBoard = searchScreenKeyBoard
             )
         }
 
@@ -286,7 +289,8 @@ fun SearchView(
     onValueChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onFilterConfirm: (Set<String>) -> Unit,
-    filter: Set<String>
+    filter: Set<String>,
+    searchScreenKeyBoard:Boolean
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -355,9 +359,9 @@ fun SearchView(
             )
         )
 
-        LaunchedEffect(focusRequester) {
-            focusRequester.requestFocus()
-        }
+            LaunchedEffect(key1 = focusRequester, key2 = searchScreenKeyBoard) {
+                focusRequester.requestFocus()
+            }
     }
 
     if (openDialog) {

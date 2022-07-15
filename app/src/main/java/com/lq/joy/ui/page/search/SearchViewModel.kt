@@ -54,19 +54,6 @@ class SearchViewModel(
         }
     }
 
-    fun searchNaifei(key: String? = null): Flow<PagingData<VideoSearchBean>> {
-        return if (key == null) {
-            emptyFlow()
-        } else
-            naifeiRepository.search(10, key).cachedIn(viewModelScope)
-    }
-
-    fun searchSakura(key: String? = null): Flow<PagingData<VideoSearchBean>> {
-        return if (key == null) {
-            emptyFlow()
-        } else
-            return sakuraRepository.search(key).cachedIn(viewModelScope)
-    }
 
     companion object {
         fun providerFactory(

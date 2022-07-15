@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,11 +33,20 @@ fun JoyNavGraph(
     systemUiController: SystemUiController,
     navigationActions: NavigationActions
 ) {
+
+    //每次进入搜索页，键盘都会弹出来，这里控制只弹出一次。这样写感觉不太好
+    var searchScreenKeyBoard by remember {
+        mutableStateOf(true)
+    }
+
     NavHost(navController = navController, startDestination = Destinations.Main.route) {
         jump(Destinations.Main) {
             MainScreen(
                 appContainer,
-                onSearchClick = { navigationActions.navigateToSearch() },
+                onSearchClick = {
+                    searchScreenKeyBoard = true
+                    navigationActions.navigateToSearch()
+                },
                 onFavouriteClick = {
                     Log.d(TAG, "navigateToFavourite")
                     navigationActions.navigateToFavourite()
@@ -59,7 +68,8 @@ fun JoyNavGraph(
                     navigationActions.navigateToNaifeiDetail(it)
                 },
                 onSakuraSelected = { navigationActions.navigateToSakuraDetail(it) },
-                appRepository = appContainer.appRepository
+                appRepository = appContainer.appRepository,
+                searchScreenKeyBoard = searchScreenKeyBoard
             )
         }
 
@@ -74,7 +84,7 @@ fun JoyNavGraph(
             FavouriteScreen(viewModel, finish = {
                 navController.popBackStack()
             }, jumpDetail = { sourceType, jumpKey ->
-                when(sourceType) {
+                when (sourceType) {
                     SourceType.SAKURA.ordinal -> {
                         navigationActions.navigateToSakuraDetail(jumpKey)
                     }
@@ -110,7 +120,10 @@ fun JoyNavGraph(
                     }
                 },
                 systemUiController = systemUiController,
-                finish = { navController.popBackStack() },
+                finish = {
+                    searchScreenKeyBoard = false
+                    navController.popBackStack()
+                },
                 originalOrientation = originalOrientation
             )
         }
@@ -144,7 +157,10 @@ fun JoyNavGraph(
                     }
                 },
                 systemUiController = systemUiController,
-                finish = { navController.popBackStack() },
+                finish = {
+                    searchScreenKeyBoard = false
+                    navController.popBackStack()
+                },
                 originalOrientation = originalOrientation
             )
 

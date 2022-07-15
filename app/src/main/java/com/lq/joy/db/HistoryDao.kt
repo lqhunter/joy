@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HistoryDao {
-    @Query("SELECT * FROM $TABLE_FAVOURITE")
+    @Query("SELECT * FROM $TABLE_FAVOURITE ORDER BY updateTime DESC")
     fun getFavouriteList(): PagingSource<Int, Favourite>
 
     @Query("SELECT * FROM $TABLE_FAVOURITE WHERE type = :type AND uniqueTag = :uniqueTag")
