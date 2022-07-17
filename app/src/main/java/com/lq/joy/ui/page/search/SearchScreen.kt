@@ -53,7 +53,6 @@ fun SearchScreen(
     onNaifeiSelected: (Int) -> Unit,
     onSakuraSelected: (String) -> Unit,
     appRepository: AppRepository,
-    searchScreenKeyBoard: Boolean
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
@@ -90,7 +89,6 @@ fun SearchScreen(
                     }
                 },
                 filter = uiState.filter,
-                searchScreenKeyBoard = searchScreenKeyBoard
             )
         }
 
@@ -290,7 +288,6 @@ fun SearchView(
     onSearch: (String) -> Unit,
     onFilterConfirm: (Set<String>) -> Unit,
     filter: Set<String>,
-    searchScreenKeyBoard:Boolean
 ) {
     val focusManager = LocalFocusManager.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -359,9 +356,9 @@ fun SearchView(
             )
         )
 
-            LaunchedEffect(key1 = focusRequester, key2 = searchScreenKeyBoard) {
-                focusRequester.requestFocus()
-            }
+        LaunchedEffect(key1 = focusRequester) {
+            focusRequester.requestFocus()
+        }
     }
 
     if (openDialog) {

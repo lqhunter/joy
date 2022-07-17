@@ -64,32 +64,16 @@ fun DetailScreen(
     finish: () -> Unit,
     originalOrientation: Int
 ) {
-    val videoController = rememberVideoController()
-    val videoPlayerState by videoController.state.collectAsState()
-    val context = LocalContext.current
-
-    context.findActivity()?.let { activity ->
-        LaunchedEffect(key1 = videoPlayerState.isReady, key2 = videoPlayerState.lockLandscape) {
-            if (videoPlayerState.isReady) {
-                if (videoPlayerState.lockLandscape) {
-                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                } else {
-                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                }
-            }
-        }
-    }
-
     when (detailType) {
         SourceType.NAIFEI -> {
             check(viewModel is NaifeiDetailViewModel)
             DetailScreenNaifei(
                 viewModel = viewModel,
                 isExpandedScreen = isExpandedScreen,
-                videoPlayerState = videoPlayerState,
-                videoController = videoController,
                 systemUiController = systemUiController,
                 onRecommendClick = onRecommendClick,
+                lifecycleOwner = lifecycleOwner,
+                originalOrientation = originalOrientation,
                 finish = finish
             )
 
@@ -99,44 +83,15 @@ fun DetailScreen(
             DetailScreenSakura(
                 viewModel = viewModel,
                 isExpandedScreen = isExpandedScreen,
-                videoPlayerState = videoPlayerState,
-                videoController = videoController,
                 systemUiController = systemUiController,
                 onRecommendClick = onRecommendClick,
+                lifecycleOwner = lifecycleOwner,
+                originalOrientation = originalOrientation,
                 finish = finish
             )
         }
     }
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            Log.d(TAG, "LifecycleEvent:$event")
-
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-
-                }
-                Lifecycle.Event.ON_RESUME -> {
-                    videoController.play()
-                }
-                Lifecycle.Event.ON_PAUSE -> {
-                    videoController.pause()
-                }
-                Lifecycle.Event.ON_DESTROY -> {
-
-                }
-            }
-        }
-
-        // Add the observer to the lifecycle
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        // When the effect leaves the Composition, remove the observer
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-            context.findActivity()?.requestedOrientation = originalOrientation
-        }
-    }
 
 }
 
@@ -144,21 +99,37 @@ fun DetailScreen(
 fun DetailScreenNaifei(
     viewModel: NaifeiDetailViewModel,
     isExpandedScreen: Boolean,
-    videoPlayerState: VideoPlayerState,
-    videoController: DefaultVideoController,
     systemUiController: SystemUiController,
     onRecommendClick: (RecommendBean) -> Unit,
     finish: () -> Unit,
+    lifecycleOwner: LifecycleOwner,
+    originalOrientation: Int,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val _uiState = uiState
 
-    if (videoPlayerState.episodeIndex != -1) {
-        LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
-            viewModel.selectEpisode(videoPlayerState.episodeIndex)
+
+    if (_uiState is DetailUiState.HasData) {
+        val context = LocalContext.current
+        context.findActivity()?.let { activity ->
+            LaunchedEffect(key1 = _uiState.isReady, key2 = _uiState.lockLandscape) {
+                if (_uiState.isReady) {
+                    if (_uiState.lockLandscape) {
+                        activity.requestedOrientation =
+                            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    } else {
+                        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                    }
+                }
+            }
+        }
+
+        if (_uiState.currentSourceIndex != -1) {
+            LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
+                viewModel.selectEpisode(_uiState.currentEpisodeIndex)
+            }
         }
     }
-
     val rowLazyState = rememberLazyListState(
         initialFirstVisibleItemIndex = if (_uiState is DetailUiState.HasData) {
             if (_uiState.currentEpisodeIndex == -1) 0 else _uiState.currentEpisodeIndex
@@ -179,18 +150,18 @@ fun DetailScreenNaifei(
 
         LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
             if (_uiState.currentEpisodeIndex == -1) {
-                videoController.reset()
+                viewModel.videoController.reset()
             }
         }
 
         LaunchedEffect(key1 = isExpandedScreen) {
             systemUiController.isSystemBarsVisible = !isExpandedScreen
-            videoController.setLockShow(isExpandedScreen)
+            viewModel.videoController.setLockShow(isExpandedScreen)
         }
 
         if (!isExpandedScreen) {
             VideoViewWithDetail(
-                videoController = videoController,
+                videoController = viewModel.videoController,
                 videoSource = _uiState.videoSource,
                 currentEpisodeIndex = _uiState.currentEpisodeIndex,
                 currentSourceIndex = _uiState.currentSourceIndex,
@@ -202,11 +173,11 @@ fun DetailScreenNaifei(
                 },
                 onEpisodeSelected = { index, playBean ->
                     if (_uiState.currentEpisodeIndex == -1) {
-                        videoController.setItems(_uiState.videoSource[_uiState.currentSourceIndex].episodes.mapIndexed { i, it ->
+                        viewModel.videoController.setItems(_uiState.videoSource[_uiState.currentSourceIndex].episodes.mapIndexed { i, it ->
                             MediaItem.Builder().setUri(it.playUrl).setTag(i).build()
                         }, index)
                     } else {
-                        videoController.seekTo(index, 0)
+                        viewModel.videoController.seekTo(index, 0)
                     }
                     viewModel.selectEpisode(index)
                 },
@@ -221,12 +192,15 @@ fun DetailScreenNaifei(
                         ) {
                         Text(
                             text = _uiState.name, color = MaterialTheme.colors.onSurface,
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            modifier = Modifier
+                                .weight(0.9f)
+                                .padding(start = 16.dp),
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp
                         )
 
                         IconToggleButton(
+                            modifier = Modifier.weight(0.1f),
                             checked = _uiState.isFavorite,
                             onCheckedChange = {
                                 if (_uiState.isFavorite) {
@@ -247,7 +221,7 @@ fun DetailScreenNaifei(
                 },
                 rowLazyState = rowLazyState,
                 finish = {
-                    videoController.release()
+                    viewModel.videoController.release()
                     finish()
                 },
             )
@@ -256,8 +230,40 @@ fun DetailScreenNaifei(
                 modifier = Modifier
                     .background(Color.Black)
                     .fillMaxSize(),
-                videoController = videoController,
+                videoController = viewModel.videoController,
             )
+        }
+    }
+
+    val context = LocalContext.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            Log.d(TAG, "LifecycleEvent:$event")
+
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.videoController.play()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    viewModel.videoController.pause()
+                }
+                Lifecycle.Event.ON_DESTROY -> {
+
+                }
+            }
+        }
+
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            context.findActivity()?.requestedOrientation = originalOrientation
         }
     }
 }
@@ -266,18 +272,34 @@ fun DetailScreenNaifei(
 fun DetailScreenSakura(
     viewModel: SakuraDetailViewModel,
     isExpandedScreen: Boolean,
-    videoPlayerState: VideoPlayerState,
-    videoController: DefaultVideoController,
     systemUiController: SystemUiController,
     onRecommendClick: (RecommendBean) -> Unit,
     finish: () -> Unit,
+    lifecycleOwner: LifecycleOwner,
+    originalOrientation: Int,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val _uiState = uiState
 
-    if (videoPlayerState.episodeIndex != -1) {
-        LaunchedEffect(key1 = videoPlayerState.episodeIndex) {
-            viewModel.selectEpisode(videoPlayerState.episodeIndex)
+    if (_uiState is DetailUiState.HasData) {
+        val context = LocalContext.current
+        context.findActivity()?.let { activity ->
+            LaunchedEffect(key1 = _uiState.isReady, key2 = _uiState.lockLandscape) {
+                if (_uiState.isReady) {
+                    if (_uiState.lockLandscape) {
+                        activity.requestedOrientation =
+                            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    } else {
+                        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                    }
+                }
+            }
+        }
+
+        if (_uiState.currentEpisodeIndex != -1) {
+            LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
+                viewModel.selectEpisode(_uiState.currentEpisodeIndex)
+            }
         }
     }
 
@@ -303,18 +325,18 @@ fun DetailScreenSakura(
 
         LaunchedEffect(key1 = _uiState.currentEpisodeIndex) {
             if (_uiState.currentEpisodeIndex == -1) {
-                videoController.reset()
+                viewModel.videoController.reset()
             }
         }
 
         LaunchedEffect(key1 = isExpandedScreen) {
             systemUiController.isSystemBarsVisible = !isExpandedScreen
-            videoController.setLockShow(isExpandedScreen)
+            viewModel.videoController.setLockShow(isExpandedScreen)
         }
 
         if (!isExpandedScreen) {
             VideoViewWithDetail(
-                videoController = videoController,
+                videoController = viewModel.videoController,
                 videoSource = _uiState.videoSource,
                 currentEpisodeIndex = _uiState.currentEpisodeIndex,
                 currentSourceIndex = _uiState.currentSourceIndex,
@@ -326,7 +348,11 @@ fun DetailScreenSakura(
                     scope.launch {
                         val url = viewModel.getPlayUrl(playBean.playUrl)
                         url?.run {
-                            videoController.setItems(mutableListOf(MediaItem.Builder().setUri(this).build()), 0)
+                            viewModel.videoController.setItems(
+                                mutableListOf(
+                                    MediaItem.Builder().setUri(this).build()
+                                ), 0
+                            )
                         }
                     }
                     viewModel.selectEpisode(index)
@@ -342,12 +368,15 @@ fun DetailScreenSakura(
                         ) {
                         Text(
                             text = _uiState.name, color = MaterialTheme.colors.onSurface,
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            modifier = Modifier
+                                .weight(0.9f)
+                                .padding(start = 16.dp),
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp
                         )
 
                         IconToggleButton(
+                            modifier = Modifier.weight(0.1f),
                             checked = _uiState.isFavorite,
                             onCheckedChange = {
                                 if (_uiState.isFavorite) {
@@ -368,7 +397,7 @@ fun DetailScreenSakura(
                 },
                 rowLazyState = rowLazyState,
                 finish = {
-                    videoController.release()
+                    viewModel.videoController.release()
                     finish()
                 },
             )
@@ -377,8 +406,43 @@ fun DetailScreenSakura(
                 modifier = Modifier
                     .background(Color.Black)
                     .fillMaxSize(),
-                videoController = videoController,
+                videoController = viewModel.videoController,
             )
+        }
+
+
+    }
+
+
+    val context = LocalContext.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            Log.d(TAG, "LifecycleEvent:$event")
+
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.videoController.play()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    viewModel.videoController.pause()
+                }
+                Lifecycle.Event.ON_DESTROY -> {
+
+                }
+            }
+        }
+
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            context.findActivity()?.requestedOrientation = originalOrientation
         }
     }
 }
@@ -489,7 +553,7 @@ private fun VideoViewWithDetail(
 
                 }
 
-                if(recommend.isNotEmpty()) {
+                if (recommend.isNotEmpty()) {
                     itemsIndexed(recommend) { index, item ->
                         ItemRow(
                             item = item,
@@ -499,7 +563,11 @@ private fun VideoViewWithDetail(
                     }
                 } else {
                     item {
-                        Text(text = "没有推荐数据！\n懒得找图片，就用文字吧", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                        Text(
+                            text = "没有推荐数据！\n懒得找图片，就用文字吧",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
 

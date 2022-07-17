@@ -86,5 +86,6 @@ data class VideoPlayerState(
     val isPlaying: Boolean = false,
     val isReady: Boolean = false,
     val lockLandscape:Boolean = false,
+    val videoPositionMs:Long = 0L
 ) : Serializable
 

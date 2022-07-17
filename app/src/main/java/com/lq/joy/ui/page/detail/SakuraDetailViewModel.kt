@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lq.joy.JoyApplication.Companion.context
 import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.AppRepository
@@ -12,6 +13,7 @@ import com.lq.joy.data.BaseResult
 import com.lq.joy.data.SourceType
 import com.lq.joy.data.sakura.ISakuraRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,7 +40,11 @@ class SakuraDetailViewModel(
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return SakuraDetailViewModel(sakuraRepository, appRepository, handle) as T
+                return SakuraDetailViewModel(
+                    sakuraRepository,
+                    appRepository,
+                    handle
+                ) as T
             }
         }
     }
@@ -54,7 +60,16 @@ class SakuraDetailViewModel(
             viewModelState.value.toUIState()
         )
 
+    val videoController = DefaultVideoController(
+        context = context,
+        initialState = VideoPlayerState(),
+        coroutineScope = viewModelScope
+    )
+
     init {
+        Log.d(TAG, "viewModel:$this")
+
+
         getDetailHtml(Api.HOME + episodeUrl)
 
         viewModelScope.launch {
@@ -64,6 +79,22 @@ class SakuraDetailViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            videoController.state.collect { playerState ->
+                Log.d(TAG, "stateUpdate进度:${playerState}")
+
+                viewModelState.update {
+                    it.copy(
+                        isPlaying = playerState.isPlaying,
+                        isReady = playerState.isReady,
+                        lockLandscape = playerState.lockLandscape,
+                        videoPositionMs = playerState.videoPositionMs
+                    )
+                }
+            }
+        }
+
 
     }
 

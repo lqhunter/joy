@@ -19,6 +19,7 @@ import com.lq.joy.data.ui.RecommendBean
 import com.lq.joy.ui.page.detail.DetailScreen
 import com.lq.joy.ui.page.detail.NaifeiDetailViewModel
 import com.lq.joy.ui.page.detail.SakuraDetailViewModel
+import com.lq.joy.ui.page.detail.rememberVideoController
 import com.lq.joy.ui.page.favourite.FavouriteScreen
 import com.lq.joy.ui.page.favourite.FavouriteViewModel
 import com.lq.joy.ui.page.mian.MainScreen
@@ -34,17 +35,11 @@ fun JoyNavGraph(
     navigationActions: NavigationActions
 ) {
 
-    //每次进入搜索页，键盘都会弹出来，这里控制只弹出一次。这样写感觉不太好
-    var searchScreenKeyBoard by remember {
-        mutableStateOf(true)
-    }
-
     NavHost(navController = navController, startDestination = Destinations.Main.route) {
         jump(Destinations.Main) {
             MainScreen(
                 appContainer,
                 onSearchClick = {
-                    searchScreenKeyBoard = true
                     navigationActions.navigateToSearch()
                 },
                 onFavouriteClick = {
@@ -69,7 +64,6 @@ fun JoyNavGraph(
                 },
                 onSakuraSelected = { navigationActions.navigateToSakuraDetail(it) },
                 appRepository = appContainer.appRepository,
-                searchScreenKeyBoard = searchScreenKeyBoard
             )
         }
 
@@ -106,8 +100,8 @@ fun JoyNavGraph(
                         defaultArgs = backStackEntry.arguments
                     )
                 )
-
             val originalOrientation = LocalContext.current.findActivity()!!.requestedOrientation
+
             DetailScreen(
                 detailType = SourceType.SAKURA,
                 viewModel = viewModel,
@@ -121,7 +115,6 @@ fun JoyNavGraph(
                 },
                 systemUiController = systemUiController,
                 finish = {
-                    searchScreenKeyBoard = false
                     navController.popBackStack()
                 },
                 originalOrientation = originalOrientation
@@ -135,6 +128,8 @@ fun JoyNavGraph(
         }
 
         jump(Destinations.NaifeiDetail) { backStackEntry ->
+            val videoController = rememberVideoController()
+
             val viewModel: NaifeiDetailViewModel =
                 viewModel(
                     factory = NaifeiDetailViewModel.providerFactory(
@@ -159,7 +154,6 @@ fun JoyNavGraph(
                 },
                 systemUiController = systemUiController,
                 finish = {
-                    searchScreenKeyBoard = false
                     navController.popBackStack()
                 },
                 originalOrientation = originalOrientation

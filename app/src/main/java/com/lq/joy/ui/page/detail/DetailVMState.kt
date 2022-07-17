@@ -16,6 +16,9 @@ data class DetailVMState(
     val currentSourceIndex: Int = 0,
     val currentEpisodeIndex: Int = -1,
     val isPlaying: Boolean = false,
+    val videoPositionMs:Long = 0L,
+    val isReady: Boolean = false,
+    val lockLandscape:Boolean = false,
     val favourite: Favourite? = null,
     val naifeiDetailBean: NaifeiDetailBean? = null,
     val sakuraDetailBean: DetailBean? = null
@@ -28,6 +31,9 @@ data class DetailVMState(
                 DetailUiState.HasData(
                     isLoading = isLoading,
                     isPlaying = isPlaying,
+                    isReady = isReady,
+                    videoPositionMs = videoPositionMs,
+                    lockLandscape = lockLandscape,
                     isFavorite = favourite != null,
                     videoSource = mutableListOf<VideoSource>().apply {
                         naifeiDetailBean.data.vod_play_list.forEachIndexed { index, vodPlay ->
@@ -64,6 +70,9 @@ data class DetailVMState(
                 DetailUiState.HasData(
                     isLoading = isLoading,
                     isPlaying = isPlaying,
+                    isReady = isReady,
+                    lockLandscape = lockLandscape,
+                    videoPositionMs = videoPositionMs,
                     isFavorite = favourite != null,
                     videoSource = mutableListOf(
                         VideoSource("线路1", sakuraDetailBean.episodes)
@@ -121,6 +130,9 @@ sealed interface DetailUiState {
     data class HasData(
         override val isLoading: Boolean,
         val isPlaying: Boolean,
+        val isReady: Boolean,
+        val videoPositionMs:Long,
+        val lockLandscape:Boolean,
         val isFavorite: Boolean,
         val videoSource: List<VideoSource>,
         val currentEpisodeIndex: Int,

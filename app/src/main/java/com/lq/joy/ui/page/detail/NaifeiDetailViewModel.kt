@@ -1,11 +1,14 @@
 package com.lq.joy.ui.page.detail
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lq.joy.JoyApplication
+import com.lq.joy.TAG
 import com.lq.joy.data.Api
 import com.lq.joy.data.AppRepository
 import com.lq.joy.data.SourceType
@@ -51,12 +54,33 @@ class NaifeiDetailViewModel(
             viewModelState.value.toUIState()
         )
 
+    val videoController = DefaultVideoController(
+        context = JoyApplication.context,
+        initialState = VideoPlayerState(),
+        coroutineScope = viewModelScope
+    )
+
     init {
         loadDetail(vodId)
         viewModelScope.launch {
             appRepository.isFavourite(SourceType.NAIFEI, "$vodId").collect { f ->
                 viewModelState.update {
                     it.copy(favourite = f)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            videoController.state.collect { playerState ->
+                Log.d(TAG, "stateUpdate进度:${playerState}")
+
+                viewModelState.update {
+                    it.copy(
+                        isPlaying = playerState.isPlaying,
+                        isReady = playerState.isReady,
+                        lockLandscape = playerState.lockLandscape,
+                        videoPositionMs = playerState.videoPositionMs
+                    )
                 }
             }
         }

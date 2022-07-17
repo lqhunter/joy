@@ -7,7 +7,7 @@ interface IVideoController {
 
     fun setSource(url: String)
 
-    fun setItems(mediaItems: List<MediaItem>, windowIndex: Int)
+    fun setItems(mediaItems: List<MediaItem>, windowIndex: Int, start:Long = 0L)
 
     fun getItemsCount():Int
 

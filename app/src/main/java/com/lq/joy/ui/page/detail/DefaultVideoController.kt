@@ -6,17 +6,16 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player.Listener
-import com.google.android.exoplayer2.Player.STATE_READY
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
 import com.google.android.exoplayer2.util.Log
 import com.lq.joy.R
 import com.lq.joy.TAG
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class DefaultVideoController(
     private val context: Context,
@@ -30,26 +29,9 @@ class DefaultVideoController(
         get() = _state.asStateFlow()
 
 
-
-
     private var url: String? = null
     private var playerView: PlayerView? = null
     private var ivScreenLock: ImageView? = null
-
-    init {
-        coroutineScope.launch {
-            state.stateIn(coroutineScope).collect { s ->
-                ivScreenLock?.run {
-                    if (s.lockLandscape) {
-                        setImageResource(R.drawable.outline_lock_white_48)
-                    } else {
-                        setImageResource(R.drawable.outline_lock_open_white_48)
-                    }
-                }
-            }
-        }
-    }
-
 
     private val exoPlayer =
         SimpleExoPlayer.Builder(context).build()
@@ -85,19 +67,64 @@ class DefaultVideoController(
                     override fun onPlayerError(error: ExoPlaybackException) {
                         Toast.makeText(context, "播放失败", Toast.LENGTH_LONG).show()
                     }
+
+                    override fun onEvents(player: Player, events: Events) {
+                        if (events.containsAny(
+                                EVENT_POSITION_DISCONTINUITY,
+                                EVENT_TIMELINE_CHANGED
+                            )
+                        ) {
+
+                        }
+                        if (events.containsAny(
+                                EVENT_PLAYBACK_STATE_CHANGED,
+                                EVENT_PLAY_WHEN_READY_CHANGED,
+                                EVENT_IS_PLAYING_CHANGED
+                            )
+                        ) {
+
+                        }
+                    }
+
                 })
             }
+
+
+    init {
+        coroutineScope.launch {
+            state.stateIn(coroutineScope).collect { s ->
+                ivScreenLock?.run {
+                    if (s.lockLandscape) {
+                        setImageResource(R.drawable.outline_lock_white_48)
+                    } else {
+                        setImageResource(R.drawable.outline_lock_open_white_48)
+                    }
+                }
+            }
+        }
+
+        coroutineScope.launch {
+            while (true) {
+                delay(1000L)
+                if (_state.value.isPlaying) {
+                    _state.update {
+                        Log.d(TAG, "进度:${exoPlayer.currentPosition} | ${this@DefaultVideoController}")
+                        it.copy(videoPositionMs = exoPlayer.currentPosition)
+                    }
+                }
+            }
+        }
+    }
 
     override fun setSource(url: String) {
 
     }
 
-    override fun setItems(mediaItems: List<MediaItem>, windowIndex: Int) {
+    override fun setItems(mediaItems: List<MediaItem>, windowIndex: Int, start: Long) {
         reset()
-        exoPlayer.setMediaItems(mediaItems, windowIndex, 0)
+        exoPlayer.setMediaItems(mediaItems, windowIndex, start)
         exoPlayer.prepare()
     }
-
 
 
     override fun getItemsCount(): Int {
@@ -106,12 +133,14 @@ class DefaultVideoController(
 
 
     override fun play() {
+        Log.d(TAG, "play()")
         if (exoPlayer.playbackState == STATE_READY) {
             exoPlayer.play()
         }
     }
 
     override fun pause() {
+        Log.d(TAG, "pause()")
         if (exoPlayer.isPlaying) {
             exoPlayer.pause()
         }
