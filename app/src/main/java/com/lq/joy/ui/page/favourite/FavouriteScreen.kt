@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -32,6 +33,7 @@ import coil.request.ImageRequest
 import com.lq.joy.TAG
 import com.lq.joy.data.SourceType
 import com.lq.joy.db.Favourite
+import com.lq.joy.utils.isScrolled
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -39,6 +41,8 @@ fun FavouriteScreen(viewModel: FavouriteViewModel, finish: () -> Unit, jumpDetai
 
     val uiState by viewModel.uiState.collectAsState()
     val paging = uiState.pagingData.collectAsLazyPagingItems()
+
+    val listState = rememberLazyListState()
 
     var deleteDialogShow by remember {
         mutableStateOf(false)
@@ -48,6 +52,9 @@ fun FavouriteScreen(viewModel: FavouriteViewModel, finish: () -> Unit, jumpDetai
         mutableStateOf(-1)
     }
 
+    val scrolling by remember {
+        listState.isScrolled
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         Surface(shadowElevation = 5.dp) {
@@ -64,6 +71,7 @@ fun FavouriteScreen(viewModel: FavouriteViewModel, finish: () -> Unit, jumpDetai
 
         if (paging.itemCount > 0) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .padding(paddingValues)
                     .padding(top = 5.dp)
