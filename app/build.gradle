@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 32
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -26,6 +26,13 @@ android {
                         "room.incremental":"true",
                         "room.expandProjection":"true"]
             }
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        // assign different version code for each output
+        variant.outputs.each { output ->
+            output.outputFileName = "joy_" + variant.versionName + ".apk"
         }
     }
 
